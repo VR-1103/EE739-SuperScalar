@@ -60,7 +60,7 @@ begin
 
       -- Analysing executed instructions-------------------------
       ctr <= unsigned(valid1) + unsigned(valid2) + unsigned(valid3); -- so that we can break the cycle as soon as we don't have anything to match
-      for i in 0 to size_rob - 1 loop
+      for i in to_integer(head) to to_integer(tail - 1) loop
         if ((valid1 and rob_row(i)(row_len - 1 downto len_ARF + len_RRF + 1) = tag1) or
             (valid2 and rob_row(i)(row_len - 1 downto len_ARF + len_RRF + 1) = tag2) or
             (valid3 and rob_row(i)(row_len - 1 downto len_ARF + len_RRF + 1) = tag3)) -- we have a match on the ith row
