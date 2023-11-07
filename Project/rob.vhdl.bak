@@ -6,7 +6,7 @@ use work.Gates.all;
 
 entity rob is
     generic(len_PC:integer:=5;
-              len_RRF:integer:= 6;
+              len_RRF:integer:= 12;
               len_ARF:integer:= 3;
               size_rob:integer:=64;
               log_size_rob: integer:= 6;
