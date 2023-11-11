@@ -175,7 +175,20 @@ architecture trivial of register_file is
 	
 	rob_work: process(clk)
 		begin
-		
+		if (rob1(3+log_size_rrf+1-1) = '1') then
+			ar(to_integer(rob1(3+log+size_rrf-1 downto log_size_rrf)))(15 downto 0) <= rr(to_integer(rob1(log_size_rrf-1 downto 0)))(15 downto 0);
+			rr(to_integer(rob1(log_size_rrf-1 downto 0)))(16) <= '0';
+			queue_out1 <= rob1(log_size_rrf-1 downto 0);
+		else
+			null;
+		end if;
+		if (rob2(3+log_size_rrf+1-1) = '1') then
+			ar(to_integer(rob2(3+log+size_rrf-1 downto log_size_rrf)))(15 downto 0) <= rr(to_integer(rob2(log_size_rrf-1 downto 0)))(15 downto 0);
+			rr(to_integer(rob2(log_size_rrf-1 downto 0)))(16) <= '0';
+			queue_out2 <= rob2(log_size_rrf-1 downto 0);
+		else
+			null;
+		end if;
 		
 	end process;
 		
