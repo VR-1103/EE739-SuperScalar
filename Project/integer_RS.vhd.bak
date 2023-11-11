@@ -1,0 +1,21 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity rob is
+    generic(len_PC:integer:=5;
+              len_RRF:integer:= 6;
+              len_ARF:integer:= 3;
+              size_rob:integer:=64;
+              log_size_rob: integer:= 6;
+              row_len: integer:= (len_PC + len_ARF + len_RRF + 1)); -- This line is only valid for VHDL-2008.
+
+    port(clk, rob_flush: in std_logic;
+          dispatch_word1, dispatch_word2: in std_logic_vector(row_len - 1 downto 0); -- dispatch word has PC, ARF entry, RRF entry, executed bit
+          valid_dispatch1, valid_dispatch2 : in std_logic; -- RS might have to send just one word/ no words in case of not having ready instr
+          tag1, tag2, tag3 : in std_logic_vector(len_PC - 1 downto 0); -- one from each pipeline (execution words come from pipeline)
+          valid1, valid2, valid3: in std_logic; -- if the executed words are valid
+          retire_word1, retire_word2: out std_logic_vector(len_RRF - 1 downto 0); -- sent to PRF to tell it to update ARF
+          valid_retire1, valid_retire2: out std_logic; -- in case you can only retire one of the instructions, make that valid_retirei as 0
+          rob_stall: out std_logic);
+end entity;
