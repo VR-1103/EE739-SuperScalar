@@ -44,28 +44,38 @@ begin
         for i in size_rob - 1 downto 0 loop
           rob_row(i)(0) <= '0'; -- makes all of the execution bits as zero
         end loop;
+      else --adding this to reduce the number of inferred latches
+        head <= head;
+        tail <= tail;
       end if;
 
-      -- Welcoming dispactched instructions----------------------
+      -- Welcoming dispatched instructions ---------------------
       if (valid_dispatch1 = '1' and tail/=head) then
         rob_row(to_integer(tail)) <= dispatch_word1;
         tail <= tail + 1;
-
+      else --adding this to reduce the number of inferred latches
+        rob_row(to_integer(tail)) <= dispatch_word1;
+        tail <= tail;
       end if;
+
       if (valid_dispatch2 = '1' and tail/=head) then
         rob_row(to_integer(tail)) <= dispatch_word2;
         tail <= tail + 1;
-
+      else --adding this to reduce the number of inferred latches
+        rob_row(to_integer(tail)) <= dispatch_word2;
+        tail <= tail;
       end if;
 
-      -- Analysing executed instructions-------------------------
+      -- Analysing executed instructions ------------------------
       ctr <= unsigned(valid1) + unsigned(valid2) + unsigned(valid3); -- so that we can break the cycle as soon as we don't have anything to match
       for i in to_integer(head) to to_integer(tail - 1) loop
         if ((valid1 and rob_row(i)(row_len - 1 downto len_ARF + len_RRF + 1) = tag1) or
             (valid2 and rob_row(i)(row_len - 1 downto len_ARF + len_RRF + 1) = tag2) or
-            (valid3 and rob_row(i)(row_len - 1 downto len_ARF + len_RRF + 1) = tag3)) -- we have a match on the ith row
+            (valid3 and rob_row(i)(row_len - 1 downto len_ARF + len_RRF + 1) = tag3)) then -- we have a match on the ith row
           rob_row(i)(0) <= '1';
-          ctr<= ctr - 1;
+          ctr <= ctr - 1;
+        else --adding this to reduce the number of inferred latches
+          ctr <= ctr;
         end if;
         if (valid = '1') then
         end if;
@@ -90,6 +100,7 @@ begin
       if (head = tail or head = tail + 1) then -- stall condition (we don't accept anything even if we have just 1 slot free)
           rob_stall <= '1';
       end if;
+
     end if;
 
   end process normal_operation;

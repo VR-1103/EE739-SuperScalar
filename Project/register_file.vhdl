@@ -4,9 +4,9 @@ use ieee.numeric_std.all;
 
 entity register_file is
 	generic(len_rrf: integer:=63;
-				log_size_rrf: integer:=6;
-				len_rs: integer:=32;
-				);
+			log_size_rrf: integer:=6;
+			len_rs: integer:=32;
+			);
 	port (clk: in std_logic;
 			number_of_operands1,number_of_operands2: in std_logic(1 downto 0);--00: none, 01: one, 10:two
 			operand_adds_11,operand_adds_12,operand_adds_21,operand_adds_22: in std_logic_vector(2 downto 0);
@@ -52,20 +52,20 @@ architecture trivial of register_file is
 			if (ar(to_integer(operand_adds_11))(16) = '0') then
 				operand_words_11 <= ar(to_integer(operand_adds_11)(15 downto 0);
 			else
-				operand_words_11 <= "000000000" & ar(to_integer(operand_adds_11)(15+1+log_size_rrf downto 17) --basically want to append the address of the tag to 16 bits
+				operand_words_11 <= "000000000" & ar(to_integer(operand_adds_11)(15+1+log_size_rrf downto 17); --basically want to append the address of the tag to 16 bits
 			end if;
 			
 		elsif(number_of_operands1 = "10") then
 			if (ar(to_integer(operand_adds_11))(16) = '0') then
 				operand_words_11 <= ar(to_integer(operand_adds_11)(15 downto 0);
 			else
-				operand_words_11 <= "000000000" & ar(to_integer(operand_adds_11)(15+1+log_size_rrf downto 17) --basically want to append the address of the tag to 16 bits
+				operand_words_11 <= "000000000" & ar(to_integer(operand_adds_11)(15+1+log_size_rrf downto 17); --basically want to append the address of the tag to 16 bits
 			end if;			
 			
 			if (ar(to_integer(operand_adds_12))(16) = '0') then
 				operand_words_12 <= ar(to_integer(operand_adds_12)(15 downto 0);
 			else
-				operand_words_12 <= "000000000" & ar(to_integer(operand_adds_12)(15+1+log_size_rrf downto 17) --basically want to append the address of the tag to 16 bits
+				operand_words_12 <= "000000000" & ar(to_integer(operand_adds_12)(15+1+log_size_rrf downto 17); --basically want to append the address of the tag to 16 bits
 			end if;	
 		else
 			null;
@@ -75,28 +75,31 @@ architecture trivial of register_file is
 			if (ar(to_integer(operand_adds_21))(16) = '0') then
 				operand_words_21 <= ar(to_integer(operand_adds_21)(15 downto 0);
 			else
-				operand_words_21 <= "000000000" & ar(to_integer(operand_adds_21)(15+1+log_size_rrf downto 17) --basically want to append the address of the tag to 16 bits
+				operand_words_21 <= "000000000" & ar(to_integer(operand_adds_21)(15+1+log_size_rrf downto 17); --basically want to append the address of the tag to 16 bits
 			end if;
 			
 		elsif(number_of_operands2 = "10") then
 			if (ar(to_integer(operand_adds_21))(16) = '0') then
 				operand_words_21 <= ar(to_integer(operand_adds_21)(15 downto 0);
 			else
-				operand_words_21 <= "000000000" & ar(to_integer(operand_adds_21)(15+1+log_size_rrf downto 17) --basically want to append the address of the tag to 16 bits
+				operand_words_21 <= "000000000" & ar(to_integer(operand_adds_21)(15+1+log_size_rrf downto 17); --basically want to append the address of the tag to 16 bits
 			end if;			
 			
 			if (ar(to_integer(operand_adds_22))(16) = '0') then
 				operand_words_22 <= ar(to_integer(operand_adds_22)(15 downto 0);
 			else
-				operand_words_22 <= "000000000" & ar(to_integer(operand_adds_22)(15+1+log_size_rrf downto 17) --basically want to append the address of the tag to 16 bits
+				operand_words_22 <= "000000000" & ar(to_integer(operand_adds_22)(15+1+log_size_rrf downto 17); --basically want to append the address of the tag to 16 bits
 			end if;	
 		else
 			null;
 		end if;
 		
 		if (carryzero1(0) = '1') then 
-			if (zero(16) = '0')
-		end if
+			if (zero(16) = '0') then
+			-- What is supposed to be written here? I am writing a null here for the sake of syntax
+				null;
+			end if;
+		end if;
 		
 		queue_used1 <= '0';
 		if (dest_reqd1 = '1') then
@@ -112,6 +115,7 @@ architecture trivial of register_file is
 		else
 			null;
 		end if;
+
 		queue_used2 <= '0';
 		if (dest_reqd2 = '1') then
 			if(queue2 = "111111") then
@@ -139,7 +143,7 @@ architecture trivial of register_file is
 				else
 					validity_op1(i) <= '0';
 				end if;
-			end if
+			end if;
 		end loop;
 		L2: for i in 0 to len_rs loop
 			if (invalidity_op2(i) = '0') then
@@ -149,7 +153,7 @@ architecture trivial of register_file is
 				else
 					validity_op2(i) <= '0';
 				end if;
-			end if
+			end if;
 		end loop;
 		
 		--have to write for c and z
