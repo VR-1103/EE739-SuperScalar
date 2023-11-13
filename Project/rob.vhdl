@@ -89,16 +89,16 @@ begin
       for i in size_rob - 1 downto 0 loop
         if (rob_row(i)(row_len - 1)) then -- only checking valid rows
 
-          if (valid1 and (rob_row(i)(pc_start downto pc_end) = tag1))) then -- we have a match on the ith row for the 1st word
+          if (valid1 and (rob_row(i)(pc_start downto pc_end) = tag1)) then -- we have a match on the ith row for the 1st word
             rob_row(i)(0) <= '1'; -- executed successfully
             if ((mispred1 = '1') and (rob_row(i)(op_start downto op_end + 2) = branch_op)) then -- zooming in on a mispredicted branch
-              rob_row(i + 1)(1) = '1'; -- spec bit of next row is made 1
+              rob_row(i + 1)(1) <= '1'; -- spec bit of next row is made 1
             end if;
 
           elsif (valid2 and (rob_row(i)(pc_start downto pc_end) = tag2)) then -- we have a match on the ith row for the 2nd word
             rob_row(i)(0) <= '1'; -- executed successfully
             if ((mispred2 = '1') and (rob_row(i)(op_start downto op_end + 2) = branch_op)) then -- zooming in on a mispredicted branch
-              rob_row(i + 1)(1) = '1';
+              rob_row(i + 1)(1) <= '1';
             end if;
 
           elsif (valid3 and (rob_row(i)(pc_start downto pc_end) = tag3)) then -- we have a match on the ith row for the 3rd word
