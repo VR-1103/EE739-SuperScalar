@@ -1,5 +1,5 @@
 Analysis & Synthesis report for superscalar
-Tue Nov 14 03:26:25 2023
+Fri Nov 17 03:37:38 2023
 Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 
 
@@ -37,7 +37,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                        ;
 +------------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status        ; Failed - Tue Nov 14 03:26:25 2023              ;
+; Analysis & Synthesis Status        ; Failed - Fri Nov 17 03:37:38 2023              ;
 ; Quartus Prime Version              ; 22.1std.2 Build 922 07/20/2023 SC Lite Edition ;
 ; Revision Name                      ; superscalar                                    ;
 ; Top-level Entity Name              ; superscalar                                    ;
@@ -164,11 +164,13 @@ https://fpgasoftware.intel.com/eula.
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
-    Info: Processing started: Tue Nov 14 03:26:17 2023
+    Info: Processing started: Fri Nov 17 03:37:31 2023
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off superscalar -c superscalar
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
-Error (10500): VHDL syntax error at store_buffer.vhdl(100) near text "=";  expecting "(", or "'", or "." File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 100
+Error (10500): VHDL syntax error at store_buffer.vhdl(54) near text # File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 54
+Error (10500): VHDL syntax error at store_buffer.vhdl(54) near text "#";  expecting "entity", or "architecture", or "use", or "library", or "package", or "configuration" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 54
+Error (10500): VHDL syntax error at store_buffer.vhdl(62) near text # File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 62
 Info (12021): Found 0 design units, including 0 entities, in source file store_buffer.vhdl
 Error (10500): VHDL syntax error at store_queue.vhdl(87) near text ")"; mismatched closing parenthesis  File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_queue.vhdl Line: 87
 Error (10500): VHDL syntax error at store_queue.vhdl(91) near text "=";  expecting "(", or "'", or "." File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_queue.vhdl Line: 91
@@ -176,9 +178,8 @@ Error (10500): VHDL syntax error at store_queue.vhdl(98) near text "=";  expecti
 Info (12021): Found 0 design units, including 0 entities, in source file store_queue.vhdl
 Error (10500): VHDL syntax error at rob_alt.vhdl(88) near text ")"; mismatched closing parenthesis  File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob_alt.vhdl Line: 88
 Info (12021): Found 0 design units, including 0 entities, in source file rob_alt.vhdl
-Error (10500): VHDL syntax error at load_queue.vhdl(87) near text ")"; mismatched closing parenthesis  File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/load_queue.vhdl Line: 87
-Error (10500): VHDL syntax error at load_queue.vhdl(91) near text "=";  expecting "(", or "'", or "." File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/load_queue.vhdl Line: 91
-Error (10500): VHDL syntax error at load_queue.vhdl(98) near text "=";  expecting "(", or "'", or "." File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/load_queue.vhdl Line: 98
+Error (10430): VHDL Primary Unit Declaration error at load_queue.vhdl(7): primary unit "store_buffer" already exists in library "work". Compile the two primary units into different libraries or assign them unique names. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number. File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/load_queue.vhdl Line: 7
+Error (10784): HDL error at store_buffer.vhdl(7): see declaration for object "store_buffer" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 7
 Info (12021): Found 0 design units, including 0 entities, in source file load_queue.vhdl
 Error (10430): VHDL Primary Unit Declaration error at rob.vhdl(7): primary unit "rob" already exists in library "work". Compile the two primary units into different libraries or assign them unique names. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number. File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 7
 Error (10784): HDL error at rob_alt.vhdl(7): see declaration for object "rob" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob_alt.vhdl Line: 7
@@ -201,10 +202,10 @@ Info (12021): Found 0 design units, including 0 entities, in source file registe
 Info (12021): Found 2 design units, including 1 entities, in source file integer_RS.vhd
     Info (12022): Found design unit 1: int_RS-int_RS_arch File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/integer_RS.vhd Line: 34
     Info (12023): Found entity 1: int_RS File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/integer_RS.vhd Line: 5
-Error: Quartus Prime Analysis & Synthesis was unsuccessful. 23 errors, 1 warning
+Error: Quartus Prime Analysis & Synthesis was unsuccessful. 24 errors, 1 warning
     Error: Peak virtual memory: 413 megabytes
-    Error: Processing ended: Tue Nov 14 03:26:25 2023
-    Error: Elapsed time: 00:00:08
-    Error: Total CPU time (on all processors): 00:00:24
+    Error: Processing ended: Fri Nov 17 03:37:38 2023
+    Error: Elapsed time: 00:00:07
+    Error: Total CPU time (on all processors): 00:00:23
 
 

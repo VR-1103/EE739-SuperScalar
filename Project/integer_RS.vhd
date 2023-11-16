@@ -18,11 +18,11 @@ entity int_RS is
             row_len: integer:= (1 + input_len)); -- This line is only valid for VHDL-2008.
 				-- This works like: busy(1) + pc(len_pc) + opcode(4) + control(len_control) + valid1(1) + opr1(len_operand) + valid2(1) + opr2(len_operand) + destination(len_RRF) + status_valid(1) + status_reg(6) + ready(1)
 
-    port(clk, rs_flush: in std_logic; -- Clock and flush signal
+    port(clk, RS_flush: in std_logic; -- Clock and flush signal
 			input_word1, input_word2: in std_logic_vector(0 to input_len - 1); -- Input from decoder 
 			valid_in1, valid_in2: in std_logic; -- Whether input from decoder is valid/should be entered in the RS table
-			prf_reg1, prf_reg2, prf_reg3: in std_logic_vector(0 to input_RRF - 1); -- Input of updated register from RRF. Contains address + content
-			prf_valid1, prf_valid2, prf_valid3: in std_logic; -- Whether input from PRF is valid
+			rrf_reg1, rrf_reg2, rrf_reg3: in std_logic_vector(0 to input_RRF - 1); -- Input of updated register from RRF. Contains address + content
+			rrf_valid1, rrf_valid2, rrf_valid3: in std_logic; -- Whether input from PRF is valid
 			status_reg1, status_reg2, status_reg3: in std_logic_vector(0 to len_RRF + 1); -- Input of updated status register. Contains address + content
 			status_valid1, status_valid2, status_valid3: in std_logic; -- Whether input from status reg is valid
 			pipe1_busy, pipe2_busy: in std_logic; -- pipelines are busy so cant give instr
@@ -42,6 +42,7 @@ architecture int_RS_arch of int_RS is
 	signal pipe1_done, pipe2_done: std_logic := '0'; -- whether pipeline has already been assigned something
 	signal stall_determine: std_logic := '0'; -- determine stall based on predetermined indexes given above 
 	signal current_row: std_logic_vector(0 to row_len - 1) := (others => '0');
+	signal pipe1_out, pipe2_out: std_logic_vector(0 to len_out - 1) := (others => '0'); --buffer for output to pipeline
 	
 	-- bunch of indexes
 	constant busy_i : integer := 0;
@@ -73,18 +74,15 @@ architecture int_RS_arch of int_RS is
 			pipe1_done <= '0';
 			pipe2_done <= '0';
 			
-			-- Note that the addresses for new instructions and the stall signal are determined from the previous cycle
-			RS_stall <= stall_determine;
-			
 			-- flush if necessary
-			if (rs_flush = '1') then 
+			if (RS_flush = '1') then 
 				flush_loop: for i in 0 to size_rs - 1 loop
 					int_RS_table(i)(busy_i) <= '0'; -- row no longer busy and is ready to be overwritten
 				end loop flush_loop;
 			end if; --dunno what to put into else
 			
-			-- insert incoming instructions if they are valid and there is no stall
-			if (stall_determine = '0') then 
+			-- insert incoming instructions if they are valid and there is no stall. Indexes are determined from previous cycle
+			if (stall_determine = '0' and RS_flush = '0') then -- Ideally after a flush, input valid bits should be 0
 				if (valid_in1 = '1') then
 					int_RS_table(in1_index) <= '1' & input_word1;
 					in1_index_valid <= '0';
@@ -95,67 +93,59 @@ architecture int_RS_arch of int_RS is
 				end if;
 			end if;
 			
-		-- start traversing table 
+		-- start traversing table. This is done regardless of a stall in RS  
 			traverse_loop: for i in 0 to size_rs -1 loop -- im fucking breaking my head over this loop
 				current_row <= int_RS_table(i);
-				
-			-- check if row is free and assign a predetermined index for decoded instrs if it is
-				if (current_row(0) = '0') then
-					if (in1_index_valid <= '0') then 
-						in1_index := i;
-						in1_index_valid <= '1';
-					end if;
-					if (in1_index /= i and in2_index_valid <= '0') then
-						in2_index := i;
-						in2_index_valid <= '1';
-					end if;
 					
-				else --row is busy so contains an instr
+				if (current_row(busy_i) = '1') then --row is busy so contains an instr
 				
 				-- Update operands and status and check if instr is ready
 					if (current_row(row_len - 1) = '0') then -- instruction is not ready
-					
-						if (current_row(valid1_i) = '0') then -- check if opr1 is not valid
-							if (current_row(opr1_start_i to opr1_end_addr_i) = prf_reg1(0 to len_RRF - 1) and prf_valid1 = '1') then
+						
+						-- check if opr1 is valid
+						if (current_row(valid1_i) = '0') then 
+							if (current_row(opr1_start_i to opr1_end_addr_i) = rrf_reg1(0 to len_RRF - 1) and rrf_valid1 = '1') then
 								current_row(valid1_i) <= '1'; -- update opr1 to prf_1
-								current_row(opr1_start_i to opr1_end_i) <= prf_reg1(len_RRF to input_RRF - 1);
+								current_row(opr1_start_i to opr1_end_i) <= rrf_reg1(len_RRF to input_RRF - 1);
 							end if;
-							if (current_row(opr1_start_i to opr1_end_addr_i) = prf_reg2(0 to len_RRF - 1) and prf_valid2 = '1') then
+							if (current_row(opr1_start_i to opr1_end_addr_i) = rrf_reg2(0 to len_RRF - 1) and rrf_valid2 = '1') then
 								current_row(valid1_i) <= '1'; -- update opr1 to prf_2
-								current_row(opr1_start_i to opr1_end_i) <= prf_reg2(len_RRF to input_RRF - 1);
+								current_row(opr1_start_i to opr1_end_i) <= rrf_reg2(len_RRF to input_RRF - 1);
 							end if;
-							if (current_row(opr1_start_i to opr1_end_addr_i) = prf_reg3(0 to len_RRF - 1) and prf_valid3 = '1') then
+							if (current_row(opr1_start_i to opr1_end_addr_i) = rrf_reg3(0 to len_RRF - 1) and rrf_valid3 = '1') then
 								current_row(valid1_i) <= '1'; -- update opr1 to prf_3
-								current_row(opr1_start_i to opr1_end_i) <= prf_reg3(len_RRF to input_RRF - 1);
+								current_row(opr1_start_i to opr1_end_i) <= rrf_reg3(len_RRF to input_RRF - 1);
 							end if;
 						end if;
 						
-						if (current_row(valid2_i) = '0') then -- check if opr2 is not valid
-							if (current_row(opr2_start_i to opr2_end_addr_i) = prf_reg1(0 to len_RRF - 1) and prf_valid1 = '1') then
+						-- check if opr2 is valid
+						if (current_row(valid2_i) = '0') then 
+							if (current_row(opr2_start_i to opr2_end_addr_i) = rrf_reg1(0 to len_RRF - 1) and rrf_valid1 = '1') then
 								current_row(valid2_i) <= '1'; -- update opr2 to prf_1
-								current_row(opr2_start_i to opr2_end_i) <= prf_reg1(len_RRF to input_RRF - 1);
+								current_row(opr2_start_i to opr2_end_i) <= rrf_reg1(len_RRF to input_RRF - 1);
 							end if;
-							if (current_row(opr2_start_i to opr2_end_addr_i) = prf_reg2(0 to len_RRF - 1) and prf_valid2 = '1') then
+							if (current_row(opr2_start_i to opr2_end_addr_i) = rrf_reg2(0 to len_RRF - 1) and rrf_valid2 = '1') then
 								current_row(valid2_i) <= '1'; -- update opr2 to prf_2
-								current_row(opr2_start_i to opr2_end_i) <= prf_reg2(len_RRF to input_RRF - 1);
+								current_row(opr2_start_i to opr2_end_i) <= rrf_reg2(len_RRF to input_RRF - 1);
 							end if;
-							if (current_row(opr2_start_i to opr2_end_addr_i) = prf_reg3(0 to len_RRF - 1) and prf_valid3 = '1') then
+							if (current_row(opr2_start_i to opr2_end_addr_i) = rrf_reg3(0 to len_RRF - 1) and rrf_valid3 = '1') then
 								current_row(valid2_i) <= '1'; -- update opr2 to prf_3
-								current_row(opr2_start_i to opr2_end_i) <= prf_reg3(len_RRF to input_RRF - 1);
+								current_row(opr2_start_i to opr2_end_i) <= rrf_reg3(len_RRF to input_RRF - 1);
 							end if;
 						end if;
 						
-						if (current_row(status_valid_i) = '0') then -- check if status is not valid
+						-- check if status is valid
+						if (current_row(status_valid_i) = '0') then 
 							if (current_row(status_start_i to status_end_addr_i) = status_reg1(0 to len_RRF - 1) and status_valid1 = '1') then
 								current_row(status_valid_i) <= '1'; --update status to status_reg1
 								current_row(status_start_i to status_end_i) <= status_reg1(len_RRF to len_RRF + 1);
 							end if;
 							if (current_row(status_start_i to status_end_addr_i) = status_reg2(0 to len_RRF - 1) and status_valid2 = '1') then
-								current_row(status_valid_i) <= '1'; --update status to status_reg1
+								current_row(status_valid_i) <= '1'; --update status to status_reg2
 								current_row(status_start_i to status_end_i) <= status_reg2(len_RRF to len_RRF + 1);
 							end if;
 							if (current_row(status_start_i to status_end_addr_i) = status_reg3(0 to len_RRF - 1) and status_valid3 = '1') then
-								current_row(status_valid_i) <= '1'; --update status to status_reg1
+								current_row(status_valid_i) <= '1'; --update status to status_reg3
 								current_row(status_start_i to status_end_i) <= status_reg3(len_RRF to len_RRF + 1);
 							end if;
 						end if;
@@ -164,25 +154,54 @@ architecture int_RS_arch of int_RS is
 						current_row(row_len - 1) <= current_row(valid1_i) and current_row(valid2_i) and current_row(status_valid_i);
 					end if;
 					
-					if (current_row(row_len - 1) = '1') then -- instruction was born/groomed ready
+					-- Check if instruction is ready now after update/ was already ready
+					if (current_row(row_len - 1) = '1') then
 						if (pipe1_done = '0' and pipe1_busy = '0') then
-							pipe1_issue <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_start_i to status_end_i);
-							pipe1_done <= '1';
+							pipe1_out <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_start_i to status_end_i);
+							pipe1_done <= '1'; --mark as valid
+							current_row(busy_i) <= '0'; -- make slot available
 						else 
 							if (pipe2_done = '0' and pipe2_busy = '0') then
-								pipe2_issue <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_start_i to status_end_i);
-								pipe2_done <= '1';
+								pipe2_out <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_start_i to status_end_i);
+								pipe2_done <= '1'; -- mark as valid
+								current_row(busy_i) <= '0'; -- make slot available
 							end if;
 						end if;
 					end if;
 				end if;
-				int_RS_table(i) <= current_row;	
+				
+				-- check if row is now free and assign a predetermined index for decoded instrs if it is
+				if (current_row(busy_i) = '0') then --row is free, can use for an input instruction in the next cycle
+					if (in1_index_valid <= '0') then 
+						in1_index := i;
+						in1_index_valid <= '1';
+					else 
+						if (in2_index_valid <= '0') then
+							in2_index := i;
+							in2_index_valid <= '1';
+						end if;
+					end if;
+				end if;
+				
+				--place the updated row back into the RS table and move onto the next iteration
+				int_RS_table(i) <= current_row; 	
 			end loop traverse_loop;
 			
-			--housekeeping signals
-			pipe1_issue_valid <= pipe1_done;
-			pipe2_issue_valid <= pipe2_done;
+			-- Determine stall for next cycle and assign an output
 			stall_determine <= not(in1_index_valid and in2_index_valid); -- stall if there is not atleast two spaces available
+			
 		end if;
 	end process RS_proc;
+	
+	-- Output to pipelines
+	pipe1_issue <= pipe1_out;
+	pipe2_issue <= pipe2_out;
+	
+	-- Valid signals to pipelines 
+	pipe1_issue_valid <= pipe1_done;
+	pipe2_issue_valid <= pipe2_done;
+	
+	-- Stall output
+	RS_stall <= stall_determine;
+	
 end architecture int_RS_arch;
