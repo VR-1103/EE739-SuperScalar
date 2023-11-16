@@ -1,5 +1,5 @@
 Analysis & Synthesis report for superscalar
-Fri Nov 17 03:37:38 2023
+Fri Nov 17 04:50:17 2023
 Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 
 
@@ -37,7 +37,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                        ;
 +------------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status        ; Failed - Fri Nov 17 03:37:38 2023              ;
+; Analysis & Synthesis Status        ; Failed - Fri Nov 17 04:50:17 2023              ;
 ; Quartus Prime Version              ; 22.1std.2 Build 922 07/20/2023 SC Lite Edition ;
 ; Revision Name                      ; superscalar                                    ;
 ; Top-level Entity Name              ; superscalar                                    ;
@@ -164,7 +164,7 @@ https://fpgasoftware.intel.com/eula.
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
-    Info: Processing started: Fri Nov 17 03:37:31 2023
+    Info: Processing started: Fri Nov 17 04:50:08 2023
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off superscalar -c superscalar
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
@@ -202,10 +202,13 @@ Info (12021): Found 0 design units, including 0 entities, in source file registe
 Info (12021): Found 2 design units, including 1 entities, in source file integer_RS.vhd
     Info (12022): Found design unit 1: int_RS-int_RS_arch File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/integer_RS.vhd Line: 34
     Info (12023): Found entity 1: int_RS File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/integer_RS.vhd Line: 5
+Info (12021): Found 2 design units, including 1 entities, in source file LS_RS.vhd
+    Info (12022): Found design unit 1: LS_RS-LS_RS_arch File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/LS_RS.vhd Line: 33
+    Info (12023): Found entity 1: LS_RS File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/LS_RS.vhd Line: 5
 Error: Quartus Prime Analysis & Synthesis was unsuccessful. 24 errors, 1 warning
     Error: Peak virtual memory: 413 megabytes
-    Error: Processing ended: Fri Nov 17 03:37:38 2023
-    Error: Elapsed time: 00:00:07
-    Error: Total CPU time (on all processors): 00:00:23
+    Error: Processing ended: Fri Nov 17 04:50:17 2023
+    Error: Elapsed time: 00:00:09
+    Error: Total CPU time (on all processors): 00:00:24
 
 

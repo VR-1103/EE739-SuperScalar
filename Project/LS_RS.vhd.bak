@@ -2,21 +2,20 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity int_RS is
-	 -- The integer RS only cares about the PC, control word, operands or the address of where to update them from, and the destination RRF (both operand and status)
+entity LS_RS is
+	 -- The Load/Store RS only cares about the PC, control word, operand or address of the reference register, the offset, and the destination RRF 
     generic(len_PC: integer := 5; -- Length of the PC which RS receives for each instruction
 				len_control: integer := 16; -- Length of the control word for the integer pipeline
             len_RRF: integer := 6; -- Length of the destination RRF which the RS receives for each instruction
-            len_operand: integer := 32; -- Length of the two operands. This is more than the length of the addresses in the PRF so that address can fit as well  
+            len_operand: integer := 32; -- Length of the operand (reference register) or displacement. This is more than the length of the addresses in the PRF so that address can fit as well  
             size_rs: integer := 64; -- Size of RS table
-				len_status: integer := 6; --status register. It is 6 so that renamed status reg can also be fitted. Actual CZ flag is to be put in the first two indexes 
             log_size_rs: integer := 6; -- log2 of size. UPDATE EVERYTIME YOU UPDATE SIZE
 				input_RRF: integer := (len_RRF + len_operand); -- reg address + content
-				len_out: integer := (len_pc + len_control + len_operand + len_operand + len_RRF + len_RRF + 2); -- output to pipeline. Status is just 2 here cause address won't be needed now
-				input_len: integer := (len_pc + 4 + len_control + 1 + len_operand + 1 + len_operand + len_RRF + 1 + len_status + len_RRF + 1);
-				-- This works like: pc(len_pc) + opcode(4) + control(len_control) + valid1(1) + opr1(len_operand) + valid2(1) + opr2(len_operand) + destination(len_RRF) + status_valid(1) + status_reg(6) + status_destination(len_RRF) + ready(1)
-            row_len: integer:= (1 + input_len));
-				-- This works like: busy(1) + input
+				len_out: integer := (len_pc + len_control + len_operand + len_operand + len_RRF); -- output to pipeline
+				input_len: integer := (len_pc + 4 + len_control + 1 + len_operand + len_operand + len_RRF + 1);
+				-- This works like: pc(len_pc) + opcode(4) + control(len_control) + valid1(1) + opr1(len_operand) + Immediate(len_operand) + destination(len_RRF) + ready(1)
+            row_len: integer:= (1 + input_len)); -- This line is only valid for VHDL-2008.
+				-- This works like: busy(1) + pc(len_pc) + opcode(4) + control(len_control) + valid1(1) + opr1(len_operand) + Immediate(len_operand) + destination(len_RRF) + ready(1)
 
     port(clk, RS_flush: in std_logic; -- Clock and flush signal
 			input_word1, input_word2: in std_logic_vector(0 to input_len - 1); -- Input from decoder 
@@ -38,6 +37,7 @@ architecture int_RS_arch of int_RS is
 	signal in1_index : integer := 0; --predetermined index for where to put first of decoder output
 	signal in2_index : integer := 1; --predetermined index for where to put second of decoder output
 	signal in1_index_valid, in2_index_valid : std_logic := '1'; -- is predetermined index even valid?
+	signal to_pipe1, to_pipe2: std_logic_vector(0 to len_out - 1) := (others => '0'); -- what to send to pipelines
 	signal pipe1_done, pipe2_done: std_logic := '0'; -- whether pipeline has already been assigned something
 	signal stall_determine: std_logic := '0'; -- determine stall based on predetermined indexes given above 
 	signal current_row: std_logic_vector(0 to row_len - 1) := (others => '0');
@@ -62,11 +62,9 @@ architecture int_RS_arch of int_RS is
 	constant status_valid_i : integer := 1 + len_pc + 4 + len_control + 1 + len_operand + 1 + len_operand + len_RRF;
 	constant status_start_i : integer := 1 + len_pc + 4 + len_control + 1 + len_operand + 1 + len_operand + len_RRF + 1;
 	constant status_end_i : integer := 1 + len_pc + 4 + len_control + 1 + len_operand + 1 + len_operand + len_RRF + 1 + 2;
-	constant status_end_addr_i : integer := 1 + len_pc + 4 + len_control + 1 + len_operand + 1 + len_operand + len_RRF + 1 + len_status - 1;
-	constant status_dest_start_i : integer := 1 + len_pc + 4 + len_control + 1 + len_operand + 1 + len_operand + len_RRF + 1 + len_status;
-	constant status_dest_end_i : integer := 1 + len_pc + 4 + len_control + 1 + len_operand + 1 + len_operand + len_RRF + 1 + len_status + len_RRF - 1;
-	
+	constant status_end_addr_i : integer := 1 + len_pc + 4 + len_control + 1 + len_operand + 1 + len_operand + len_RRF + 1 + len_status;
 	begin
+	--stall signal is not in process
 	RS_proc: process(clk)
 	begin
 		if(rising_edge(clk)) then
@@ -158,12 +156,12 @@ architecture int_RS_arch of int_RS is
 					-- Check if instruction is ready now after update/ was already ready
 					if (current_row(row_len - 1) = '1') then
 						if (pipe1_done = '0' and pipe1_busy = '0') then
-							pipe1_out <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_dest_start_i to status_dest_end_i) & current_row(status_start_i to status_end_i);
+							pipe1_out <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_start_i to status_end_i);
 							pipe1_done <= '1'; --mark as valid
 							current_row(busy_i) <= '0'; -- make slot available
 						else 
 							if (pipe2_done = '0' and pipe2_busy = '0') then
-								pipe2_out <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_dest_start_i to status_dest_end_i) & current_row(status_start_i to status_end_i);
+								pipe2_out <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_start_i to status_end_i);
 								pipe2_done <= '1'; -- mark as valid
 								current_row(busy_i) <= '0'; -- make slot available
 							end if;
