@@ -27,9 +27,9 @@ entity store_buffer is
           valid_prf_update2: in std_logic;
           tag_prf_update2: in std_logic_vector(len_PC - 1 downto 0);
           data_prf_update2: in std_logic_vector(len_data - 1 downto 0);
-          valid_prf_update2: in std_logic;
-          tag_prf_update2: in std_logic_vector(len_PC - 1 downto 0);
-          data_prf_update2: in std_logic_vector(len_data - 1 downto 0);
+          valid_prf_update3: in std_logic;
+          tag_prf_update3: in std_logic_vector(len_PC - 1 downto 0);
+          data_prf_update3: in std_logic_vector(len_data - 1 downto 0);
           -- pre- ROB stage $$$$$$$$$$$$$$--
           valid_complete1 : out std_logic; -- that we do need to retire it
           complete_word1 : out std_logic_vector(len_PC - 1 downto 0); -- sent to ROB to tell it that the row can be now executed pakka (this is required to ensure "data" in store buffer is actual data)
@@ -89,7 +89,6 @@ begin
 
       -- Flushing Cases #######################################--
       if (store_buffer_flush = '1') then --technically, a procedure could be more elegant but I don't know how to efficiently use it for a store_row_type
-        tail <= 1;
         passed <= '0';
         for i in 0 to size_store - 1 loop
           -- I have to implement a way to allocate a new location for the tail pointer
