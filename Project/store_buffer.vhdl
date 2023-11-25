@@ -22,13 +22,13 @@ entity store_buffer is
           valid_store_execute1 : in std_logic; -- if the executed words are actually meant for store buffer
           -- waiting for data stage $$$$$$--
           valid_prf_update1: in std_logic;
-          tag_prf_update1: in std_logic_vector(len_PC - 1 downto 0);
+          tag_prf_update1: in std_logic_vector(len_data - 1 downto 0);
           data_prf_update1: in std_logic_vector(len_data - 1 downto 0);
           valid_prf_update2: in std_logic;
-          tag_prf_update2: in std_logic_vector(len_PC - 1 downto 0);
+          tag_prf_update2: in std_logic_vector(len_data - 1 downto 0);
           data_prf_update2: in std_logic_vector(len_data - 1 downto 0);
           valid_prf_update3: in std_logic;
-          tag_prf_update3: in std_logic_vector(len_PC - 1 downto 0);
+          tag_prf_update3: in std_logic_vector(len_data - 1 downto 0);
           data_prf_update3: in std_logic_vector(len_data - 1 downto 0);
           -- pre- ROB stage $$$$$$$$$$$$$$--
           valid_complete1 : out std_logic; -- that we do need to retire it
@@ -39,7 +39,7 @@ entity store_buffer is
           -- pre-memory stage $$$$$$$$$$$$--
           port_free_bit : in std_logic; -- tells store_buffer that it can now control the memory port
           kucch_dena_hai : out std_logic; -- '0' if there is no completed store at the head
-          port_kya_lega : out std_logic_vector(len_data - 1 downto 0);
+          port_kya_dega : out std_logic_vector(len_data - 1 downto 0);
           port_kaha_dega : out std_logic_vector(len_mem_addr - 1 downto 0);
           -- load forwarding stage $$$$$$$--
           valid_load_fwd_request : in std_logic;
@@ -67,7 +67,7 @@ architecture Struct of store_buffer is
   signal store_row : store_row_type := (others => default_row);
   constant branch_op : std_logic_vector(1 downto 0) := "10";
   signal head: unsigned(log_size_store - 1 downto 0) := 0; -- log_size_rob - 1 downto 0 refers to the integer written bitwise
-  signal tail: unsigned(log_size_store - 1 downto 0) := 1; -- these are written in this way to ensure we get modular arithmetic
+  signal tail: unsigned(log_size_store - 1 downto 0) := 0; -- these are written in this way to ensure we get modular arithmetic
   signal i: unsigned(log_size_rob - 1 downto 0) :=0; -- temporary variable for our loops
   signal passed : std_logic := '0'; -- temporary variable with multiple uses
 
@@ -85,17 +85,17 @@ begin
 
     if(rising_edge(clk)) then -- we don't want to do anything during the falling edge
       port_kaha_dega <= store_row(head)(mem_addr_start downto mem_addr_end);
-      port_kya_lega <= store_row(head)(data_start downto data_end);
+      port_kya_dega <= store_row(head)(data_start downto data_end);
 
       -- Flushing Cases #######################################--
       if (store_buffer_flush = '1') then --technically, a procedure could be more elegant but I don't know how to efficiently use it for a store_row_type
-        passed <= '0';
+      tail <= head; -- to ensure the worst case is taken care of when no store instruction is completed
         for i in 0 to size_store - 1 loop
+        i <= i + head;
           -- I have to implement a way to allocate a new location for the tail pointer
-          if head = i then
-            passed <= '1';
-          elsif store_row(i)(0) and (not passed) then
-            tail <= i; -- this basically ensures that tail is below last entry which is completed that comes before we encounter the head
+          if store_row(i)(0) then
+            tail <= i;
+            -- this basically ensures that tail is the last entry which is completed
           elsif not store_row(i)(0) then -- un-completed instructions are flushed
             store_row(i)(2 downto 0) <= "000"; -- makes all of the status bits as zero; I could have made all of the rows into default_row but that is just unnecessary
             store_row(i)(row_len - 1) <= '0';
@@ -106,7 +106,7 @@ begin
       end if;
 
       -- Welcoming dispatched requests ########################--
-      if (valid_dispatch1 = '1' and tail/=head) then
+      if (valid_dispatch1 = '1') then
         store_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_PC + len_data downto len_data + 1);
         store_row(to_integer(tail))(data_start downto data_end) <= dispatch_word1(len_data downto 1);
         store_row(to_integer(tail))(1) <= dispatch_word1(0); -- valid bit
@@ -126,7 +126,7 @@ begin
         tail <= tail;
       end if;
 
-      if (valid_dispatch2 = '1' and tail/=head) then
+      if (valid_dispatch2 = '1') then
         store_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word2(len_PC + len_data downto len_data + 1);
         store_row(to_integer(tail))(data_start downto data_end) <= dispatch_word2(len_data downto 1);
         store_row(to_integer(tail))(1) <= dispatch_word2(0); -- valid bit
@@ -148,6 +148,7 @@ begin
 
       passed <= '0';
       for i in size_store - 1 downto 0 loop -- one singular loop to decrease the number of potential loops
+
       -- Analysing executed addresses ##########################--
         if valid_store_execute1 and (store_row(i)(pc_start downto pc_end) = tag1) then -- we have a match on the ith row for the 1st word
           store_row(i)(mem_addr_start downto mem_addr_end) <= addr1;
@@ -157,13 +158,13 @@ begin
         end if;
 
       -- Waiting for valid data ################################--
-        if valid_prf_update1 and store_row(i)(pc_start downto pc_end) = tag_prf_update1 then
+        if valid_prf_update1 and store_row(i)(data_start downto data_end) = tag_prf_update1 and (not store_row(i)(1)) then -- we only check tag against the rrf addresses and not the valid data
           store_row(i)(data_start downto data_end) <= data_prf_update1;
           store_row(i)(1) <= '1'; -- got valid data successfully
-        elsif valid_prf_update2 and store_row(i)(pc_start downto pc_end) = tag_prf_update2 then
+        elsif valid_prf_update2 and store_row(i)(data_start downto data_end) = tag_prf_update2 and (not store_row(i)(1)) then
           store_row(i)(data_start downto data_end) <= data_prf_update2;
           store_row(i)(1) <= '1'; -- got valid data successfully
-        elsif valid_prf_update3 and store_row(i)(pc_start downto pc_end) = tag_prf_update3 then
+        elsif valid_prf_update3 and store_row(i)(data_start downto data_end) = tag_prf_update3 and (not store_row(i)(1)) then
           store_row(i)(data_start downto data_end) <= data_prf_update3;
           store_row(i)(1) <= '1'; -- got valid data successfully
         end if;
@@ -208,7 +209,7 @@ begin
       end if;
 
       -- Checking if we need to stall in next cycle ###############--
-      if (head = tail or head = tail + 1) then -- stall condition (we don't accept anything even if we have just 1 slot free)
+      if ( (head = tail and rob_row(to_integer(head))(row_len - 1)) or head = tail + 1 or head = tail + 2) then -- stall condition (we don't accept anything even if we have just 1 slot free)
         store_buffer_stall <= '1';
       else
         store_buffer_stall <= '0';

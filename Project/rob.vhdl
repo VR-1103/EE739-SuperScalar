@@ -29,8 +29,8 @@ architecture Struct of rob is
   constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
   signal rob_row : rob_row_type := (others => default_row);
   constant branch_op : std_logic_vector(1 downto 0) := "10";
-  signal head: unsigned(log_size_rob - 1 downto 0) :=0; -- log_size_rob - 1 downto 0 refers to the integer written bitwise
-  signal tail: unsigned(log_size_rob - 1 downto 0) :=1; -- these are written in this way to ensure we get modular arithmetic
+  signal head: unsigned(log_size_rob - 1 downto 0) := 0; -- log_size_rob - 1 downto 0 refers to the integer written bitwise
+  signal tail: unsigned(log_size_rob - 1 downto 0) := 0; -- these are written in this way to ensure we get modular arithmetic
   signal i: unsigned(log_size_rob - 1 downto 0) :=0; -- temporary variable for our loops
 
   constant len_status: unsigned(7 downto 0) := 1 + 1; -- spec and ex bit
@@ -154,8 +154,8 @@ begin
       end if;
 
       -- Checking if we need to stall in next cycle ---------------
-      if (head = tail or head = tail + 1) then -- stall condition (we don't accept anything even if we have just 1 slot free)
-        rob_stall <= '1';
+      if ( (head = tail and rob_row(to_integer(head))(row_len - 1)) or head = tail + 1) then -- stall condition (we don't accept anything even if we have just 1 slot free)
+        rob_stall <= '1'; -- the and condition above comes from the case when rob is empty i.e. head = tail and there is no entry present
       else
         rob_stall <= '0';
       end if;
