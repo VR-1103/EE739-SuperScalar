@@ -39,3 +39,20 @@ Design policy:
 4. When we get a alias-checker tag, we just make the `speculation` bit = '1' if there is any mem addr match when the `forward` bit = '0'. If no matches, we can safely ignore the alias-checker.
 
 5. When a load instruction reaches the top of ROB, we will check if `head` has `spec` bit = '1'. If so, flush the load queue as well as the ROB.
+
+   ## load_queue (new)
+   Design policy:
+
+   1. The queue is a table in which theres a busy bit which tells if a particular location in the table is free or not.
+  
+   2. It takes the Pc addr during dispatch if theres a valid load instr. It finds the first non-busy location  that it can, and stores the pc addr there.
+  
+   3. Then it sees if theres a need to flush. If so, then make the busy bit of every row `0`, so thats sorted.
+  
+   4. Then it takes value from execute, and if it finds a pc_addr corresponding, then it stores the calculated mem_addr there. It also stores a bit which tells if the pipeline has done forwarding.
+  
+   5. Next it checks for aliasing, if it finds a corresponding pc_addr, and forwarding wasn't done, then it makes the `alias` bit 1.
+  
+   6. Then it sees if there is a load instr at the top of ROB. If so, it checks whether the corresponding location in load_queue was aliased. If it was, then it tells this to the ROB.
+  
+   7. Lastly, if the ROB tells that a load instr was safely retired, load_queue makes the corresponding location ka busy bit 0, essentially making the row empty.
