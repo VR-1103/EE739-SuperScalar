@@ -123,6 +123,32 @@ begin
 		end if;
 		
 	----ROB----
+		if (valid_rob_instr = '1') then
+			L6: for i in 0 to size_load-1 loop
+			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = rob_pc_addr)) then
+				if (load_row(i)(1) = '1') then
+					validity_of_instr <= '0';
+				else
+					validity_of_instr <= '1';
+				end if;
+				exit;
+			else null;
+			end if;
+			end loop;
+		else null;
+		end if;
+		
+	----Post ROB----
+		if (valid_retirement = '1') then
+			L7: for i in 0 to size_load-1 loop
+			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = retired_rob_pc_addr)) then
+				load_row(i)(row_len-1) <= '0';
+				exit;
+			else null;
+			end if;
+			end loop;
+		else null;
+		end if;
 		
 	end process;
 	
