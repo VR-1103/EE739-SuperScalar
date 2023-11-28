@@ -21,6 +21,8 @@ entity decoder is
 	port(fetch1,fetch2: in std_logic_vector(len_PC+len_instr-1 downto 0);
 			rob_dispatch1,rob_dispatch2: out std_logic_vector(len_rob_dispatch-1 downto 0);
 			int_rs_dispatch1,int_rs_dispatch2: out std_logic_vector(len_int_rs_dispatch-1 downto 0);
+			int_valid1,int_valid2: out std_logic;
+			ls_valid1,ls_valid2: out std_logic;
 			ls_rs_dispatch1,ls_rs_dispatch2: out std_logic_vector(len_ls_rs_dispatch-1 downto 0);
 			disable_fetch: out std_logic;
 			----requirements for ports working with prf----

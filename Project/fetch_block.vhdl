@@ -16,7 +16,7 @@ entity fetch_block is ----this does not have the temp register for pc, that need
 			from_mem1,from_mem2: in std_logic_vector(len_data-1 downto 0);
 			instr1,instr2: out std_logic_vector(len_data+len_PC-1 downto 0);
 			instr_validity1,instr_validity2: out std_logic;
-			next_pc_addr: out std_logic_vector(len_PC-1 downto 0););
+			next_pc_addr: out std_logic_vector(len_PC-1 downto 0));
 end entity fetch_block;
 
 architecture struct of fetch_block is
@@ -30,8 +30,8 @@ begin
 					disable_bit1 when control_bit = '0';
 	disable2 <= '0' when control_bit = '1' else
 					disable_bit2 when control_bit = '0';
-	pc_addr2_temp <= ('0' & pc_addr1) + "000100";
-	next_pc_addr_temp <= pc_addr2_temp + "000100";
+	pc_addr2_temp <= ('0' & pc_addr1) + "000010";
+	next_pc_addr_temp <= pc_addr2_temp + "000010";
 	pc_addr2 <= pc_addr2_temp(len_PC-1 downto 0);
 	next_pc_addr <= next_pc_addr_temp(len_PC-1 downto 0);
 	to_mem1 <= pc_addr1;
