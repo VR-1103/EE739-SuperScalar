@@ -14,7 +14,7 @@ entity fetch_block is ----this does not have the temp register for pc, that need
 			disable_bit1,disable_bit2: in std_logic;
 			to_mem1,to_mem2: out std_logic_vector(len_mem_addr-1 downto 0);
 			from_mem1,from_mem2: in std_logic_vector(len_data-1 downto 0);
-			instr1,instr2: out std_logic_vector(len_data-1 downto 0);
+			instr1,instr2: out std_logic_vector(len_data+len_PC-1 downto 0);
 			instr_validity1,instr_validity2: out std_logic;
 			next_pc_addr: out std_logic_vector(len_PC-1 downto 0););
 end entity fetch_block;
@@ -39,8 +39,10 @@ begin
 	
 	getting_instr_op: process(clk)
 	begin
-		instr1 <= from_mem1;
-		instr2 <= from_mem2;
+		instr1(len_data+len_PC-1 downto len_data) <= pc_addr1;
+		instr2(len_data+len_PC-1 downto len_data) <= pc_addr2;
+		instr1(len_data-1 downto 0) <= from_mem1;
+		instr2(len_data-1 downto 0) <= from_mem2;
 		instr_validity1 <= disable1;
 		instr_validity2 <= disable2;
 	end process;
