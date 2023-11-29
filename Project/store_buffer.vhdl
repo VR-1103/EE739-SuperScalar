@@ -31,8 +31,8 @@ entity store_buffer is
           tag_prf_update3: in std_logic_vector(len_data - 1 downto 0);
           data_prf_update3: in std_logic_vector(len_data - 1 downto 0);
           -- pre- ROB stage $$$$$$$$$$$$$$--
-          valid_complete1 : out std_logic; -- that we do need to retire it
-          complete_word1 : out std_logic_vector(len_PC - 1 downto 0); -- sent to ROB to tell it that the row can be now executed pakka (this is required to ensure "data" in store buffer is actual data)
+          valid_complete1, valid_complete2 : out std_logic; -- that we do need to retire it
+          complete_word1, complete_word2 : out std_logic_vector(len_PC - 1 downto 0); -- sent to ROB to tell it that the row can be now executed pakka (this is required to ensure "data" in store buffer is actual data)
           -- post- ROB stage $$$$$$$$$$$$$--
           rob_retire_tag1, rob_retire_tag2 : in std_logic_vector(len_PC - 1 downto 0); -- when ROB retires a word, it sends that to store queue
           valid_rob_retire1, valid_rob_retire2 : in std_logic; -- '1' only if
@@ -51,7 +51,7 @@ entity store_buffer is
 end entity;
 
 -- row word has busy bit, PC, Memory Addr, Data, executed bit, valid bit, completed bit
-############ Format of the store_row #####################--
+-- ############ Format of the store_row #####################--
 -- busy bit: Is this entry garbage or not
 -- PC : obvious
 -- Memory Addr : Where we want to store the data
@@ -59,7 +59,7 @@ end entity;
 -- Executed bit : If the addr has been calculated by pipeline or if it is garbage
 -- Valid bit : If the data in store_buffer is valid or garbage
 -- Completed bit : If ROB has retired the instruction thus making it free to be written into the memory port
-############################################################
+-- ############################################################
 
 architecture Struct of store_buffer is
   type store_row_type is array(0 to size_store - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
@@ -86,6 +86,7 @@ begin
     if(rising_edge(clk)) then -- we don't want to do anything during the falling edge
       port_kaha_dega <= store_row(head)(mem_addr_start downto mem_addr_end);
       port_kya_dega <= store_row(head)(data_start downto data_end);
+      valid_complete1 <= '0';
 
       -- Flushing Cases #######################################--
       if (store_buffer_flush = '1') then --technically, a procedure could be more elegant but I don't know how to efficiently use it for a store_row_type
@@ -170,14 +171,17 @@ begin
         end if;
 
       -- Checking if any store is executable ###################--
-        if store_row(i)(2 downto 1) = "11" and (not passed) then
+        if store_row(i)(2 downto 1) = "11" and (not valid_complete1) then
           complete_word1 <= store_row(i)(pc_start downto pc_end);
           valid_complete1 <= '1';
-          passed <= '1';
-        elsif passed then
+          valid_complete2 <= '0';
+        elsif store_row(i)(2 downto 1) = "11" and (not valid_complete2) then
+          complete_word2 <= store_row(i)(pc_start downto pc_end);
           valid_complete1 <= '1';
+          valid_complete2 <= '1';
         else
-          valid_complete1 <= '0';
+          valid_complete1 <= valid_complete1;
+          valid_complete2 <= valid_complete2;
         end if;
 
       -- Checking if any store is completed ####################--

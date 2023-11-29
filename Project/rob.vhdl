@@ -14,15 +14,24 @@ entity rob is
               row_len: integer := (1 + len_PC + len_op + len_ARF + len_RRF + 1 + 1)); -- This line is only valid for VHDL-2008.
 
     port(clk, rob_flush: in std_logic;
-          dispatch_word1, dispatch_word2: in std_logic_vector(row_len - 1 downto 0); -- dispatch word has valid bit, PC, Opcode, ARF entry, RRF entry, speculative bit, executed bit
+          dispatch_word1, dispatch_word2: in std_logic_vector(row_len - 2 downto 0); -- dispatch word has PC, Opcode, ARF entry, RRF entry, speculative bit, disabled bit, executed bit
           valid_dispatch1, valid_dispatch2 : in std_logic; -- RS might have to send just one word/ no words in case of not having ready instr
-          tag1, tag2, tag3 : in std_logic_vector(len_PC - 1 downto 0); -- one from each pipeline (execution words come from pipeline)
-          valid1, valid2, valid3: in std_logic; -- if the executed words are valid
+          execute_word1, execute_word2, execute_word3 : in std_logic_vector(len_PC - 1 downto 0); -- one from each pipeline (execution words come from pipeline)
+          valid_execute1, valid_execute2, valid_execute3: in std_logic; -- if the executed words are valid
+          -- branch instructions $$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           mispred1, mispred2: in std_logic; -- used specifically for branch statements to signify that we have to flush the instructions after them (2 of them since we have 2 integer pipelines)
+          valid_jump1, valid_jump2: in std_logic
+          jump_location1, jump_location2: in std_logic_vector(len_PC - 1 downto 0);
           retire_word1, retire_word2: out std_logic_vector(len_RRF - 1 downto 0); -- sent to PRF to tell it to update ARF
           valid_retire1, valid_retire2: out std_logic; -- in case you can only retire one of the instructions, make that valid_retirei as 0
           rob_stall: out std_logic);
 end entity;
+
+-- Features to add
+-- 1. Support for store buffer
+-- 2. Support for load queue
+-- 3. Proper flush protocol
+-- 4. Proper mispredict protocol
 
 architecture Struct of rob is
   type rob_row_type is array(0 to size_rob - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
@@ -33,15 +42,18 @@ architecture Struct of rob is
   signal tail: unsigned(log_size_rob - 1 downto 0) := 0; -- these are written in this way to ensure we get modular arithmetic
   signal i: unsigned(log_size_rob - 1 downto 0) :=0; -- temporary variable for our loops
 
-  constant len_status: unsigned(7 downto 0) := 1 + 1; -- spec and ex bit
-  constant pc_start: unsigned(7 downto 0) := row_len - 2; -- assuming row_len cannot exceed 64
-  constant pc_end: unsigned(7 downto 0) := len_op + len_ARF + len_RRF + len_status;
-  constant op_start: unsigned(7 downto 0) := len_op + len_ARF + len_RRF + len_status - 1;
-  constant op_end: unsigned(7 downto 0) := len_ARF + len_RRF + len_status;
-  constant arf_start: unsigned(7 downto 0) := len_ARF + len_RRF + len_status - 1;
-  constant arf_end: unsigned(7 downto 0) := len_RRF + len_status;
-  constant rrf_start: unsigned(7 downto 0) := len_RRF + len_status - 1;
-  constant rrf_end: unsigned(7 downto 0) := len_status;
+  constant len_status: integer := 1 + 1 + 1; -- spec, disable, ex bit
+  constant spec_bit_loc: integer := 2;
+  constant disable_bit_loc: integer := 1;
+  constant ex_bit_loc: integer := 0;
+  constant pc_start: integer := row_len - 2;
+  constant pc_end: integer := len_op + len_ARF + len_RRF + len_status;
+  constant op_start: integer := len_op + len_ARF + len_RRF + len_status - 1;
+  constant op_end: integer := len_ARF + len_RRF + len_status;
+  constant arf_start: integer := len_ARF + len_RRF + len_status - 1;
+  constant arf_end: integer := len_RRF + len_status;
+  constant rrf_start: integer := len_RRF + len_status - 1;
+  constant rrf_end: integer := len_status;
 
 begin
   normal_operation: process(clk)
@@ -54,10 +66,10 @@ begin
       -- Flushing Cases -----------------------------------------
       if (rob_flush = '1') then --technically, a procedure could be more elegant but I don't know how to efficiently use it for a rob_row_type
         head <= 0;
-        tail <= 1;
+        tail <= 0;
         for i in size_rob - 1 downto 0 loop
-          rob_row(i)(0) <= '0'; -- makes all of the execution bits as zero; I could have made all of the rows into default_row but that is just unnecessary
-          row_row(i)(row_len - 1) <= '0';
+          rob_row(i)(ex_bit_loc) <= '0'; -- makes all of the execution bits as zero; I could have made all of the rows into default_row but that is just unnecessary
+          row_row(i)(row_len - 1) <= '0'; -- every row is not "valid"
         end loop;
       else --adding this to reduce the number of inferred latches
         head <= head;
@@ -65,7 +77,7 @@ begin
       end if;
 
       -- Welcoming dispatched instructions ---------------------
-      if (valid_dispatch1 = '1' and tail/=head) then
+      if (valid_dispatch1 = '1') then
         rob_row(to_integer(tail))(pc_start downto 0) <= dispatch_word1;
         row_row(to_integer(tail))(row_len - 1) <= '1';
         tail <= tail + 1;
@@ -75,7 +87,7 @@ begin
         tail <= tail;
       end if;
 
-      if (valid_dispatch2 = '1' and tail/=head) then
+      if (valid_dispatch2 = '1') then
         rob_row(to_integer(tail))(pc_start downto 0) <= dispatch_word2;
         row_row(tail)(row_len - 1) <= '1';
         tail <= tail + 1;
@@ -85,24 +97,25 @@ begin
         tail <= tail;
       end if;
 
-      -- Analysing executed instructions ------------------------
       for i in size_rob - 1 downto 0 loop
+      -- Analysing executed instructions ------------------------
         if (rob_row(i)(row_len - 1)) then -- only checking valid rows
 
-          if (valid1 and (rob_row(i)(pc_start downto pc_end) = tag1)) then -- we have a match on the ith row for the 1st word
-            rob_row(i)(0) <= '1'; -- executed successfully
+          if (valid_execute1 and (rob_row(i)(pc_start downto pc_end) = execute_word1)) then -- we have a match on the ith row for the 1st word
+            rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
+
             if ((mispred1 = '1') and (rob_row(i)(op_start downto op_end + 2) = branch_op)) then -- zooming in on a mispredicted branch
-              rob_row(i + 1)(1) <= '1'; -- spec bit of next row is made 1
+              rob_row(i + 1)(spec_bit_loc) <= '1'; -- spec bit of next row is made 1
             end if;
 
-          elsif (valid2 and (rob_row(i)(pc_start downto pc_end) = tag2)) then -- we have a match on the ith row for the 2nd word
-            rob_row(i)(0) <= '1'; -- executed successfully
+          elsif (valid_execute2 and (rob_row(i)(pc_start downto pc_end) = execute_word2)) then -- we have a match on the ith row for the 2nd word
+            rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
             if ((mispred2 = '1') and (rob_row(i)(op_start downto op_end + 2) = branch_op)) then -- zooming in on a mispredicted branch
-              rob_row(i + 1)(1) <= '1';
+              rob_row(i + 1)(spec_bit_loc) <= '1';
             end if;
 
-          elsif (valid3 and (rob_row(i)(pc_start downto pc_end) = tag3)) then -- we have a match on the ith row for the 3rd word
-            rob_row(i)(0) <= '1'; -- executed successfully
+          elsif (valid_execute3 and (rob_row(i)(pc_start downto pc_end) = execute_word3)) then -- we have a match on the ith row for the 3rd word
+            rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
 
           else --adding this to reduce the number of inferred latches
             null;
@@ -116,36 +129,36 @@ begin
       end loop;
 
       -- Retiring instructions -----------------------------------
-      if (rob_row(to_integer(head))(1) = '1') then -- I do not want to create 2 ROB flush cases (i.e. when everything has to be wiped vs everything except head). So I will try to make this into a 2-step process in case the head if non-speculative but the head + 1 is.)
+      if (rob_row(to_integer(head))(spec_bit_loc) = '1') then -- I do not want to create 2 ROB flush cases (i.e. when everything has to be wiped vs everything except head). So I will try to make this into a 2-step process in case the head if non-speculative but the head + 1 is.)
         head <= 0; --flushed the entire ROB
         tail <= 1;
         for i in size_rob - 1 downto 0 loop
-          rob_row(i)(0) <= '0'; -- makes all of the valid and execution bits as zero; I could have made all of the rows into default_row but that is just unnecessary
+          integerrob_row(i)(ex_bit_loc) <= '0'; -- makes all of the valid and execution bits as zero; I could have made all of the rows into default_row but that is just unnecessary
           row_row(i)(row_len - 1) <= '0';
         end loop;
 
-      elsif (rob_row(to_integer(head + 1))(1) = '1') then
-        rob_row(to_integer(head + 1))(0) <= '0'; -- We are lying about the execution status of (head + 1) to get one more cycle before we have to flush
+      elsif (rob_row(to_integer(head + 1))(spec_bit_loc) = '1') then
+        rob_row(to_integer(head))(ex_bit_loc) <= '0'; -- We are lying about the execution status of (head + 1) to get one more cycle before we have to flush
 
       else
         null; --idk what this does. I am just copying from Vedika
 
       end if;
 
-      if (rob_row(to_integer(head))(0) and rob_row(to_integer(head + 1))(0) = '1') then -- we have zoomed in on the ex_bit for the word on the top and second-top
+      if (rob_row(to_integer(head))(ex_bit_loc) and rob_row(to_integer(head + 1))(ex_bit_loc) = '1') then -- we have zoomed in on the ex_bit for the word on the top and second-top
         valid_retire1 <= '1';
         valid_retire2 <= '1';
         row_row(to_integer(head))(row_len - 1) <= '0';
         row_row(to_integer(head + 1))(row_len - 1) <= '0';
-        row_row(to_integer(head))(0) <= '0';
-        row_row(to_integer(head + 1))(0) <= '0';
+        row_row(to_integer(head))(ex_bit_loc) <= '0';
+        row_row(to_integer(head))(ex_bit_loc) <= '0';
         head <= head + 2; -- head is lowered
 
-      elsif (rob_row(to_integer(head))(0) = '1') then -- only one word is retired
+      elsif (rob_row(to_integer(head))(ex_bit_loc) = '1') then -- only one word is retired
         valid_retire1 <= '1';
         valid_retire2 <= '0';
         row_row(to_integer(head))(row_len - 1) <= '0';
-        row_row(to_integer(head))(0) <= '0';
+        row_row(to_integer(head))(ex_bit_loc) <= '0';
         head <= head + 1; -- head is lowered
       else
         valid_retire1 <= '0';

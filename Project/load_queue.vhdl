@@ -47,7 +47,7 @@ end entity;
 architecture Struct of store_buffer is
   type load_row_type is array(0 to size_load - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
   constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
-  signal load_row : load_row_type := (others => default_row)
+  signal load_row : load_row_type := (others => default_row);
 
 begin
 	normal_op: process(clk)
@@ -86,6 +86,7 @@ begin
 		if (load_queue_flush = '1') then
 			L3: for i in 0 to size_load-1 loop
 			load_row(i)(row_len-1) <= '0';
+			end loop;
 		else
 			null;
 		end if;
