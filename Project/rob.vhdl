@@ -76,7 +76,6 @@ begin
     if(rising_edge(clk)) then -- we don't want to do anything during the falling edge
     retire_word1 <= rob_row(to_integer(head))(rrf_start downto rrf_end);
     retire_word2 <= rob_row(to_integer(head + 1))(rrf_start downto rrf_end); -- irrespective of if it is valid or not, the RRF addresses would be sent to PRF
-    fetch_loc <= jump_location; -- we always only send the jump_location even if it is not valid right now
 
     if rob_row(to_integer(head)(op_start downto op_start - 1) = "0011" or rob_row(to_integer(head)(op_start downto op_start - 1) = "0100" then
         head_plus_is_load <= '1';
@@ -283,6 +282,8 @@ begin
         rob_stall <= '0';
       end if;
 
+      -- sending the correct jump location to the fetch stage
+      fetch_loc <= jump_location; -- we always only send the jump_location even if it is not valid right now
     end if;
   end process normal_operation;
 end Struct;
