@@ -53,29 +53,36 @@ begin
 	normal_op: process(clk)
 	begin
 	----Dispatch---
+		variable status: std_logic;
 		if(dispatch_word1_validity = '1') then
+			status <= '0';
 			L1: for i in 0 to size_load-1 loop
 			if (load_row(i)(row_len-1) = 0) then
-				load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word1;
-				load_row(i)(0) <= '0';
-				load_row(i)(row_len-1) <= '1';
-				exit L1;
-			else
-				next L1;
+				if status = '0' then
+					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word1;
+					load_row(i)(0) <= '0';
+					load_row(i)(row_len-1) <= '1';
+					status <= '1';
+				else null;
+				end if;
+			else null;
 			end if;
 			end loop;
 		else
 			null;
 		end if;
 		if(dispatch_word2_validity = '1') then
+			status <= '0';
 			L2: for i in 0 to size_load-1 loop
 			if (load_row(i)(row_len-1) = 0) then
-				load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word2;
-				load_row(i)(0) <= '0';
-				load_row(i)(row_len-1) <= '1';
-				exit L2;
-			else
-				next L2;
+				if status = '0' then
+					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word2;
+					load_row(i)(0) <= '0';
+					load_row(i)(row_len-1) <= '1';
+					status <= '1';
+				else null;
+				end if;
+			else null;
 			end if;
 			end loop;
 		else
@@ -93,12 +100,16 @@ begin
 		
 	----Post execute----
 		if (valid_load_execute1 = '1') then
+			status <= '0';
 			L4: for i in 0 to size_load-1 loop
 			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = tag1)) then
-				load_row(i)(len_mem_addr+3-1  downto 3) <= addr1;
-				load_row(i)(2) <= forwarded1;
-				load_row(i)(0) <= '0';
-				exit;
+				if status = '0' then
+					load_row(i)(len_mem_addr+3-1  downto 3) <= addr1;
+					load_row(i)(2) <= forwarded1;
+					load_row(i)(0) <= '0';
+					status <= '1';
+				else null;
+				end if;
 			else
 				null;
 			end if;
@@ -107,12 +118,16 @@ begin
 		
 	----Checking for aliasing----
 		if (valid_store_addr = '1') then
+			status <= '0';
 			L5: for i in 0 to size_load-1 loop
 			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(len_mem_addr+3-1  downto 3) = store_mem_addr)) then
-				if (load_row(i)(2) = '0') then
-					load_row(i)(1) <= '1';
-					load_row(i)(0) <= '0';
-					exit;
+				if status = '0' then
+					if (load_row(i)(2) = '0') then
+						load_row(i)(1) <= '1';
+						load_row(i)(0) <= '0';
+						status <= '1';
+					else null;
+					end if;
 				else null;
 				end if;
 			else
@@ -125,14 +140,18 @@ begin
 		
 	----ROB----
 		if (valid_rob_instr = '1') then
+		`	status <= '0';
 			L6: for i in 0 to size_load-1 loop
 			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = rob_pc_addr)) then
-				if (load_row(i)(1) = '1') then
-					validity_of_instr <= '0';
-				else
-					validity_of_instr <= '1';
+				if status = '0' then
+					if (load_row(i)(1) = '1') then
+						validity_of_instr <= '0';
+					else
+						validity_of_instr <= '1';
+					end if;
+					status <= '1';
+				else null;
 				end if;
-				exit;
 			else null;
 			end if;
 			end loop;
@@ -141,19 +160,20 @@ begin
 		
 	----Post ROB----
 		if (valid_retirement = '1') then
+			status <= '0';
 			L7: for i in 0 to size_load-1 loop
 			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = retired_rob_pc_addr)) then
-				load_row(i)(row_len-1) <= '0';
-				exit;
+				if status = '0' then
+					load_row(i)(row_len-1) <= '0';
+					status <= '1';
+				else null;
+				end if;
 			else null;
 			end if;
 			end loop;
 		else null;
 		end if;
 		
-	end process;
-	
-	
-		
+	end process;	
 	
 end Struct;

@@ -11,7 +11,7 @@ entity fetch_block is ----this does not have the temp register for pc, that need
 	port(clk: in std_logic;
 			from_rob,from_temp_reg: in std_logic_vector(len_PC-1 downto 0);
 			control_bit: in std_logic; ---to decide if instr addr is coming from rob or temp_reg
-			disable_bit1,disable_bit2: in std_logic;
+			disable_bit: in std_logic;
 			to_mem1,to_mem2: out std_logic_vector(len_mem_addr-1 downto 0);
 			from_mem1,from_mem2: in std_logic_vector(len_data-1 downto 0);
 			instr1,instr2: out std_logic_vector(len_data+len_PC-1 downto 0);
@@ -27,9 +27,9 @@ begin
 	pc_addr1 <= from_rob when control_bit = '1' else
 					from_temp_reg when control_bit = '0';
 	disable1 <= '0' when control_bit = '1' else ----We dont need to care about whatever is in decoder when the new instr is coming from rob
-					disable_bit1 when control_bit = '0';
+					disable_bit when control_bit = '0';
 	disable2 <= '0' when control_bit = '1' else
-					disable_bit2 when control_bit = '0';
+					disable_bit when control_bit = '0';
 	pc_addr2_temp <= ('0' & pc_addr1) + "000010";
 	next_pc_addr_temp <= pc_addr2_temp + "000010";
 	pc_addr2 <= pc_addr2_temp(len_PC-1 downto 0);

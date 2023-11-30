@@ -12,7 +12,7 @@ entity decoder is
 				len_data: integer:= 16;
 				len_control: integer:= 5;---some random value rn
 				len_status: integer:= 16;
-				len_rob_dispatch: integer:= 1+len_PC+4+len_arf+len_rrf+1+1; ----valid bit, PC, Opcode, ARF entry, RRF entry, speculative bit, executed bit
+				len_rob_dispatch: integer:= len_PC+4+len_arf+len_rrf+1; ----PC, Opcode, ARF entry, RRF entry, disabled bit
 				len_int_rs_dispatch: integer:= len_PC+4+len_control+1+len_data+1+len_data+len_rrf+1+len_status+len_rrf+1;
 				----pc(len_pc) + opcode(4) + control(len_control) + valid1(1) + opr1(len_operand) + valid2(1) + opr2(len_operand) + destination(len_RRF) + status_valid(1) + status_reg(6) + status_destination(len_RRF) + ready(1)
 				len_ls_rs_dispatch: integer:= len_PC+4+len_control+1+len_data+len_data+len_rrf+len_rrf+1
@@ -21,6 +21,7 @@ entity decoder is
 	port(fetch1,fetch2: in std_logic_vector(len_PC+len_instr-1 downto 0);
 			fetch_disable1,fetch_disable2: in std_logic;
 			rob_dispatch1,rob_dispatch2: out std_logic_vector(len_rob_dispatch-1 downto 0);
+			rob_valid1,rob_valid2: out std_logic;
 			int_rs_dispatch1,int_rs_dispatch2: out std_logic_vector(len_int_rs_dispatch-1 downto 0);
 			int_valid1,int_valid2: out std_logic;
 			ls_valid1,ls_valid2: out std_logic;
@@ -36,15 +37,20 @@ entity decoder is
 			dest_required1,dest_required2: out std_logic; ---whether destination is required
 			dest_addr1,dest_addr2: out std_logic_vector(len_arf-1 downto 0); ---arf addr of destination
 			op_data1,op_data2: in std_logic_vector(len_data+len_data-1 downto 0); ---at max data of 2 operands
+			op_valid1,op_valid2: in std_logic_vector(1 downto 0);
 			dest_rrf1,dest_rrf3: in std_logic_vector(len_rrf-1 downto 0); ---addr of destination rrf
 			cz_required1,cz_required2: out std_logic_vector(1 downto 0); ---Only C required:10, only Z: 01, both: 11, none: 00
-			cz1,cz2: in std_logic_vector(len_data+len_data-1 downto 0));
+			cz1,cz2: in std_logic_vector(len_data+len_data-1 downto 0);
+			cz_valid1,cz_valid2: in std_logic_vector(1 downto 0));
 end entity;
 
 architecture struct of decoder is
 	signal op_maybe1,op_maybe2: std_logic_vector(1 downto 0);
 	signal dest_maybe1,dest_maybe2: std_logic;
 	signal cz_mayb1,cz_maybe2: std_logic_vector(1 downto 0);
+	signal control_maybe1,control_maybe2: std_logic_vector(len_control-1 downto 0):= (others => '0');
+	signal instr1_jump,instr2_jump: std_logic;
+	signal instr1_disable,instr2_disable: std_logic;
 
 begin
 	----deciding how many operands required----
@@ -100,10 +106,20 @@ begin
 	
 	----Control Signals Assignment----
 	
+	----Disabling instructions----
+	instr1_jump <= '1' when fetch1(len_instr-1 downto len_instr-2) = "11" and fetch_disable1 = '0' else '0';
+	instr2_jump <= '1' when fetch2(len_instr-1 downto len_instr-2) = "11" and fetch_disable2 = '0' else '0';
+	instr1_disable <= fetch_disable1;
+	instr2_disable <= fetch_disable2 or instr1_jump;
+	disable_fetch <= instr1_jump or instr2_jump;
+	
 	----Cyclically send data forward to RS,ROB,Store buffer,Load Queue
 	operation: process(clk)
 	begin
-		
+		----Sending stuff to rob----
+			rob_dispatch1(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch1(len_PC+len_instr-1 downto len_instr);
+			rob_dispatch1(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch1(len_instr-1 downto len_instr-4);
+			
 	
 	end process;
 
