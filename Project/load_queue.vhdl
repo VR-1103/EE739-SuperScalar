@@ -45,27 +45,29 @@ end entity;
 --############################################################
 
 architecture Struct of store_buffer is
-  type load_row_type is array(0 to size_load - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
-  constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
-  signal load_row : load_row_type := (others => default_row);
-
+	type load_row_type is array(0 to size_load - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
+	constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
+	signal load_row : load_row_type := (others => default_row);
+	variable status: std_logic;
 begin
 	normal_op: process(clk)
 	begin
 	----Dispatch---
-		variable status: std_logic;
+
 		if(dispatch_word1_validity = '1') then
 			status <= '0';
-			L1: for i in 0 to size_load-1 loop
+			L1: for i in 0 to size_load - 1 loop
 			if (load_row(i)(row_len-1) = 0) then
 				if status = '0' then
 					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word1;
 					load_row(i)(0) <= '0';
 					load_row(i)(row_len-1) <= '1';
 					status <= '1';
-				else null;
+				else
+					null;
 				end if;
-			else null;
+			else
+				null;
 			end if;
 			end loop;
 		else
