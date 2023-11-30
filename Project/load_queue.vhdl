@@ -24,13 +24,19 @@ entity store_buffer is
 			 --checking from store buffer stage--
 			 store_mem_addr : in std_logic_vector(lem_mem_addr-1 downto 0);
 			 valid_store_addr: in std_logic; --if checking is actually required
-			 --ROB stage--
-			 valid_rob_instr: in std_logic; --if it is even a load instr at the top of rob
-			 rob_pc_addr: in std_logic_vector(len_PC-1 downto 0);
-			 validity_of_instr: out std_logic;
+			 store_mem_addr2 : in std_logic_vector(lem_mem_addr-1 downto 0);
+			 valid_store_addr2: in std_logic; --if checking is actually required
+			 alias1,alias2: out std_logic;
+			 alias_pc1,alias_pc2: out std_logic_vector(len_PC-1 downto 0);
+--			 --ROB stage--
+--			 valid_rob_instr: in std_logic; --if it is even a load instr at the top of rob
+--			 rob_pc_addr: in std_logic_vector(len_PC-1 downto 0);
+--			 validity_of_instr: out std_logic;
 			 --post ROB stage--
 			 retired_rob_pc_addr: in std_logic_vector(len_PC-1 downto 0);
-			 valid_retirement: in std_logic);
+			 valid_retirement: in std_logic;
+			 --Send stall bit--
+			 stall: out std_logic);
 end entity;
 
 -- row word has busy bit, PC, Memory Addr, Data, executed bit, valid bit, completed bit
@@ -49,15 +55,28 @@ architecture Struct of store_buffer is
 	constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
 	signal load_row : load_row_type := (others => default_row);
 	variable status: std_logic;
+	variable avlb_rows: integer:= 0;
 begin
 	normal_op: process(clk)
 	begin
+	----If only 2 rows are empty, send out stall high----
+		L8: for i in 0 to size_load-1 loop
+			if (load_row(i)(row_len-1) = '0') then
+				avlb_rows = avlb_rows+1;
+			else null;
+			end if;
+		end loop;
+		if avlb_rows <= 2 then
+			stall <= '1';
+		else
+			stall <= '0';
+		end if;
 	----Dispatch---
 
 		if(dispatch_word1_validity = '1') then
 			status <= '0';
 			L1: for i in 0 to size_load - 1 loop
-			if (load_row(i)(row_len-1) = 0) then
+			if (load_row(i)(row_len-1) = '0') then
 				if status = '0' then
 					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word1;
 					load_row(i)(0) <= '0';
@@ -76,7 +95,7 @@ begin
 		if(dispatch_word2_validity = '1') then
 			status <= '0';
 			L2: for i in 0 to size_load-1 loop
-			if (load_row(i)(row_len-1) = 0) then
+			if (load_row(i)(row_len-1) = '0') then
 				if status = '0' then
 					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word2;
 					load_row(i)(0) <= '0';
@@ -119,6 +138,8 @@ begin
 		end if;
 		
 	----Checking for aliasing----
+		alias1 <= '0';
+		alias2 <= '0';
 		if (valid_store_addr = '1') then
 			status <= '0';
 			L5: for i in 0 to size_load-1 loop
@@ -127,6 +148,8 @@ begin
 					if (load_row(i)(2) = '0') then
 						load_row(i)(1) <= '1';
 						load_row(i)(0) <= '0';
+						alias1 <= '1';
+						alias_pc1 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
 						status <= '1';
 					else null;
 					end if;
@@ -140,25 +163,48 @@ begin
 			null;
 		end if;
 		
-	----ROB----
-		if (valid_rob_instr = '1') then
-		`	status <= '0';
-			L6: for i in 0 to size_load-1 loop
-			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = rob_pc_addr)) then
+		if (valid_store_addr2 = '1') then
+			status <= '0';
+			L5: for i in 0 to size_load-1 loop
+			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(len_mem_addr+3-1  downto 3) = store_mem_addr2)) then
 				if status = '0' then
-					if (load_row(i)(1) = '1') then
-						validity_of_instr <= '0';
-					else
-						validity_of_instr <= '1';
+					if (load_row(i)(2) = '0') then
+						load_row(i)(1) <= '1';
+						load_row(i)(0) <= '0';
+						alias2 <= '1';
+						alias_pc2 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
+						status <= '1';
+					else null;
 					end if;
-					status <= '1';
 				else null;
 				end if;
-			else null;
+			else
+				null;
 			end if;
 			end loop;
-		else null;
+		else
+			null;
 		end if;
+		
+--	----ROB----
+--		if (valid_rob_instr = '1') then
+--		`	status <= '0';
+--			L6: for i in 0 to size_load-1 loop
+--			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = rob_pc_addr)) then
+--				if status = '0' then
+--					if (load_row(i)(1) = '1') then
+--						validity_of_instr <= '0';
+--					else
+--						validity_of_instr <= '1';
+--					end if;
+--					status <= '1';
+--				else null;
+--				end if;
+--			else null;
+--			end if;
+--			end loop;
+--		else null;
+--		end if;
 		
 	----Post ROB----
 		if (valid_retirement = '1') then
