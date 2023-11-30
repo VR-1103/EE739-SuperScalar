@@ -39,9 +39,11 @@ entity decoder is
 			op_data1,op_data2: in std_logic_vector(len_data+len_data-1 downto 0); ---at max data of 2 operands
 			op_valid1,op_valid2: in std_logic_vector(1 downto 0);
 			dest_rrf1,dest_rrf2: in std_logic_vector(len_rrf-1 downto 0); ---addr of destination rrf
-			cz_required1,cz_required2: out std_logic_vector(1 downto 0); ---Only C required:10, only Z: 01, both: 11, none: 00
+			cz_required1,cz_required2: out std_logic;
 			cz1,cz2: in std_logic_vector(len_data-1 downto 0);
-			cz_valid1,cz_valid2: in std_logic); --We never require both c or z
+			cz_valid1,cz_valid2: in std_logic;
+			cz_dest_required1,cz_dest_required2: out std_logic;
+			cz_rrf1,cz_rrf2: in std_logic_vector(len_rrf-1 downto 0)); --We never require both c or z
 end entity;
 
 architecture struct of decoder is
@@ -105,11 +107,17 @@ begin
 	cz_maybe1 <= "10" when (fetch1(len_instr-15) = "1" and (fetch1(len_instr-1 downto len_instr-2) = "00" and not (fetch1(len_instr-3 downto len_instr-4) = "11" or fetch1(len_instr-3 downto len_instr-4) = "00"))) else
 						"01" when (fetch1(len_instr-15 downto len_instr-16) = "01" and (fetch1(len_instr-1 downto len_instr-2) = "00" and not (fetch1(len_instr-3 downto len_instr-4) = "11" or fetch1(len_instr-3 downto len_instr-4) = "00"))) else
 						"00";
-	cz_required1 <= cz_maybe1 when fetch_disable1 = '0' else "00";
+	cz_required1 <= '0' when fetch_disable1 = '1' or cz_maybe1 = "00" else '1';
 	cz_maybe2 <= "10" when (fetch2(len_instr-15) = "1" and (fetch2(len_instr-1 downto len_instr-2) = "00" and not (fetch2(len_instr-3 downto len_instr-4) = "11" or fetch2(len_instr-3 downto len_instr-4) = "00"))) else
 						"01" when (fetch2(len_instr-15 downto len_instr-16) = "01" and (fetch2(len_instr-1 downto len_instr-2) = "00" and not (fetch2(len_instr-3 downto len_instr-4) = "11" or fetch2(len_instr-3 downto len_instr-4) = "00"))) else
 						"00";
-	cz_required2 <= cz_maybe2 when fetch_disable2 = '0' else "00";
+	cz_required2 <= '0' when fetch_disable2 = '1' or cz_maybe2 = "00" else '1';
+	
+	----Whether C,Z will be changed----
+	cz_dest_required1 <= '1' when fetch1(len_instr-1 downto len_instr-2) = "00" and not fetch1(len_instr-3 downto len_instr-4) = "11" else
+								'1' when fetch1(len_instr-1 downto len_instr-4) = "0100" else '0';
+	cz_dest_required2 <= '1' when fetch2(len_instr-1 downto len_instr-2) = "00" and not fetch2(len_instr-3 downto len_instr-4) = "11" else
+								'1' when fetch2(len_instr-1 downto len_instr-4) = "0100" else '0';
 	
 	----Disabling instructions----
 	instr1_jump <= '1' when fetch1(len_instr-1 downto len_instr-2) = "11" and fetch_disable1 = '0' else '0';
@@ -162,7 +170,7 @@ begin
 			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-len_rrf) <= dest_rrf1;
 			int_dispatch1(1+len_status+len_rrf+1-1) <= cz_valid1;
 			int_dispatch1(1+len_status+len_rrf+1-1-1 downto 1+len_status+len_rrf+1-1-len_status) <= cz1;
-			---status destination to add---
+			int_dispatch1(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf1;
 			int_dispatch1(0) <= op_valid1(1) and op_valid1(0);
 			
 			int_dispatch2(len_int_rs_dispatch-1 downto len_int_rs_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
@@ -175,7 +183,7 @@ begin
 			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-len_rrf) <= dest_rrf2;
 			int_dispatch2(1+len_status+len_rrf+1-1) <= cz_valid2;
 			int_dispatch2(1+len_status+len_rrf+1-1-1 downto 1+len_status+len_rrf+1-1-len_status) <= cz2;
-			---status destination to add---
+			int_dispatch2(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf2;
 			int_dispatch2(0) <= op_valid2(1) and op_valid2(0);
 			
 		----Sending stuff to ls pipeline----
@@ -187,7 +195,7 @@ begin
 			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000000" & fetch1_prev(5 downto 0) when fetch1_prev(len_instr-2) = '1'
 																																																	else ("0000000" & fetch1_prev(8 downto 0);
 			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-len_rrf) <= dest_rrf1;
-			---status destination to add---
+			ls_dispatch1(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf1;
 			ls_dispatch1(0) <= op_valid1(0);
 
 			ls_dispatch2(len_ls_rs_dispatch-1 downto len_ls_rs_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
@@ -198,7 +206,7 @@ begin
 			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000000" & fetch2_prev(5 downto 0) when fetch2_prev(len_instr-2) = '1'
 																																																	else ("0000000" & fetch2_prev(8 downto 0);
 			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-len_rrf) <= dest_rrf2;
-			---status destination to add---
+			ls_dispatch2(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf2;
 			ls_dispatch2(0) <= op_valid2(0);
 			
 		----Whether it is load or store----
