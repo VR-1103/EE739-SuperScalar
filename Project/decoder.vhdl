@@ -22,13 +22,13 @@ entity decoder is
 			fetch_disable1,fetch_disable2: in std_logic;
 			rob_dispatch1,rob_dispatch2: out std_logic_vector(len_rob_dispatch-1 downto 0);
 			rob_valid1,rob_valid2: out std_logic;
-			int_rs_dispatch1,int_rs_dispatch2: out std_logic_vector(len_int_rs_dispatch-1 downto 0);
+			int_dispatch1,int_dispatch2: out std_logic_vector(len_int_rs_dispatch-1 downto 0);
 			int_valid1,int_valid2: out std_logic;
 			ls_valid1,ls_valid2: out std_logic;
-			ls_rs_dispatch1,ls_rs_dispatch2: out std_logic_vector(len_ls_rs_dispatch-1 downto 0);
+			ls_dispatch1,ls_dispatch2: out std_logic_vector(len_ls_rs_dispatch-1 downto 0);
 			load_dispatch1,load_dispatch2: out std_logic_vector(len_PC-1 downto 0);
 			load_valid1,load_valid2: out std_logic;
-			store_dispatch1,store_dispatch2: out std_logic_vector(len_PC+len_data+1-1 downto 0);
+			store_dispatch1,store_dispatch2: out std_logic_vector(len_PC+4+len_data+1-1 downto 0);
 			store_valid1,store_valid2: out std_logic;
 			disable_fetch: out std_logic;
 			----requirements for working with prf----
@@ -38,19 +38,24 @@ entity decoder is
 			dest_addr1,dest_addr2: out std_logic_vector(len_arf-1 downto 0); ---arf addr of destination
 			op_data1,op_data2: in std_logic_vector(len_data+len_data-1 downto 0); ---at max data of 2 operands
 			op_valid1,op_valid2: in std_logic_vector(1 downto 0);
-			dest_rrf1,dest_rrf3: in std_logic_vector(len_rrf-1 downto 0); ---addr of destination rrf
+			dest_rrf1,dest_rrf2: in std_logic_vector(len_rrf-1 downto 0); ---addr of destination rrf
 			cz_required1,cz_required2: out std_logic_vector(1 downto 0); ---Only C required:10, only Z: 01, both: 11, none: 00
-			cz1,cz2: in std_logic_vector(len_data+len_data-1 downto 0);
-			cz_valid1,cz_valid2: in std_logic_vector(1 downto 0));
+			cz1,cz2: in std_logic_vector(len_data-1 downto 0);
+			cz_valid1,cz_valid2: in std_logic); --We never require both c or z
 end entity;
 
 architecture struct of decoder is
+	signal fetch1_prev,fetch2_prev: std_logic_vector(len_PC+len_instr-1 downto 0):= (others => '0');
+	signal fetch_disable1_prev,fetch_disable2_prev: std_logic;
+	-----We need a pipelined thingy basically.----
 	signal op_maybe1,op_maybe2: std_logic_vector(1 downto 0);
 	signal dest_maybe1,dest_maybe2: std_logic;
-	signal cz_mayb1,cz_maybe2: std_logic_vector(1 downto 0);
+	signal dest1,dest2: std_logic_vector(len_arf-1 downto 0);
+	signal cz_maybe1,cz_maybe2: std_logic_vector(1 downto 0);
 	signal control_maybe1,control_maybe2: std_logic_vector(len_control-1 downto 0):= (others => '0');
 	signal instr1_jump,instr2_jump: std_logic;
 	signal instr1_disable,instr2_disable: std_logic;
+	signal is_int1,is_int2,is_ls1,is_ls2: std_logic;
 
 begin
 	----deciding how many operands required----
@@ -87,12 +92,14 @@ begin
 	dest_required2 <= dest_maybe2 when fetch_disable2 = '0' else '0';
 	
 	----Addr of destination----
-	dest_addr1 <= fetch1(len_instr-11 downto len_instr-13) when (fetch1(len_instr-1 downto len_instr-2) = "00" and not (fetch1(len_instr-3 downto len_instr-4) = "11" or fetch1(len_instr-3 downto len_instr-4) = "00")) else
+	dest1 <= fetch1(len_instr-11 downto len_instr-13) when (fetch1(len_instr-1 downto len_instr-2) = "00" and not (fetch1(len_instr-3 downto len_instr-4) = "11" or fetch1(len_instr-3 downto len_instr-4) = "00")) else
 						fetch1(len_instr-8 downto len_instr-10) when fetch1(len_instr-1 downto len_instr-4) = "0000" else
 						fetch1(len_instr-5 downto len_instr-7);
-	dest_addr2 <= fetch2(len_instr-11 downto len_instr-13) when (fetch2(len_instr-1 downto len_instr-2) = "00" and not (fetch2(len_instr-3 downto len_instr-4) = "11" or fetch2(len_instr-3 downto len_instr-4) = "00")) else
+	dest_addr1 <= dest1;
+	dest2 <= fetch2(len_instr-11 downto len_instr-13) when (fetch2(len_instr-1 downto len_instr-2) = "00" and not (fetch2(len_instr-3 downto len_instr-4) = "11" or fetch2(len_instr-3 downto len_instr-4) = "00")) else
 						fetch2(len_instr-8 downto len_instr-10) when fetch2(len_instr-1 downto len_instr-4) = "0000" else
 						fetch2(len_instr-5 downto len_instr-7);
+	dest_addr2 <= dest2;
 						
 	----Whether C,Z required----
 	cz_maybe1 <= "10" when (fetch1(len_instr-15) = "1" and (fetch1(len_instr-1 downto len_instr-2) = "00" and not (fetch1(len_instr-3 downto len_instr-4) = "11" or fetch1(len_instr-3 downto len_instr-4) = "00"))) else
@@ -104,8 +111,6 @@ begin
 						"00";
 	cz_required2 <= cz_maybe2 when fetch_disable2 = '0' else "00";
 	
-	----Control Signals Assignment----
-	
 	----Disabling instructions----
 	instr1_jump <= '1' when fetch1(len_instr-1 downto len_instr-2) = "11" and fetch_disable1 = '0' else '0';
 	instr2_jump <= '1' when fetch2(len_instr-1 downto len_instr-2) = "11" and fetch_disable2 = '0' else '0';
@@ -113,13 +118,115 @@ begin
 	instr2_disable <= fetch_disable2 or instr1_jump;
 	disable_fetch <= instr1_jump or instr2_jump;
 	
+	
 	----Cyclically send data forward to RS,ROB,Store buffer,Load Queue
 	operation: process(clk)
 	begin
 		----Sending stuff to rob----
-			rob_dispatch1(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch1(len_PC+len_instr-1 downto len_instr);
-			rob_dispatch1(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch1(len_instr-1 downto len_instr-4);
+			rob_dispatch1(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+			rob_dispatch1(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
+			rob_dispatch1(len_rob_dispatch-len_PC-5 downto len_rob_dispatch-len_PC-7) <= dest1;
+			rob_dispatch1(len_rob_dispatch-len_PC-4-len_arf-1 downto len_rob_dispatch-len_PC-4-len_arf-len_rrf) <= dest_rrf1;
+			rob_dispatch1(0) <= '1' when fetch1_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable1_prev = '0' else '0';
+			rob_dispatch2(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+			rob_dispatch2(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
+			rob_dispatch2(len_rob_dispatch-len_PC-5 downto len_rob_dispatch-len_PC-7) <= dest2;
+			rob_dispatch2(len_rob_dispatch-len_PC-4-len_arf-1 downto len_rob_dispatch-len_PC-4-len_arf-len_rrf) <= dest_rrf2;
+			rob_dispatch2(0) <= '1' when fetch2_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable2_prev = '0' else '0';		
+		----whether rob instr is valid or not----
+			rob_valid1 <= '1' when fetch1_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable1_prev = '0' else '0';
+			rob_valid2 <= '1' when fetch2_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable2_prev = '0' else '0';
+	
+		----Whether instr is int or ls----
+			is_int1 <= '1' when fetch1_prev(len_instr-1 downto len_instr-2) = "00" and not fetch1_prev(len_instr-3 downto len_instr-4) = "11" else
+							'1' when fetch1_prev(len_instr-1) = "1" else '0';
+			is_ls1 <= not is_int1;
+			is_int2 <= '1' when fetch2_prev(len_instr-1 downto len_instr-2) = "00" and not fetch2_prev(len_instr-3 downto len_instr-4) = "11" else
+							'1' when fetch2_prev(len_instr-1) = "1" else '0';
+			is_ls2 <= not is_int2;
+			int_valid1 <= '0' when fetch_disable1_prev = '1' else is_int1;
+			int_valid2 <= '0' when fetch_disable2_prev = '1' else is_int2;
+			ls_valid1 <= '0' when fetch_disable1_prev = '1' else is_ls1;
+			ls_valid2 <= '0' when fetch_disable2_prev = '1' else is_ls2;
 			
+		----Control Signals Assignment----
+		
+		----Sending stuff to int pipeline----
+			int_dispatch1(len_int_rs_dispatch-1 downto len_int_rs_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+			int_dispatch1(len_int_rs_dispatch-len_PC-1 downto len_int_rs_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
+			int_dispatch1(len_int_rs_dispatch-len_PC-4-1 downto len_int_rs_dispatch-len_PC-4-len_control) <= control_maybe1;
+			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1) <= op_valid1(0);
+			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data1(len_data-1 downto 0);
+			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1) <= op_valid1(1);
+			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data) <= op_data1(len_data+len_data-1 downto len_data);
+			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-len_rrf) <= dest_rrf1;
+			int_dispatch1(1+len_status+len_rrf+1-1) <= cz_valid1;
+			int_dispatch1(1+len_status+len_rrf+1-1-1 downto 1+len_status+len_rrf+1-1-len_status) <= cz1;
+			---status destination to add---
+			int_dispatch1(0) <= op_valid1(1) and op_valid1(0);
+			
+			int_dispatch2(len_int_rs_dispatch-1 downto len_int_rs_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+			int_dispatch2(len_int_rs_dispatch-len_PC-1 downto len_int_rs_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
+			int_dispatch2(len_int_rs_dispatch-len_PC-4-1 downto len_int_rs_dispatch-len_PC-4-len_control) <= control_maybe2;
+			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1) <= op_valid2(0);
+			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data2(len_data-1 downto 0);
+			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1) <= op_valid2(1);
+			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data) <= op_data2(len_data+len_data-1 downto len_data);
+			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-len_rrf) <= dest_rrf2;
+			int_dispatch2(1+len_status+len_rrf+1-1) <= cz_valid2;
+			int_dispatch2(1+len_status+len_rrf+1-1-1 downto 1+len_status+len_rrf+1-1-len_status) <= cz2;
+			---status destination to add---
+			int_dispatch2(0) <= op_valid2(1) and op_valid2(0);
+			
+		----Sending stuff to ls pipeline----
+			ls_dispatch1(len_ls_rs_dispatch-1 downto len_ls_rs_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+			ls_dispatch1(len_ls_rs_dispatch-len_PC-1 downto len_ls_rs_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
+			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-1 downto len_ls_rs_dispatch-len_PC-4-len_control) <= control_maybe1;
+			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1) <= op_valid1(0);
+			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data1(len_data-1 downto 0);
+			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000000" & fetch1_prev(5 downto 0) when fetch1_prev(len_instr-2) = '1'
+																																																	else ("0000000" & fetch1_prev(8 downto 0);
+			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-len_rrf) <= dest_rrf1;
+			---status destination to add---
+			ls_dispatch1(0) <= op_valid1(0);
+
+			ls_dispatch2(len_ls_rs_dispatch-1 downto len_ls_rs_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+			ls_dispatch2(len_ls_rs_dispatch-len_PC-1 downto len_ls_rs_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
+			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-1 downto len_ls_rs_dispatch-len_PC-4-len_control) <= control_maybe2;
+			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1) <= op_valid2(0);
+			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data2(len_data-1 downto 0);
+			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000000" & fetch2_prev(5 downto 0) when fetch2_prev(len_instr-2) = '1'
+																																																	else ("0000000" & fetch2_prev(8 downto 0);
+			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-len_rrf) <= dest_rrf2;
+			---status destination to add---
+			ls_dispatch2(0) <= op_valid2(0);
+			
+		----Whether it is load or store----
+			load_valid1 <= '1' when (fetch1_prev = "0100" or "0011") and fetch_disable1_prev = '0' else '0';
+			store_valid1 <= '1' when (fetch1_prev = "0101") and fetch_disable1_prev = '0' else '0';
+			load_valid2 <= '1' when (fetch2_prev = "0100" or "0011") and fetch_disable2_prev = '0' else '0';
+			store_valid2 <= '1' when fetch2_prev = "0101" and fetch_disable2_prev = '0' else '0';
+		
+		----Sending to load queue----
+			load_dispatch1 <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+			load_dispatch2 <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+		
+		----Sending to store buffer----
+			store_dispatch1(len_PC+4+len_data+1-1 downto len_PC+4+len_data+1-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+			store_dispatch1(len_PC+4+len_data+1-len_PC-1 downto len_PC+4+len_data+1-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
+			store_dispatch1(len_PC+4+len_data+1-len_PC-4-1 downto len_PC+4+len_data+1-len_PC-4-len_data) <= dest_rrf1;
+			store_dispatch1(0) <= '1' when (fetch1_prev = "0101") and fetch_disable1_prev = '0' else '0';
+
+			store_dispatch2(len_PC+4+len_data+1-1 downto len_PC+4+len_data+1-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+			store_dispatch2(len_PC+4+len_data+1-len_PC-1 downto len_PC+4+len_data+1-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
+			store_dispatch2(len_PC+4+len_data+1-len_PC-4-1 downto len_PC+4+len_data+1-len_PC-4-len_data) <= dest_rrf2;
+			store_dispatch2(0) <= '1' when (fetch2_prev = "0101") and fetch_disable2_prev = '0' else '0';	
+		
+		----Updating fetch----
+			fetch1_prev <= fetch1;
+			fetch2_prev <= fetch2;
+			fetch_disable1_prev <= fetch_disable1;
+			fetch_disable2_prev <= fetch_disable2;
 	
 	end process;
 
