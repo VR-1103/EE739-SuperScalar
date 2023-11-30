@@ -226,22 +226,22 @@ begin
       retire_load2 <= rob_row(to_integer(head + 1))(pc_start downto pc_end);
 
       if rob_row(to_integer(head + 1)(op_start downto op_end) = "0011" or rob_row(to_integer(head)(op_start downto op_start - 1) = "0100" then
-          head_plus_is_load <= '1';
+          head_plus_is_load <= '1' and (not rob_row(to_integer(head + 1))(disable_bit_loc));
           head_plus_is_store <= '0';
       elsif rob_row(to_integer(head + 1)(op_start downto op_end) = "0101" then
           head_plus_is_load <= '0';
-          head_plus_is_store <= '1';
+          head_plus_is_store <= '1' and (not rob_row(to_integer(head + 1))(disable_bit_loc));
       else
           head_plus_is_load <= '0';
           head_plus_is_store <= '0';
       end if;
 
       if rob_row(to_integer(head)(op_start downto op_end) = "0011" or rob_row(to_integer(head + 1)(op_start downto op_start - 1) = "0100" then
-          head_is_load <= '1';
+          head_is_load <= '1' and (not rob_row(to_integer(head))(disable_bit_loc));
           head_is_store <= '0';
       elsif rob_row(to_integer(head)(op_start downto op_end) = "0101" then
           head_is_load <= '0';
-          head_is_store <= '1';
+          head_is_store <= '1' and (not rob_row(to_integer(head))(disable_bit_loc)); -- head isn't a store if it is disabled
       else
           head_is_load <= '0';
           head_is_store <= '0';
