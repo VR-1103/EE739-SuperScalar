@@ -2,7 +2,6 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;
 library work;
-use work.Gates.all;
 
 entity rob is
     generic(len_PC :integer := 5;
@@ -11,7 +10,7 @@ entity rob is
               len_op: integer := 4;
               size_rob: integer := 64;
               log_size_rob: integer := 6;
-              row_len: integer := (1 + len_PC + len_op + len_ARF + len_RRF + 1 + 1 + 1)); -- This line is only valid for VHDL-2008.
+              row_len: integer := (1 + 5 + 4 + 3 + 6 + 1 + 1 + 1)); -- 1 + len_PC + len_op + len_ARF + len_RRF + 1 + 1 + 1
 
     port(clk, rob_flush: in std_logic;
           flush_location: in std_logic_vector(len_PC - 1 downto 0); -- tells us where we should ask fetch to go to in the next cycle
@@ -49,13 +48,13 @@ end entity;
 
 architecture Struct of rob is
 
-  type rob_row_type is array(0 to size_rob - 1) of std_logic_vector(valid_bit_loc downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
-  constant default_row : std_logic_vector(valid_bit_loc downto 0) := (others => '0');
+  type rob_row_type is array(0 to size_rob - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
+  constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
   signal rob_row : rob_row_type := (others => default_row);
   constant branch_op : std_logic_vector(1 downto 0) := "10";
-  signal head: unsigned(log_size_rob - 1 downto 0) := 0; -- log_size_rob - 1 downto 0 refers to the integer written bitwise
-  signal tail: unsigned(log_size_rob - 1 downto 0) := 0; -- these are written in this way to ensure we get modular arithmetic
-  signal i: unsigned(log_size_rob - 1 downto 0) :=0; -- temporary variable for our loops
+  signal head: unsigned(log_size_rob - 1 downto 0) := (others => '0'); -- log_size_rob - 1 downto 0 refers to the integer written bitwise
+  signal tail: unsigned(log_size_rob - 1 downto 0) := (others => '0'); -- these are written in this way to ensure we get modular arithmetic
+  --signal i: unsigned(log_size_rob - 1 downto 0) := (others => '0'); -- temporary variable for our loops
   signal jump_location: std_logic_vector(len_PC - 1 downto 0) := (others=> '0'); -- in case we have to flush, where exactly do we go to?
   signal jump_tag: std_logic_vector(len_PC - 1 downto 0) := (others=> '1'); -- to identify which instruction caused this jump location, by default it is set to the maximum value
   signal head_is_load, head_plus_is_load, head_is_store, head_plus_is_store : std_logic := '0'; -- used for L/S instruction ka retirement
@@ -84,11 +83,11 @@ begin
         valid_fetch <= '1'; -- we want to send some location to fetch stage
         jump_location <= flush_location;
         jump_tag <= (others=> '1');
-        head <= 0;
-        tail <= 0;
+        head <= (others => '0');
+        tail <= (others => '0');
         for i in size_rob - 1 downto 0 loop
           rob_row(i)(mispred_bit_loc downto ex_bit_loc) <= "000"; -- makes all of the status bits as zero; I could have made all of the rows into default_row but that is just unnecessary
-          row_row(i)(valid_bit_loc) <= '0'; -- every row is not "valid"
+          rob_row(i)(valid_bit_loc) <= '0'; -- every row is not "valid"
         end loop;
       else --adding this to reduce the number of inferred latches
         valid_fetch <= '0';
@@ -103,9 +102,9 @@ begin
         rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word1(len_ARF + len_RRF downto len_RRF);
         rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word1(len_ARF + len_RRF +len_op downto len_RRF + len_ARF);
         rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op);
-        row_row(to_integer(tail))(valid_bit_loc) <= '1';
-        row_row(to_integer(tail))(ex_bit_loc) <= '0';
-        row_row(to_integer(tail))(mispred_bit_loc) <= '0';
+        rob_row(to_integer(tail))(valid_bit_loc) <= '1';
+        rob_row(to_integer(tail))(ex_bit_loc) <= '0';
+        rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail + 1;
       else --adding this to reduce the number of inferred latches
         rob_row(to_integer(tail))(disable_bit_loc) <= dispatch_word1(0);
@@ -113,9 +112,9 @@ begin
         rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word1(len_ARF + len_RRF downto len_RRF);
         rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word1(len_ARF + len_RRF +len_op downto len_RRF + len_ARF);
         rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op);
-        row_row(to_integer(tail))(valid_bit_loc) <= '0';
-        row_row(to_integer(tail))(ex_bit_loc) <= '0';
-        row_row(to_integer(tail))(mispred_bit_loc) <= '0';
+        rob_row(to_integer(tail))(valid_bit_loc) <= '0';
+        rob_row(to_integer(tail))(ex_bit_loc) <= '0';
+        rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail;
       end if;
 
@@ -125,9 +124,9 @@ begin
         rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word2(len_ARF + len_RRF downto len_RRF);
         rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word2(len_ARF + len_RRF +len_op downto len_RRF + len_ARF);
         rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word2(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op);
-        row_row(to_integer(tail))(valid_bit_loc) <= '1';
-        row_row(to_integer(tail))(ex_bit_loc) <= '0';
-        row_row(to_integer(tail))(mispred_bit_loc) <= '0';
+        rob_row(to_integer(tail))(valid_bit_loc) <= '1';
+        rob_row(to_integer(tail))(ex_bit_loc) <= '0';
+        rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail + 1;
       else --adding this to reduce the number of inferred latches
         rob_row(to_integer(tail))(disable_bit_loc) <= dispatch_word2(0);
@@ -135,20 +134,20 @@ begin
         rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word2(len_ARF + len_RRF downto len_RRF);
         rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word2(len_ARF + len_RRF +len_op downto len_RRF + len_ARF);
         rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word2(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op);
-        row_row(to_integer(tail))(valid_bit_loc) <= '0';
-        row_row(to_integer(tail))(ex_bit_loc) <= '0';
-        row_row(to_integer(tail))(mispred_bit_loc) <= '0';
+        rob_row(to_integer(tail))(valid_bit_loc) <= '0';
+        rob_row(to_integer(tail))(ex_bit_loc) <= '0';
+        rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail;
       end if;
 
       for i in size_rob - 1 downto 0 loop
       -- Analysing executed instructions ------------------------
-        if (rob_row(i)(valid_bit_loc)) then -- only checking valid rows
+        if rob_row(i)(valid_bit_loc) = '1' then -- only checking valid rows
 
-          if valid_execute2 and (rob_row(i)(pc_start downto pc_end) = execute_word1(len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a match on the ith row for the 2nd word
+          if valid_execute2 = '1' and (rob_row(i)(pc_start downto pc_end) = execute_word2(len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a match on the ith row for the 2nd word
             rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
-            row_row(i + 1)(mispred_bit_loc) <= execute_word2(1 + len_PC - 1); -- mispredict bit of execute word is now considered as the next row's mispredict bit
-            if execute_word2(1 + len_PC -1) and (jump_tag < execute_word2 (len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a mispredicted branch which comes before the one we already have
+            rob_row(i + 1)(mispred_bit_loc) <= execute_word2(1 + len_PC - 1); -- mispredict bit of execute word is now considered as the next row's mispredict bit
+            if (execute_word2(1 + len_PC -1) = '1') and (jump_tag < execute_word2 (len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a mispredicted branch which comes before the one we already have
               jump_tag <= execute_word2(len_PC + 1 + len_PC - 1 downto 1 + len_PC);
               jump_location <= execute_word2(len_PC - 1 downto 0); -- jump location updated
 
@@ -158,10 +157,10 @@ begin
 
             end if;
 
-          elsif valid_execute3 and (rob_row(i)(pc_start downto pc_end) = execute_word3(len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a match on the ith row for the 3rd word
+          elsif (valid_execute3 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_word3(len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a match on the ith row for the 3rd word
             rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
-            row_row(i + 1)(mispred_bit_loc) <= execute_word3(1 + len_PC - 1); -- mispredict bit of execute word is now considered as the next row's mispredict bit
-            if execute_word3(1 + len_PC -1) and (jump_tag < execute_word3 (len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a mispredicted branch which comes before the one we already have
+            rob_row(i + 1)(mispred_bit_loc) <= execute_word3(1 + len_PC - 1); -- mispredict bit of execute word is now considered as the next row's mispredict bit
+            if (execute_word3(1 + len_PC -1) = '1') and (jump_tag < execute_word3 (len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a mispredicted branch which comes before the one we already have
               jump_tag <= execute_word3(len_PC + 1 + len_PC - 1 downto 1 + len_PC);
               jump_location <= execute_word3(len_PC - 1 downto 0); -- jump location updated
 
@@ -171,19 +170,19 @@ begin
 
             end if;
 
-          elsif (valid_store1 and (rob_row(i)(pc_start downto pc_end) = execute_store1)) or
-                (valid_store2 and (rob_row(i)(pc_start downto pc_end) = execute_store2)) or
-                (valid_load1 and (rob_row(i)(pc_start downto pc_end) = execute_load1)) or
-                (valid_load2 and (rob_row(i)(pc_start downto pc_end) = execute_load2)) then -- we are having some or the correct load or store having executed
+          elsif ((valid_store1 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_store1)) or
+                ((valid_store2 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_store2)) or
+                ((valid_load1 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_load1)) or
+                ((valid_load2 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_load2)) then -- we are having some or the correct load or store having executed
             rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
 
-          elsif (valid_alias1 and (rob_row(i)(pc_start downto pc_end) = alias_tag1)) then
-            rob_row(i)(mispred_bit_loc) = '1';
+          elsif (valid_alias1 = '1') and (rob_row(i)(pc_start downto pc_end) = alias_tag1) then
+            rob_row(i)(mispred_bit_loc) <= '1';
             jump_tag <= alias_tag1;
             jump_location <= alias_tag1;
 
-          elsif (valid_alias2 and (rob_row(i)(pc_start downto pc_end) = alias_tag2)) then
-            rob_row(i)(mispred_bit_loc) = '1';
+          elsif (valid_alias2 = '1') and (rob_row(i)(pc_start downto pc_end) = alias_tag2) then
+            rob_row(i)(mispred_bit_loc) <= '1';
             jump_tag <= alias_tag2;
             jump_location <= alias_tag2;
 
@@ -199,17 +198,17 @@ begin
       end loop;
 
       -- Retiring mispredicted instructions -----------------------------------
-      if (rob_row(to_integer(head))(mispred_bit_loc) = '1') then -- I do not want to create 2 ROB flush cases (i.e. when everything has to be wiped vs everything except head). So I will try to make this into a 2-step process in case the head if non-speculative but the head + 1 is.)
+      if rob_row(to_integer(head))(mispred_bit_loc) = '1' then -- I do not want to create 2 ROB flush cases (i.e. when everything has to be wiped vs everything except head). So I will try to make this into a 2-step process in case the head if non-speculative but the head + 1 is.)
         valid_fetch <= '1';
         jump_tag <= (others => '1'); -- we want to start off with a new slate
-        head <= 0; --flush the entire ROB
-        tail <= 0;
+        head <= (others => '0'); --flush the entire ROB
+        tail <= (others => '0');
         for i in size_rob - 1 downto 0 loop
-          integerrob_row(i)(ex_bit_loc) <= '0'; -- makes all of the valid and execution bits as zero; I could have made all of the rows into default_row but that is just unnecessary
-          row_row(i)(valid_bit_loc) <= '0';
+          rob_row(i)(ex_bit_loc) <= '0'; -- makes all of the valid and execution bits as zero; I could have made all of the rows into default_row but that is just unnecessary
+          rob_row(i)(valid_bit_loc) <= '0';
         end loop;
 
-      elsif (rob_row(to_integer(head + 1))(mispred_bit_loc) = '1') then
+      elsif rob_row(to_integer(head + 1))(mispred_bit_loc) = '1' then
         rob_row(to_integer(head))(ex_bit_loc) <= '0'; -- We are lying about the execution status of (head + 1) to get one more cycle before we have to flush
         valid_fetch <= '0';
         head <= head;
@@ -225,10 +224,10 @@ begin
       retire_load1 <= rob_row(to_integer(head))(pc_start downto pc_end);
       retire_load2 <= rob_row(to_integer(head + 1))(pc_start downto pc_end);
 
-      if rob_row(to_integer(head + 1)(op_start downto op_end) = "0011" or rob_row(to_integer(head)(op_start downto op_start - 1) = "0100" then
+      if rob_row(to_integer(head + 1))(op_start downto op_end) = "0011" or rob_row(to_integer(head))(op_start downto op_start - 1) = "0100" then
           head_plus_is_load <= '1' and (not rob_row(to_integer(head + 1))(disable_bit_loc));
           head_plus_is_store <= '0';
-      elsif rob_row(to_integer(head + 1)(op_start downto op_end) = "0101" then
+      elsif rob_row(to_integer(head + 1))(op_start downto op_end) = "0101" then
           head_plus_is_load <= '0';
           head_plus_is_store <= '1' and (not rob_row(to_integer(head + 1))(disable_bit_loc));
       else
@@ -236,10 +235,10 @@ begin
           head_plus_is_store <= '0';
       end if;
 
-      if rob_row(to_integer(head)(op_start downto op_end) = "0011" or rob_row(to_integer(head + 1)(op_start downto op_start - 1) = "0100" then
+      if rob_row(to_integer(head))(op_start downto op_end) = "0011" or rob_row(to_integer(head + 1))(op_start downto op_start - 1) = "0100" then
           head_is_load <= '1' and (not rob_row(to_integer(head))(disable_bit_loc));
           head_is_store <= '0';
-      elsif rob_row(to_integer(head)(op_start downto op_end) = "0101" then
+      elsif rob_row(to_integer(head))(op_start downto op_end) = "0101" then
           head_is_load <= '0';
           head_is_store <= '1' and (not rob_row(to_integer(head))(disable_bit_loc)); -- head isn't a store if it is disabled
       else
@@ -249,7 +248,7 @@ begin
 
 
       -- Retiring valid instructions -----------------------------------
-      if (rob_row(to_integer(head))(ex_bit_loc) and rob_row(to_integer(head + 1))(ex_bit_loc) = '1') then -- we have zoomed in on the ex_bit for the word on the top and second-top
+      if (rob_row(to_integer(head))(ex_bit_loc) = '1') and (rob_row(to_integer(head + 1))(ex_bit_loc) = '1') then -- we have zoomed in on the ex_bit for the word on the top and second-top
         valid_retire_load1 <= head_is_load xor head_plus_is_load;
         valid_retire_load2 <= head_is_load and head_plus_is_load; -- 00 if none, 01 if one, 10 if both
         retire_store(0) <= head_is_store xor head_plus_is_store;
@@ -257,13 +256,13 @@ begin
         valid_retire1 <= not (head_is_store or rob_row(to_integer(head))(disable_bit_loc));
         valid_retire2 <= not (head_plus_is_store or rob_row(to_integer(head + 1))(disable_bit_loc));
 
-        update_r0 <= rob_row(to_integer(head + 1)(pc_start downto pc_end);
+        update_r0 <= rob_row(to_integer(head + 1))(pc_start downto pc_end);
         valid_update <= '1';
 
-        row_row(to_integer(head))(valid_bit_loc) <= '0';
-        row_row(to_integer(head + 1))(valid_bit_loc) <= '0';
-        row_row(to_integer(head))(ex_bit_loc) <= '0';
-        row_row(to_integer(head))(ex_bit_loc) <= '0';
+        rob_row(to_integer(head))(valid_bit_loc) <= '0';
+        rob_row(to_integer(head + 1))(valid_bit_loc) <= '0';
+        rob_row(to_integer(head))(ex_bit_loc) <= '0';
+        rob_row(to_integer(head))(ex_bit_loc) <= '0';
         head <= head + 2; -- head is lowered
 
       elsif (rob_row(to_integer(head))(ex_bit_loc) = '1') then -- only one word is retired
@@ -274,11 +273,11 @@ begin
         valid_retire1 <= not (head_is_store or rob_row(to_integer(head))(disable_bit_loc));
         valid_retire2 <= '0';
 
-        update_r0 <= rob_row(to_integer(head)(pc_start downto pc_end);
+        update_r0 <= rob_row(to_integer(head))(pc_start downto pc_end);
         valid_update <= '1';
 
-        row_row(to_integer(head))(valid_bit_loc) <= '0';
-        row_row(to_integer(head))(ex_bit_loc) <= '0';
+        rob_row(to_integer(head))(valid_bit_loc) <= '0';
+        rob_row(to_integer(head))(ex_bit_loc) <= '0';
         retire_store(0) <= head_is_store;
         retire_store(1) <= '0'; -- 00 if none, 01 if one
         head <= head + 1; -- head is lowered
@@ -289,14 +288,14 @@ begin
         valid_retire1 <= '0';
         valid_retire2 <= '0';
 
-        update_r0 <= rob_row(to_integer(head)(pc_start downto pc_end);
+        update_r0 <= rob_row(to_integer(head))(pc_start downto pc_end);
         valid_update <= '0';
 
         head <= head; -- symmetry helps ig?
       end if;
 
       -- Checking if we need to stall in next cycle ---------------
-      if ((head = tail and rob_row(to_integer(head))(valid_bit_loc)) or head = tail + 1) then -- stall condition (we don't accept anything even if we have just 1 slot free)
+      if ((head = tail) and (rob_row(to_integer(head))(valid_bit_loc) = '1')) or (head = tail + 1) then -- stall condition (we don't accept anything even if we have just 1 slot free)
         rob_stall <= '1'; -- the and condition above comes from the case when rob is empty i.e. head = tail and there is no entry present
       else
         rob_stall <= '0';
