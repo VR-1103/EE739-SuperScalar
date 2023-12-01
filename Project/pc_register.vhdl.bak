@@ -1,0 +1,13 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity pc_register is
+	generic();
+	port();
+end entity;
+
+architecture Struct of pc_register is
+begin
+
+end Struct;

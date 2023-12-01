@@ -1,16 +1,14 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;
-library work;
-use work.Gates.all;
 
-entity store_buffer is
+entity load_queue is
     generic(len_PC :integer := 5;
-              len_mem_addr: integer := len_PC;
+              len_mem_addr: integer := 5;
               len_data: integer := 16;
               size_load: integer := 16;
               log_size_load: integer := 4;
-              row_len: integer := (1 + len_PC + len_mem_addr + 1 + 1 + 1)); -- busy bit+pc_add+mem_add+forwarded bit+alias bit+valid bit
+              row_len: integer := (1 + 5 + 5 + 1 + 1 + 1)); -- busy bit+pc_add+mem_add+forwarded bit+alias bit+valid bit
 
     port(clk, load_queue_flush : in std_logic; -- we will use the flush to remove the "un-retired" instructions
           -- dispatch stage $$$$$$$$$$$$$$--
@@ -22,9 +20,9 @@ entity store_buffer is
 			 forwarded1: in std_logic;
           valid_load_execute1 : in std_logic; -- if the executed words are actually meant for load_queue
 			 --checking from store buffer stage--
-			 store_mem_addr : in std_logic_vector(lem_mem_addr-1 downto 0);
+			 store_mem_addr : in std_logic_vector(len_mem_addr-1 downto 0);
 			 valid_store_addr: in std_logic; --if checking is actually required
-			 store_mem_addr2 : in std_logic_vector(lem_mem_addr-1 downto 0);
+			 store_mem_addr2 : in std_logic_vector(len_mem_addr-1 downto 0);
 			 valid_store_addr2: in std_logic; --if checking is actually required
 			 alias1,alias2: out std_logic;
 			 alias_pc1,alias_pc2: out std_logic_vector(len_PC-1 downto 0);
@@ -50,19 +48,19 @@ end entity;
 -- Completed bit : If ROB has retired the instruction thus making it free to be written into the memory port
 --############################################################
 
-architecture Struct of store_buffer is
+architecture Struct of load_queue is
 	type load_row_type is array(0 to size_load - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
 	constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
 	signal load_row : load_row_type := (others => default_row);
-	variable status: std_logic;
-	variable avlb_rows: integer:= 0;
 begin
 	normal_op: process(clk)
+	variable status: std_logic;
+	variable avlb_rows: integer:= 0;
 	begin
 	----If only 2 rows are empty, send out stall high----
 		L8: for i in 0 to size_load-1 loop
 			if (load_row(i)(row_len-1) = '0') then
-				avlb_rows = avlb_rows+1;
+				avlb_rows := (avlb_rows+1);
 			else null;
 			end if;
 		end loop;
@@ -74,14 +72,14 @@ begin
 	----Dispatch---
 
 		if(dispatch_word1_validity = '1') then
-			status <= '0';
+			status := '0';
 			L1: for i in 0 to size_load - 1 loop
 			if (load_row(i)(row_len-1) = '0') then
 				if status = '0' then
 					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word1;
 					load_row(i)(0) <= '0';
 					load_row(i)(row_len-1) <= '1';
-					status <= '1';
+					status := '1';
 				else
 					null;
 				end if;
@@ -93,14 +91,14 @@ begin
 			null;
 		end if;
 		if(dispatch_word2_validity = '1') then
-			status <= '0';
+			status := '0';
 			L2: for i in 0 to size_load-1 loop
 			if (load_row(i)(row_len-1) = '0') then
 				if status = '0' then
 					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word2;
 					load_row(i)(0) <= '0';
 					load_row(i)(row_len-1) <= '1';
-					status <= '1';
+					status := '1';
 				else null;
 				end if;
 			else null;
@@ -121,14 +119,14 @@ begin
 		
 	----Post execute----
 		if (valid_load_execute1 = '1') then
-			status <= '0';
+			status := '0';
 			L4: for i in 0 to size_load-1 loop
 			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = tag1)) then
 				if status = '0' then
 					load_row(i)(len_mem_addr+3-1  downto 3) <= addr1;
 					load_row(i)(2) <= forwarded1;
 					load_row(i)(0) <= '0';
-					status <= '1';
+					status := '1';
 				else null;
 				end if;
 			else
@@ -141,7 +139,7 @@ begin
 		alias1 <= '0';
 		alias2 <= '0';
 		if (valid_store_addr = '1') then
-			status <= '0';
+			status := '0';
 			L5: for i in 0 to size_load-1 loop
 			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(len_mem_addr+3-1  downto 3) = store_mem_addr)) then
 				if status = '0' then
@@ -150,7 +148,7 @@ begin
 						load_row(i)(0) <= '0';
 						alias1 <= '1';
 						alias_pc1 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
-						status <= '1';
+						status := '1';
 					else null;
 					end if;
 				else null;
@@ -164,8 +162,8 @@ begin
 		end if;
 		
 		if (valid_store_addr2 = '1') then
-			status <= '0';
-			L5: for i in 0 to size_load-1 loop
+			status := '0';
+			L6: for i in 0 to size_load-1 loop
 			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(len_mem_addr+3-1  downto 3) = store_mem_addr2)) then
 				if status = '0' then
 					if (load_row(i)(2) = '0') then
@@ -173,7 +171,7 @@ begin
 						load_row(i)(0) <= '0';
 						alias2 <= '1';
 						alias_pc2 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
-						status <= '1';
+						status := '1';
 					else null;
 					end if;
 				else null;
@@ -208,12 +206,12 @@ begin
 		
 	----Post ROB----
 		if (valid_retirement = '1') then
-			status <= '0';
+			status := '0';
 			L7: for i in 0 to size_load-1 loop
 			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = retired_rob_pc_addr)) then
 				if status = '0' then
 					load_row(i)(row_len-1) <= '0';
-					status <= '1';
+					status := '1';
 				else null;
 				end if;
 			else null;
