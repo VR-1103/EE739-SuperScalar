@@ -1,0 +1,127 @@
+# Reading pref.tcl
+# do Testing_ROB_run_msim_rtl_vhdl.do
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work rtl_work 
+# Modifying C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# -- Giving up waiting on lock. Lockfile is "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock".
+# ** Error: WriteIniString C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini failed: 2
+# Error in macro ./Testing_ROB_run_msim_rtl_vhdl.do line 6
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work rtl_work 
+# Modifying C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# ** Warning: (vmap-7) Failed to open lock file "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock" in create mode.
+# Permission denied. (errno = EACCES)
+# -- Giving up waiting on lock. Lockfile is "C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini_lock".
+# ** Error: WriteIniString C:/intelFPGA_lite/20.1/modelsim_ase/win32aloem/../modelsim.ini failed: 2
+#     while executing
+# "error [FixExecError $msg]"
+#     (procedure "vmap" line 29)
+#     invoked from within
+# "vmap work rtl_work"

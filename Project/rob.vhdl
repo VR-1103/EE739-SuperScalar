@@ -3,7 +3,7 @@ use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;
 library work;
 
-entity rob is
+entity testing_rob is
     generic(len_PC :integer := 5;
               len_RRF: integer := 6;
               len_ARF: integer := 3;
@@ -46,7 +46,7 @@ end entity;
 -- Row Len has
 -- Busy bit, PC, Op_code, ARF, RRF, spec bit, disabled bit, executed bit
 
-architecture Struct of rob is
+architecture Struct of testing_rob is
 
   type rob_row_type is array(0 to size_rob - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
   constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
@@ -96,47 +96,33 @@ begin
       end if;
 
       -- Welcoming dispatched instructions ---------------------
-      if (valid_dispatch1 = '1') then
-        rob_row(to_integer(tail))(disable_bit_loc) <= dispatch_word1(0);
-        rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word1(len_RRF downto 1);
-        rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word1(len_ARF + len_RRF downto len_RRF);
-        rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word1(len_ARF + len_RRF +len_op downto len_RRF + len_ARF);
-        rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op);
+		rob_row(to_integer(tail))(disable_bit_loc) <= dispatch_word1(0);
+		rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word1(len_RRF downto 1);
+		rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word1(len_ARF + len_RRF downto len_RRF + 1);
+		rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word1(len_ARF + len_RRF +len_op downto len_RRF + len_ARF + 1);
+		rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op + 1);
+		rob_row(to_integer(tail))(ex_bit_loc) <= '0';
+      rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
+		if (valid_dispatch1 = '1') then
         rob_row(to_integer(tail))(valid_bit_loc) <= '1';
-        rob_row(to_integer(tail))(ex_bit_loc) <= '0';
-        rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail + 1;
       else --adding this to reduce the number of inferred latches
-        rob_row(to_integer(tail))(disable_bit_loc) <= dispatch_word1(0);
-        rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word1(len_RRF downto 1);
-        rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word1(len_ARF + len_RRF downto len_RRF);
-        rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word1(len_ARF + len_RRF +len_op downto len_RRF + len_ARF);
-        rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op);
         rob_row(to_integer(tail))(valid_bit_loc) <= '0';
-        rob_row(to_integer(tail))(ex_bit_loc) <= '0';
-        rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail;
       end if;
-
+		
+		rob_row(to_integer(tail))(disable_bit_loc) <= dispatch_word1(0);
+		rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word1(len_RRF downto 1);
+		rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word1(len_ARF + len_RRF downto len_RRF + 1);
+		rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word1(len_ARF + len_RRF +len_op downto len_RRF + len_ARF + 1);
+		rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op + 1);
+		rob_row(to_integer(tail))(ex_bit_loc) <= '0';
+      rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
       if (valid_dispatch2 = '1') then
-        rob_row(to_integer(tail))(disable_bit_loc) <= dispatch_word2(0);
-        rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word2(len_RRF downto 1);
-        rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word2(len_ARF + len_RRF downto len_RRF);
-        rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word2(len_ARF + len_RRF +len_op downto len_RRF + len_ARF);
-        rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word2(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op);
         rob_row(to_integer(tail))(valid_bit_loc) <= '1';
-        rob_row(to_integer(tail))(ex_bit_loc) <= '0';
-        rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail + 1;
       else --adding this to reduce the number of inferred latches
-        rob_row(to_integer(tail))(disable_bit_loc) <= dispatch_word2(0);
-        rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word2(len_RRF downto 1);
-        rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word2(len_ARF + len_RRF downto len_RRF);
-        rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word2(len_ARF + len_RRF +len_op downto len_RRF + len_ARF);
-        rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word2(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op);
         rob_row(to_integer(tail))(valid_bit_loc) <= '0';
-        rob_row(to_integer(tail))(ex_bit_loc) <= '0';
-        rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail;
       end if;
 
@@ -146,7 +132,7 @@ begin
 
           if valid_execute2 = '1' and (rob_row(i)(pc_start downto pc_end) = execute_word2(len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a match on the ith row for the 2nd word
             rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
-            rob_row(i + 1)(mispred_bit_loc) <= execute_word2(1 + len_PC - 1); -- mispredict bit of execute word is now considered as the next row's mispredict bit
+            rob_row((i + 1) mod size_rob)(mispred_bit_loc) <= execute_word2(1 + len_PC - 1); -- mispredict bit of execute word is now considered as the next row's mispredict bit
             if (execute_word2(1 + len_PC -1) = '1') and (jump_tag < execute_word2 (len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a mispredicted branch which comes before the one we already have
               jump_tag <= execute_word2(len_PC + 1 + len_PC - 1 downto 1 + len_PC);
               jump_location <= execute_word2(len_PC - 1 downto 0); -- jump location updated
@@ -159,7 +145,7 @@ begin
 
           elsif (valid_execute3 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_word3(len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a match on the ith row for the 3rd word
             rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
-            rob_row(i + 1)(mispred_bit_loc) <= execute_word3(1 + len_PC - 1); -- mispredict bit of execute word is now considered as the next row's mispredict bit
+            rob_row((i + 1) mod size_rob)(mispred_bit_loc) <= execute_word3(1 + len_PC - 1); -- mispredict bit of execute word is now considered as the next row's mispredict bit
             if (execute_word3(1 + len_PC -1) = '1') and (jump_tag < execute_word3 (len_PC + 1 + len_PC - 1 downto 1 + len_PC)) then -- we have a mispredicted branch which comes before the one we already have
               jump_tag <= execute_word3(len_PC + 1 + len_PC - 1 downto 1 + len_PC);
               jump_location <= execute_word3(len_PC - 1 downto 0); -- jump location updated
@@ -224,7 +210,7 @@ begin
       retire_load1 <= rob_row(to_integer(head))(pc_start downto pc_end);
       retire_load2 <= rob_row(to_integer(head + 1))(pc_start downto pc_end);
 
-      if rob_row(to_integer(head + 1))(op_start downto op_end) = "0011" or rob_row(to_integer(head))(op_start downto op_start - 1) = "0100" then
+      if rob_row(to_integer(head + 1))(op_start downto op_end) = "0011" or rob_row(to_integer(head))(op_start downto op_end) = "0100" then
           head_plus_is_load <= '1' and (not rob_row(to_integer(head + 1))(disable_bit_loc));
           head_plus_is_store <= '0';
       elsif rob_row(to_integer(head + 1))(op_start downto op_end) = "0101" then
@@ -235,7 +221,7 @@ begin
           head_plus_is_store <= '0';
       end if;
 
-      if rob_row(to_integer(head))(op_start downto op_end) = "0011" or rob_row(to_integer(head + 1))(op_start downto op_start - 1) = "0100" then
+      if rob_row(to_integer(head))(op_start downto op_end) = "0011" or rob_row(to_integer(head + 1))(op_start downto op_end) = "0100" then
           head_is_load <= '1' and (not rob_row(to_integer(head))(disable_bit_loc));
           head_is_store <= '0';
       elsif rob_row(to_integer(head))(op_start downto op_end) = "0101" then
