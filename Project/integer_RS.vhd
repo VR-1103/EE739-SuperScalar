@@ -41,7 +41,6 @@ architecture int_RS_arch of int_RS is
 	signal in1_index_valid, in2_index_valid : std_logic := '1'; -- is predetermined index even valid?
 	signal pipe1_done, pipe2_done: std_logic := '0'; -- whether pipeline has already been assigned something
 	signal stall_determine: std_logic := '0'; -- determine stall based on predetermined indexes given above 
-	signal int_RS_table(i): std_logic_vector(0 to row_len - 1) := (others => '0');
 	signal pipe1_out, pipe2_out: std_logic_vector(0 to len_out - 1) := (others => '0'); --buffer for output to pipeline
 	
 	-- bunch of indexes
@@ -182,10 +181,7 @@ architecture int_RS_arch of int_RS is
 							in2_index_valid <= '1';
 						end if;
 					end if;
-				end if;
-				
-				--place the updated row back into the RS table and move onto the next iteration
-				int_RS_table(i) <= int_RS_table(i); 	
+				end if;	
 			end loop traverse_loop;
 			
 			-- Determine stall for next cycle and assign an output
