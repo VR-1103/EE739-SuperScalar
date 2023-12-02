@@ -7,8 +7,9 @@ entity fetch_block is ----this does not have the temp register for pc, that need
 				len_mem_addr: integer:=5;
 				len_data: integer:=16);
 	port(clk: in std_logic;
-			from_rob,from_temp_reg: in std_logic_vector(len_PC-1 downto 0);
+			from_rob,from_temp_reg,from_lmsm: in std_logic_vector(len_PC-1 downto 0);
 			control_bit: in std_logic; ---to decide if instr addr is coming from rob or temp_reg
+			control_from_lmsm: in std_logic;
 			disable_bit: in std_logic;
 			to_mem1,to_mem2: out std_logic_vector(len_mem_addr-1 downto 0);
 			from_mem1,from_mem2: in std_logic_vector(len_data-1 downto 0);
@@ -22,10 +23,11 @@ architecture struct of fetch_block is
 	signal pc_addr1,pc_addr2: std_logic_vector(len_PC-1 downto 0);
 	signal pc_addr2_temp,next_pc_addr_temp: std_logic_vector(len_PC downto 0);
 	signal pc_addr1_prev,pc_addr2_prev: std_logic_vector(len_PC-1 downto 0);
-	signal control_prev,disable_prev,stall_prev: std_logic;
+	signal control_prev,control_prev_lmsm,disable_prev,stall_prev: std_logic;
 begin
 	pc_addr1 <= from_rob when control_bit = '1' else
-					from_temp_reg when control_bit = '0';
+					from_temp_reg when control_bit = '0' and control_from_lmsm = '0' else
+					from_lmsm;
 	pc_addr2_temp <= std_logic_vector(unsigned('0' & pc_addr1) + "000010");
 	next_pc_addr_temp <= std_logic_vector(unsigned(pc_addr2_temp) + "000010");
 	pc_addr2 <= pc_addr2_temp(len_PC-1 downto 0);
@@ -40,12 +42,12 @@ begin
 		instr2(len_data+len_PC-1 downto len_data) <= pc_addr2_prev;
 		instr1(len_data-1 downto 0) <= from_mem1;
 		instr2(len_data-1 downto 0) <= from_mem2;
-		if (stall_prev = '1' or (control_prev = '0' and disable_prev = '1')) then
+		if (stall_prev = '1' or (control_prev = '0' and control_prev_lmsm = '0' and disable_prev = '1')) then
 			instr_validity1 <= '1';
 		else
 			instr_validity1 <= '0';
 		end if;
-		if (stall_prev = '1' or (control_prev = '0' and disable_prev = '1')) then
+		if (stall_prev = '1' or (control_prev = '0' and control_prev_lmsm = '0' and disable_prev = '1')) then
 			instr_validity2 <= '1';
 		else
 			instr_validity2 <= '0';
@@ -60,6 +62,7 @@ begin
 --									disable_prev when control_prev = '0';
 		stall_prev <= stall_bit;
 		control_prev <= control_bit;
+		control_prev_lmsm <= control_from_lmsm;
 		disable_prev <= disable_bit;
 		pc_addr1_prev <= pc_addr1;
 		pc_addr2_prev <= pc_addr2;
