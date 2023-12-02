@@ -57,169 +57,172 @@ begin
 	variable status: std_logic;
 	variable avlb_rows: integer:= 0;
 	begin
-	----If only 2 rows are empty, send out stall high----
-		L8: for i in 0 to size_load-1 loop
-			if (load_row(i)(row_len-1) = '0') then
-				avlb_rows := (avlb_rows+1);
-			else null;
+		if (rising_edge(clk)) then
+		----If only 2 rows are empty, send out stall high----
+			L8: for i in 0 to size_load-1 loop
+				if (load_row(i)(row_len-1) = '0') then
+					avlb_rows := (avlb_rows+1);
+				else null;
+				end if;
+			end loop;
+			if avlb_rows <= 2 then
+				stall <= '1';
+			else
+				stall <= '0';
 			end if;
-		end loop;
-		if avlb_rows <= 2 then
-			stall <= '1';
-		else
-			stall <= '0';
-		end if;
-	----Dispatch---
+		----Dispatch---
 
-		if(dispatch_word1_validity = '1') then
-			status := '0';
-			L1: for i in 0 to size_load - 1 loop
-			if (load_row(i)(row_len-1) = '0') then
-				if status = '0' then
-					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word1;
-					load_row(i)(0) <= '0';
-					load_row(i)(row_len-1) <= '1';
-					status := '1';
+			if(dispatch_word1_validity = '1') then
+				status := '0';
+				L1: for i in 0 to size_load - 1 loop
+				if (load_row(i)(row_len-1) = '0') then
+					if status = '0' then
+						load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word1;
+						load_row(i)(0) <= '0';
+						load_row(i)(row_len-1) <= '1';
+						status := '1';
+					else
+						null;
+					end if;
 				else
 					null;
 				end if;
+				end loop;
 			else
 				null;
 			end if;
-			end loop;
-		else
-			null;
-		end if;
-		if(dispatch_word2_validity = '1') then
-			status := '0';
-			L2: for i in 0 to size_load-1 loop
-			if (load_row(i)(row_len-1) = '0') then
-				if status = '0' then
-					load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word2;
-					load_row(i)(0) <= '0';
-					load_row(i)(row_len-1) <= '1';
-					status := '1';
-				else null;
-				end if;
-			else null;
-			end if;
-			end loop;
-		else
-			null;
-		end if;
-		
-	----Flush----	
-		if (load_queue_flush = '1') then
-			L3: for i in 0 to size_load-1 loop
-			load_row(i)(row_len-1) <= '0';
-			end loop;
-		else
-			null;
-		end if;
-		
-	----Post execute----
-		if (valid_load_execute1 = '1') then
-			status := '0';
-			L4: for i in 0 to size_load-1 loop
-			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = tag1)) then
-				if status = '0' then
-					load_row(i)(len_mem_addr+3-1  downto 3) <= addr1;
-					load_row(i)(2) <= forwarded1;
-					load_row(i)(0) <= '0';
-					status := '1';
-				else null;
-				end if;
-			else
-				null;
-			end if;
-			end loop;
-		end if;
-		
-	----Checking for aliasing----
-		alias1 <= '0';
-		alias2 <= '0';
-		if (valid_store_addr = '1') then
-			status := '0';
-			L5: for i in 0 to size_load-1 loop
-			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(len_mem_addr+3-1  downto 3) = store_mem_addr)) then
-				if status = '0' then
-					if (load_row(i)(2) = '0') then
-						load_row(i)(1) <= '1';
+			if(dispatch_word2_validity = '1') then
+				status := '0';
+				L2: for i in 0 to size_load-1 loop
+				if (load_row(i)(row_len-1) = '0') then
+					if status = '0' then
+						load_row(i)(row_len-1-1 downto row_len-len_PC-1) <= dispatch_word2;
 						load_row(i)(0) <= '0';
-						alias1 <= '1';
-						alias_pc1 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
+						load_row(i)(row_len-1) <= '1';
 						status := '1';
 					else null;
 					end if;
 				else null;
 				end if;
+				end loop;
 			else
 				null;
 			end if;
-			end loop;
-		else
-			null;
-		end if;
-		
-		if (valid_store_addr2 = '1') then
-			status := '0';
-			L6: for i in 0 to size_load-1 loop
-			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(len_mem_addr+3-1  downto 3) = store_mem_addr2)) then
-				if status = '0' then
-					if (load_row(i)(2) = '0') then
-						load_row(i)(1) <= '1';
+			
+		----Flush----	
+			if (load_queue_flush = '1') then
+				L3: for i in 0 to size_load-1 loop
+				load_row(i)(row_len-1) <= '0';
+				end loop;
+			else
+				null;
+			end if;
+			
+		----Post execute----
+			if (valid_load_execute1 = '1') then
+				status := '0';
+				L4: for i in 0 to size_load-1 loop
+				if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = tag1)) then
+					if status = '0' then
+						load_row(i)(len_mem_addr+3-1  downto 3) <= addr1;
+						load_row(i)(2) <= forwarded1;
 						load_row(i)(0) <= '0';
-						alias2 <= '1';
-						alias_pc2 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
+						status := '1';
+					else null;
+					end if;
+				else
+					null;
+				end if;
+				end loop;
+			end if;
+			
+		----Checking for aliasing----
+			alias1 <= '0';
+			alias2 <= '0';
+			if (valid_store_addr = '1') then
+				status := '0';
+				L5: for i in 0 to size_load-1 loop
+				if ((load_row(i)(row_len-1) = '1') and (load_row(i)(len_mem_addr+3-1  downto 3) = store_mem_addr)) then
+					if status = '0' then
+						if (load_row(i)(2) = '0') then
+							load_row(i)(1) <= '1';
+							load_row(i)(0) <= '0';
+							alias1 <= '1';
+							alias_pc1 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
+							status := '1';
+						else null;
+						end if;
+					else null;
+					end if;
+				else
+					null;
+				end if;
+				end loop;
+			else
+				null;
+			end if;
+			
+			if (valid_store_addr2 = '1') then
+				status := '0';
+				L6: for i in 0 to size_load-1 loop
+				if ((load_row(i)(row_len-1) = '1') and (load_row(i)(len_mem_addr+3-1  downto 3) = store_mem_addr2)) then
+					if status = '0' then
+						if (load_row(i)(2) = '0') then
+							load_row(i)(1) <= '1';
+							load_row(i)(0) <= '0';
+							alias2 <= '1';
+							alias_pc2 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
+							status := '1';
+						else null;
+						end if;
+					else null;
+					end if;
+				else
+					null;
+				end if;
+				end loop;
+			else
+				null;
+			end if;
+			
+	--	----ROB----
+	--		if (valid_rob_instr = '1') then
+	--		`	status <= '0';
+	--			L6: for i in 0 to size_load-1 loop
+	--			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = rob_pc_addr)) then
+	--				if status = '0' then
+	--					if (load_row(i)(1) = '1') then
+	--						validity_of_instr <= '0';
+	--					else
+	--						validity_of_instr <= '1';
+	--					end if;
+	--					status <= '1';
+	--				else null;
+	--				end if;
+	--			else null;
+	--			end if;
+	--			end loop;
+	--		else null;
+	--		end if;
+			
+		----Post ROB----
+			if (valid_retirement = '1') then
+				status := '0';
+				L7: for i in 0 to size_load-1 loop
+				if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = retired_rob_pc_addr)) then
+					if status = '0' then
+						load_row(i)(row_len-1) <= '0';
 						status := '1';
 					else null;
 					end if;
 				else null;
 				end if;
-			else
-				null;
-			end if;
-			end loop;
-		else
-			null;
-		end if;
-		
---	----ROB----
---		if (valid_rob_instr = '1') then
---		`	status <= '0';
---			L6: for i in 0 to size_load-1 loop
---			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = rob_pc_addr)) then
---				if status = '0' then
---					if (load_row(i)(1) = '1') then
---						validity_of_instr <= '0';
---					else
---						validity_of_instr <= '1';
---					end if;
---					status <= '1';
---				else null;
---				end if;
---			else null;
---			end if;
---			end loop;
---		else null;
---		end if;
-		
-	----Post ROB----
-		if (valid_retirement = '1') then
-			status := '0';
-			L7: for i in 0 to size_load-1 loop
-			if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = retired_rob_pc_addr)) then
-				if status = '0' then
-					load_row(i)(row_len-1) <= '0';
-					status := '1';
-				else null;
-				end if;
+				end loop;
 			else null;
 			end if;
-			end loop;
+
 		else null;
-		end if;
-		
+		end if;		
 	end process;	
 	
 end Struct;
