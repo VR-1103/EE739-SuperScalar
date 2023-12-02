@@ -38,34 +38,38 @@ begin
 	
 	getting_instr_op: process(clk)
 	begin
-		instr1(len_data+len_PC-1 downto len_data) <= pc_addr1_prev;
-		instr2(len_data+len_PC-1 downto len_data) <= pc_addr2_prev;
-		instr1(len_data-1 downto 0) <= from_mem1;
-		instr2(len_data-1 downto 0) <= from_mem2;
-		if (stall_prev = '1' or (control_prev = '0' and control_prev_lmsm = '0' and disable_prev = '1')) then
-			instr_validity1 <= '1';
-		else
-			instr_validity1 <= '0';
+		if (rising_edge(clk)) then
+			instr1(len_data+len_PC-1 downto len_data) <= pc_addr1_prev;
+			instr2(len_data+len_PC-1 downto len_data) <= pc_addr2_prev;
+			instr1(len_data-1 downto 0) <= from_mem1;
+			instr2(len_data-1 downto 0) <= from_mem2;
+			if (stall_prev = '1' or (control_prev = '0' and control_prev_lmsm = '0' and disable_prev = '1')) then
+				instr_validity1 <= '1';
+			else
+				instr_validity1 <= '0';
+			end if;
+			if (stall_prev = '1' or (control_prev = '0' and control_prev_lmsm = '0' and disable_prev = '1')) then
+				instr_validity2 <= '1';
+			else
+				instr_validity2 <= '0';
+			end if;
+	--		instr_validity1 <= '1' when (stall_prev = '1' or (control_prev = '0' and disable_prev = '1')) else
+	--									else '0';
+	--		instr_validity2 <= '1' when (stall_prev = '1' or (control_prev = '0' and disable_prev = '1')) else
+	--									else '0';
+	--		instr_validity1 <= '0' when control_prev = '1' else ----We dont need to care about whatever is in decoder when the new instr is coming from rob
+	--									disable_prev when control_prev = '0';
+	--		instr_validity2 <= '0' when control_prev = '1' else
+	--									disable_prev when control_prev = '0';
+			stall_prev <= stall_bit;
+			control_prev <= control_bit;
+			control_prev_lmsm <= control_from_lmsm;
+			disable_prev <= disable_bit;
+			pc_addr1_prev <= pc_addr1;
+			pc_addr2_prev <= pc_addr2;
+
+		else null;
 		end if;
-		if (stall_prev = '1' or (control_prev = '0' and control_prev_lmsm = '0' and disable_prev = '1')) then
-			instr_validity2 <= '1';
-		else
-			instr_validity2 <= '0';
-		end if;
---		instr_validity1 <= '1' when (stall_prev = '1' or (control_prev = '0' and disable_prev = '1')) else
---									else '0';
---		instr_validity2 <= '1' when (stall_prev = '1' or (control_prev = '0' and disable_prev = '1')) else
---									else '0';
---		instr_validity1 <= '0' when control_prev = '1' else ----We dont need to care about whatever is in decoder when the new instr is coming from rob
---									disable_prev when control_prev = '0';
---		instr_validity2 <= '0' when control_prev = '1' else
---									disable_prev when control_prev = '0';
-		stall_prev <= stall_bit;
-		control_prev <= control_bit;
-		control_prev_lmsm <= control_from_lmsm;
-		disable_prev <= disable_bit;
-		pc_addr1_prev <= pc_addr1;
-		pc_addr2_prev <= pc_addr2;
-	end process;
+		end process;
 
 end struct;

@@ -129,171 +129,179 @@ begin
 	----Cyclically send data forward to RS,ROB,Store buffer,Load Queue
 	operation: process(clk)
 	begin
-		----Sending stuff to rob----
-			rob_dispatch1(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
-			rob_dispatch1(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
-			rob_dispatch1(len_rob_dispatch-len_PC-5 downto len_rob_dispatch-len_PC-7) <= dest1;
-			rob_dispatch1(len_rob_dispatch-len_PC-4-len_arf-1 downto len_rob_dispatch-len_PC-4-len_arf-len_rrf) <= dest_rrf1;
-			if (fetch1_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable1_prev = '0') then
-				rob_dispatch1(0) <= '1';
-			else
-				rob_dispatch1(0) <= '0';
-			end if;
-			rob_dispatch2(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
-			rob_dispatch2(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
-			rob_dispatch2(len_rob_dispatch-len_PC-5 downto len_rob_dispatch-len_PC-7) <= dest2;
-			rob_dispatch2(len_rob_dispatch-len_PC-4-len_arf-1 downto len_rob_dispatch-len_PC-4-len_arf-len_rrf) <= dest_rrf2;
-			if (fetch2_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable2_prev = '0') then
-				rob_dispatch2(0) <= '1';
-			else
-				rob_dispatch2(0) <= '0';
-			end if;
-	
-		----whether rob instr is valid or not----
-			if (fetch1_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable1_prev = '0') then
-				rob_valid1 <= '1';
-			else rob_valid1 <= '0';
-			end if;
-			if (fetch2_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable2_prev = '0') then
-				rob_valid2 <= '1';
-			else rob_valid2 <= '0';
-			end if;
-			
-		----Whether instr is int or ls----
-			if (fetch1_prev(len_instr-1 downto len_instr-2) = "00" and not fetch1_prev(len_instr-3 downto len_instr-4) = "11") then
-				is_int1 <= '1';
-			elsif (fetch1_prev(len_instr-1) = '1') then
-				is_int1 <= '1';
-			else is_int1 <= '0';
-			end if;
-			is_ls1 <= not is_int1;
-			if (fetch2_prev(len_instr-1 downto len_instr-2) = "00" and not fetch2_prev(len_instr-3 downto len_instr-4) = "11") then
-				is_int2 <= '1';
-			elsif (fetch2_prev(len_instr-1) = '1') then
-				is_int2 <= '1';
-			else is_int2 <= '0';
-			end if;
-			is_ls2 <= not is_int2;
-			
-			if fetch_disable1_prev = '1' then 
-				int_valid1 <= '0';
-			else int_valid1 <= is_int1;
-			end if;
-			if fetch_disable2_prev = '1' then 
-				int_valid2 <= '0';
-			else int_valid2 <= is_int2;
-			end if;
-			
-			if fetch_disable1_prev = '1' then
-				ls_valid1 <= '0';
-			else ls_valid1 <= is_ls1;
-			end if;
-			if fetch_disable2_prev = '1' then
-				ls_valid2 <= '0';
-			else ls_valid2 <= is_ls2;
-			end if;
-			
-		----Control Signals Assignment----
+		if (rising_edge(clk) then
+			----Sending stuff to rob----
+				rob_dispatch1(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+				rob_dispatch1(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
+				rob_dispatch1(len_rob_dispatch-len_PC-5 downto len_rob_dispatch-len_PC-7) <= dest1;
+				rob_dispatch1(len_rob_dispatch-len_PC-4-len_arf-1 downto len_rob_dispatch-len_PC-4-len_arf-len_rrf) <= dest_rrf1;
+				if (fetch1_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable1_prev = '0') then
+					rob_dispatch1(0) <= '1';
+				else
+					rob_dispatch1(0) <= '0';
+				end if;
+				rob_dispatch2(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+				rob_dispatch2(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
+				rob_dispatch2(len_rob_dispatch-len_PC-5 downto len_rob_dispatch-len_PC-7) <= dest2;
+				rob_dispatch2(len_rob_dispatch-len_PC-4-len_arf-1 downto len_rob_dispatch-len_PC-4-len_arf-len_rrf) <= dest_rrf2;
+				if (fetch2_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable2_prev = '0') then
+					rob_dispatch2(0) <= '1';
+				else
+					rob_dispatch2(0) <= '0';
+				end if;
 		
-		----Sending stuff to int pipeline----
-			int_dispatch1(len_int_rs_dispatch-1 downto len_int_rs_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
-			int_dispatch1(len_int_rs_dispatch-len_PC-1 downto len_int_rs_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
-			int_dispatch1(len_int_rs_dispatch-len_PC-4-1 downto len_int_rs_dispatch-len_PC-4-len_control) <= control_maybe1;
-			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1) <= op_valid1(0);
-			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data1(len_data-1 downto 0);
-			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1) <= op_valid1(1);
-			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data) <= op_data1(len_data+len_data-1 downto len_data);
-			int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-len_rrf) <= dest_rrf1;
-			int_dispatch1(1+len_status+len_rrf+1-1) <= cz_valid1;
-			int_dispatch1(1+len_status+len_rrf+1-1-1 downto 1+len_status+len_rrf+1-1-len_status) <= cz1;
-			int_dispatch1(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf1;
-			int_dispatch1(0) <= op_valid1(1) and op_valid1(0);
+			----whether rob instr is valid or not----
+				if (fetch1_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable1_prev = '0') then
+					rob_valid1 <= '1';
+				else rob_valid1 <= '0';
+				end if;
+				if (fetch2_prev(len_instr-1 downto len_instr-2) = "11" and fetch_disable2_prev = '0') then
+					rob_valid2 <= '1';
+				else rob_valid2 <= '0';
+				end if;
+				
+			----Whether instr is int or ls----
+				if (fetch1_prev(len_instr-1 downto len_instr-2) = "00" and not fetch1_prev(len_instr-3 downto len_instr-4) = "11") then
+					is_int1 <= '1';
+				elsif (fetch1_prev(len_instr-1) = '1') then
+					is_int1 <= '1';
+				else is_int1 <= '0';
+				end if;
+				is_ls1 <= not is_int1;
+				if (fetch2_prev(len_instr-1 downto len_instr-2) = "00" and not fetch2_prev(len_instr-3 downto len_instr-4) = "11") then
+					is_int2 <= '1';
+				elsif (fetch2_prev(len_instr-1) = '1') then
+					is_int2 <= '1';
+				else is_int2 <= '0';
+				end if;
+				is_ls2 <= not is_int2;
+				
+				if fetch_disable1_prev = '1' then 
+					int_valid1 <= '0';
+				else int_valid1 <= is_int1;
+				end if;
+				if fetch_disable2_prev = '1' then 
+					int_valid2 <= '0';
+				else int_valid2 <= is_int2;
+				end if;
+				
+				if fetch_disable1_prev = '1' then
+					ls_valid1 <= '0';
+				else ls_valid1 <= is_ls1;
+				end if;
+				if fetch_disable2_prev = '1' then
+					ls_valid2 <= '0';
+				else ls_valid2 <= is_ls2;
+				end if;
+				
+			----Control Signals Assignment----
 			
-			int_dispatch2(len_int_rs_dispatch-1 downto len_int_rs_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
-			int_dispatch2(len_int_rs_dispatch-len_PC-1 downto len_int_rs_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
-			int_dispatch2(len_int_rs_dispatch-len_PC-4-1 downto len_int_rs_dispatch-len_PC-4-len_control) <= control_maybe2;
-			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1) <= op_valid2(0);
-			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data2(len_data-1 downto 0);
-			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1) <= op_valid2(1);
-			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data) <= op_data2(len_data+len_data-1 downto len_data);
-			int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-len_rrf) <= dest_rrf2;
-			int_dispatch2(1+len_status+len_rrf+1-1) <= cz_valid2;
-			int_dispatch2(1+len_status+len_rrf+1-1-1 downto 1+len_status+len_rrf+1-1-len_status) <= cz2;
-			int_dispatch2(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf2;
-			int_dispatch2(0) <= op_valid2(1) and op_valid2(0);
-			
-		----Sending stuff to ls pipeline----
-			ls_dispatch1(len_ls_rs_dispatch-1 downto len_ls_rs_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
-			ls_dispatch1(len_ls_rs_dispatch-len_PC-1 downto len_ls_rs_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
-			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-1 downto len_ls_rs_dispatch-len_PC-4-len_control) <= control_maybe1;
-			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1) <= op_valid1(0);
-			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data1(len_data-1 downto 0);
-			if (fetch1_prev(len_instr-2) = '1') then
-				ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000000" & fetch1_prev(5 downto 0));
-			else ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000" & fetch1_prev(8 downto 0));
-			end if;
-			ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-len_rrf) <= dest_rrf1;
-			ls_dispatch1(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf1;
-			ls_dispatch1(0) <= op_valid1(0);
+			----Sending stuff to int pipeline----
+				int_dispatch1(len_int_rs_dispatch-1 downto len_int_rs_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+				int_dispatch1(len_int_rs_dispatch-len_PC-1 downto len_int_rs_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
+				int_dispatch1(len_int_rs_dispatch-len_PC-4-1 downto len_int_rs_dispatch-len_PC-4-len_control) <= control_maybe1;
+				int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1) <= op_valid1(0);
+				int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data1(len_data-1 downto 0);
+				if (fetch1_prev = "0000") then
+					int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1) <= '1';
+					int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data) <= "0000000000" & fetch1_prev(5 downto 0);
+				else
+					int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1) <= op_valid1(1);
+					int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data) <= op_data1(len_data+len_data-1 downto len_data);
+				end if;
+				int_dispatch1(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-len_rrf) <= dest_rrf1;
+				int_dispatch1(1+len_status+len_rrf+1-1) <= cz_valid1;
+				int_dispatch1(1+len_status+len_rrf+1-1-1 downto 1+len_status+len_rrf+1-1-len_status) <= cz1;
+				int_dispatch1(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf1;
+				int_dispatch1(0) <= op_valid1(1) and op_valid1(0);
+				
+				int_dispatch2(len_int_rs_dispatch-1 downto len_int_rs_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+				int_dispatch2(len_int_rs_dispatch-len_PC-1 downto len_int_rs_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
+				int_dispatch2(len_int_rs_dispatch-len_PC-4-1 downto len_int_rs_dispatch-len_PC-4-len_control) <= control_maybe2;
+				int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1) <= op_valid2(0);
+				int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data2(len_data-1 downto 0);
+				int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1) <= op_valid2(1);
+				int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data) <= op_data2(len_data+len_data-1 downto len_data);
+				int_dispatch2(len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-1 downto len_int_rs_dispatch-len_PC-4-len_control-1-len_data-1-len_data-len_rrf) <= dest_rrf2;
+				int_dispatch2(1+len_status+len_rrf+1-1) <= cz_valid2;
+				int_dispatch2(1+len_status+len_rrf+1-1-1 downto 1+len_status+len_rrf+1-1-len_status) <= cz2;
+				int_dispatch2(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf2;
+				int_dispatch2(0) <= op_valid2(1) and op_valid2(0);
+				
+			----Sending stuff to ls pipeline----
+				ls_dispatch1(len_ls_rs_dispatch-1 downto len_ls_rs_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+				ls_dispatch1(len_ls_rs_dispatch-len_PC-1 downto len_ls_rs_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
+				ls_dispatch1(len_ls_rs_dispatch-len_PC-4-1 downto len_ls_rs_dispatch-len_PC-4-len_control) <= control_maybe1;
+				ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1) <= op_valid1(0);
+				ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data1(len_data-1 downto 0);
+				if (fetch1_prev(len_instr-2) = '1') then
+					ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000000" & fetch1_prev(5 downto 0));
+				else ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000" & fetch1_prev(8 downto 0));
+				end if;
+				ls_dispatch1(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-len_rrf) <= dest_rrf1;
+				ls_dispatch1(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf1;
+				ls_dispatch1(0) <= op_valid1(0);
 
-			ls_dispatch2(len_ls_rs_dispatch-1 downto len_ls_rs_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
-			ls_dispatch2(len_ls_rs_dispatch-len_PC-1 downto len_ls_rs_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
-			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-1 downto len_ls_rs_dispatch-len_PC-4-len_control) <= control_maybe2;
-			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1) <= op_valid2(0);
-			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data2(len_data-1 downto 0);
-			if (fetch2_prev(len_instr-2) = '1') then
-				ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000000" & fetch2_prev(5 downto 0));
-			else ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000" & fetch2_prev(8 downto 0));
-			end if;
-			ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-len_rrf) <= dest_rrf2;
-			ls_dispatch2(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf2;
-			ls_dispatch2(0) <= op_valid2(0);
+				ls_dispatch2(len_ls_rs_dispatch-1 downto len_ls_rs_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+				ls_dispatch2(len_ls_rs_dispatch-len_PC-1 downto len_ls_rs_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
+				ls_dispatch2(len_ls_rs_dispatch-len_PC-4-1 downto len_ls_rs_dispatch-len_PC-4-len_control) <= control_maybe2;
+				ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1) <= op_valid2(0);
+				ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data) <= op_data2(len_data-1 downto 0);
+				if (fetch2_prev(len_instr-2) = '1') then
+					ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000000" & fetch2_prev(5 downto 0));
+				else ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data) <= ("0000000" & fetch2_prev(8 downto 0));
+				end if;
+				ls_dispatch2(len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-1 downto len_ls_rs_dispatch-len_PC-4-len_control-1-len_data-len_data-len_rrf) <= dest_rrf2;
+				ls_dispatch2(len_rrf+1-1 downto len_rrf+1-len_rrf) <= cz_rrf2;
+				ls_dispatch2(0) <= op_valid2(0);
+				
+			----Whether it is load or store----
+				if ((fetch1_prev = "0100" or fetch1_prev = "0011") and fetch_disable1_prev = '0') then
+					load_valid1 <= '1';
+				else load_valid1 <= '0';
+				end if;
+				if ((fetch1_prev = "0100" or fetch1_prev = "0011") and fetch_disable1_prev = '0') then
+					store_valid1 <= '1';
+				else store_valid1 <= '0';
+				end if;
+				if ((fetch2_prev = "0100" or fetch2_prev = "0011") and fetch_disable2_prev = '0') then
+					load_valid2 <= '1';
+				else load_valid2 <= '0';
+				end if;
+				if ((fetch2_prev = "0100" or fetch2_prev = "0011") and fetch_disable2_prev = '0') then
+					store_valid2 <= '1';
+				else store_valid2 <= '0';
+				end if;
 			
-		----Whether it is load or store----
-			if ((fetch1_prev = "0100" or fetch1_prev = "0011") and fetch_disable1_prev = '0') then
-				load_valid1 <= '1';
-			else load_valid1 <= '0';
-			end if;
-			if ((fetch1_prev = "0100" or fetch1_prev = "0011") and fetch_disable1_prev = '0') then
-				store_valid1 <= '1';
-			else store_valid1 <= '0';
-			end if;
-			if ((fetch2_prev = "0100" or fetch2_prev = "0011") and fetch_disable2_prev = '0') then
-				load_valid2 <= '1';
-			else load_valid2 <= '0';
-			end if;
-			if ((fetch2_prev = "0100" or fetch2_prev = "0011") and fetch_disable2_prev = '0') then
-				store_valid2 <= '1';
-			else store_valid2 <= '0';
-			end if;
-		
-		----Sending to load queue----
-			load_dispatch1 <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
-			load_dispatch2 <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
-		
-		----Sending to store buffer----
-			store_dispatch1(len_PC+4+len_data+1-1 downto len_PC+4+len_data+1-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
-			store_dispatch1(len_PC+4+len_data+1-len_PC-1 downto len_PC+4+len_data+1-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
-			store_dispatch1(len_PC+4+len_data+1-len_PC-4-1 downto len_PC+4+len_data+1-len_PC-4-len_data) <= dest_rrf1;
-			if ((fetch1_prev = "0101") and fetch_disable1_prev = '0') then
-				store_dispatch1(0) <= '1';
-			else store_dispatch1(0) <= '0';
-			end if;
+			----Sending to load queue----
+				load_dispatch1 <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+				load_dispatch2 <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+			
+			----Sending to store buffer----
+				store_dispatch1(len_PC+4+len_data+1-1 downto len_PC+4+len_data+1-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+				store_dispatch1(len_PC+4+len_data+1-len_PC-1 downto len_PC+4+len_data+1-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
+				store_dispatch1(len_PC+4+len_data+1-len_PC-4-1 downto len_PC+4+len_data+1-len_PC-4-len_data) <= dest_rrf1;
+				if ((fetch1_prev = "0101") and fetch_disable1_prev = '0') then
+					store_dispatch1(0) <= '1';
+				else store_dispatch1(0) <= '0';
+				end if;
 
-			store_dispatch2(len_PC+4+len_data+1-1 downto len_PC+4+len_data+1-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
-			store_dispatch2(len_PC+4+len_data+1-len_PC-1 downto len_PC+4+len_data+1-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
-			store_dispatch2(len_PC+4+len_data+1-len_PC-4-1 downto len_PC+4+len_data+1-len_PC-4-len_data) <= dest_rrf2;
-			if ((fetch2_prev = "0101") and fetch_disable2_prev = '0') then
-				store_dispatch2(0) <= '1';
-			else store_dispatch2(0) <= '0';
-			end if;	
-		
-		----Updating fetch----
-			fetch1_prev <= fetch1;
-			fetch2_prev <= fetch2;
-			fetch_disable1_prev <= fetch_disable1;
-			fetch_disable2_prev <= fetch_disable2;
-	
+				store_dispatch2(len_PC+4+len_data+1-1 downto len_PC+4+len_data+1-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+				store_dispatch2(len_PC+4+len_data+1-len_PC-1 downto len_PC+4+len_data+1-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
+				store_dispatch2(len_PC+4+len_data+1-len_PC-4-1 downto len_PC+4+len_data+1-len_PC-4-len_data) <= dest_rrf2;
+				if ((fetch2_prev = "0101") and fetch_disable2_prev = '0') then
+					store_dispatch2(0) <= '1';
+				else store_dispatch2(0) <= '0';
+				end if;	
+			
+			----Updating fetch----
+				fetch1_prev <= fetch1;
+				fetch2_prev <= fetch2;
+				fetch_disable1_prev <= fetch_disable1;
+				fetch_disable2_prev <= fetch_disable2;
+
+		else null;
+		end if;	
 	end process;
 
 end architecture;

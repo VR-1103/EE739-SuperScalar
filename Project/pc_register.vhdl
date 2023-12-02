@@ -18,15 +18,19 @@ architecture Struct of pc_register is
 begin
 	op: process(clk)
 	begin
-		if beginning = '0' then
-			if was_lmsm = '1' then
-				to_fetch <= from_lmsm;
+		if rising_edge(clk) then
+			if beginning = '0' then
+				if was_lmsm = '1' then
+					to_fetch <= from_lmsm;
+				else
+					to_fetch <= from_fetch;
+				end if;
 			else
-				to_fetch <= from_fetch;
+				to_fetch <= from_r0;
+				beginning <= '0';
 			end if;
-		else
-			to_fetch <= from_r0;
-			beginning <= '0';
+
+		else null;
 		end if;
 	end process;
 		
