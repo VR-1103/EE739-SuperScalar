@@ -10,10 +10,9 @@ entity memory is
 			from_fetch1,from_fetch2: in std_logic_vector(len_mem_addr-1 downto 0);
 			from_ls_pipeline: in std_logic_vector(len_mem_addr-1 downto 0);
 			from_store_buffer: in std_logic_vector(len_mem_addr-1 downto 0);
-			data_from_store: in std_logic_vector(len_data-1 downto 0);
-			valid_store: in std_logic;
 			to_fetch1,to_fetch2: out std_logic_vector(len_data-1 downto 0);
-			to_ls_pipeline: out std_logic_vector(len_data-1 downto 0));
+			to_ls_pipeline: out std_logic_vector(len_data-1 downto 0);
+			to_store_buffer: out std_logic_vector(len_data-1 downto 0));
 end entity;
 
 architecture struct of memory is
@@ -27,10 +26,7 @@ begin
 			to_fetch1 <= mem_row(to_integer(unsigned(from_fetch1)));
 			to_fetch2 <= mem_row(to_integer(unsigned(from_fetch2)));
 			to_ls_pipeline <= mem_row(to_integer(unsigned(from_ls_pipeline)));
-			if valid_store = '1' then
-				mem_row(to_integer(unsigned(from_store_buffer))) <= data_from_store;
-			else null;
-			end if;
+			to_store_buffer <= mem_row(to_integer(unsigned(from_store_buffer)));
 		else null;
 		end if;
 end architecture;
