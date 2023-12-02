@@ -4,12 +4,12 @@ use ieee.numeric_std.all;
 use STD.textio.all;
 use ieee.std_logic_textio.all;
  
-entity example_file_io_tb is
+entity testbench_RS is
  
-end example_file_io_tb;
+end testbench_RS;
  
  
-architecture behave of example_file_io_tb is
+architecture behave of testbench_RS is
  
   -----------------------------------------------------------------------------
   -- Declare the Component Under Test
@@ -53,7 +53,7 @@ architecture behave of example_file_io_tb is
   constant len_PC: integer := 5; -- Length of the PC which RS receives for each instruction
   constant len_control: integer := 16; -- Length of the control word for the integer pipeline
   constant len_RRF: integer := 6; -- Length of the destination RRF which the RS receives for each instruction
-  constant len_operand: integer := 32; -- Length of the two operands. This is more than the length of the addresses in the PRF so that address can fit as well  
+  constant len_operand: integer := 16; -- Length of the two operands. This is more than the length of the addresses in the PRF so that address can fit as well  
   constant size_rs: integer := 64; -- Size of RS table
   constant len_status: integer := 6; --status register. It is 6 so that renamed status reg can also be fitted. Actual CZ flag is to be put in the first two indexes 
   constant log_size_rs: integer := 6; -- log2 of size. UPDATE EVERYTIME YOU UPDATE SIZE

@@ -1,4 +1,8 @@
 /Testing/db
 /Testing/output_files
 /Project/db
-/project/output_files
+/Project/output_files
+/Testing/incremental_db
+/Testing/simulation
+/Testing/Testing_nativelink_simulation.rpt
+/Project/incremental_db

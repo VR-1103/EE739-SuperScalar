@@ -1,0 +1,12 @@
+1) Input from word1 is succesfully taken
+2) Input from word2 is sucessfully taken
+3) Input from both words are successfuly taken
+4) RRF data taken in and updated normally
+5) RRF data tak nfor instr which has just come in and updated
+6) Same for status registers
+
+
+
+RS_FLUSH INPUT_WORD1 INPUT_WORD2 VALID_IN1 VALID_IN2 RRF_REG1 RRF_REG2 RRF_REG3 RRF_VALID1 RRF_VALID2 RRF_VALID3 STATUS_REG1 STATUS_REG2 STATUS_REG3 STATUS_VALID1 STATUS_VALID2 STATUS_VALID3 PIPE1_BUSY PIPE2_BUSY 
+
+0 0000000010000000000000000 

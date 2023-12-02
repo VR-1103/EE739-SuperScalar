@@ -1,5 +1,5 @@
 Analysis & Synthesis report for superscalar
-Thu Nov 30 11:25:53 2023
+Thu Nov 30 12:17:25 2023
 Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 
 
@@ -37,7 +37,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                        ;
 +------------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status        ; Failed - Thu Nov 30 11:25:53 2023              ;
+; Analysis & Synthesis Status        ; Failed - Thu Nov 30 12:17:25 2023              ;
 ; Quartus Prime Version              ; 22.1std.2 Build 922 07/20/2023 SC Lite Edition ;
 ; Revision Name                      ; superscalar                                    ;
 ; Top-level Entity Name              ; superscalar                                    ;
@@ -64,6 +64,10 @@ https://fpgasoftware.intel.com/eula.
 ; Device                                                           ; 10M25SAE144C8G     ;                    ;
 ; Top-level entity name                                            ; superscalar        ; superscalar        ;
 ; Family name                                                      ; MAX 10             ; Cyclone V          ;
+; VHDL Show LMF Mapping Messages                                   ; Off                ;                    ;
+; Verilog Show LMF Mapping Messages                                ; Off                ;                    ;
+; Verilog Version                                                  ; SystemVerilog_2005 ; Verilog_2001       ;
+; VHDL Version                                                     ; VHDL_2008          ; VHDL_1993          ;
 ; Use smart compilation                                            ; Off                ; Off                ;
 ; Enable parallel Assembler and Timing Analyzer during compilation ; On                 ; On                 ;
 ; Enable compact report table                                      ; Off                ; Off                ;
@@ -71,8 +75,6 @@ https://fpgasoftware.intel.com/eula.
 ; Create Debugging Nodes for IP Cores                              ; Off                ; Off                ;
 ; Preserve fewer node names                                        ; On                 ; On                 ;
 ; Intel FPGA IP Evaluation Mode                                    ; Enable             ; Enable             ;
-; Verilog Version                                                  ; Verilog_2001       ; Verilog_2001       ;
-; VHDL Version                                                     ; VHDL_1993          ; VHDL_1993          ;
 ; State Machine Processing                                         ; Auto               ; Auto               ;
 ; Safe State Machine                                               ; Off                ; Off                ;
 ; Extract Verilog State Machines                                   ; On                 ; On                 ;
@@ -164,29 +166,27 @@ https://fpgasoftware.intel.com/eula.
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
-    Info: Processing started: Thu Nov 30 11:25:45 2023
+    Info: Processing started: Thu Nov 30 12:17:17 2023
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off superscalar -c superscalar
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
-Error (10500): VHDL syntax error at store_buffer.vhdl(54) near text # File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 54
-Error (10500): VHDL syntax error at store_buffer.vhdl(54) near text "#";  expecting "entity", or "architecture", or "use", or "library", or "package", or "configuration" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 54
-Error (10500): VHDL syntax error at store_buffer.vhdl(62) near text # File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 62
-Info (12021): Found 0 design units, including 0 entities, in source file store_buffer.vhdl
-Error (10500): VHDL syntax error at store_queue.vhdl(87) near text ")"; mismatched closing parenthesis  File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_queue.vhdl Line: 87
-Error (10500): VHDL syntax error at store_queue.vhdl(91) near text "=";  expecting "(", or "'", or "." File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_queue.vhdl Line: 91
-Error (10500): VHDL syntax error at store_queue.vhdl(98) near text "=";  expecting "(", or "'", or "." File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_queue.vhdl Line: 98
-Info (12021): Found 0 design units, including 0 entities, in source file store_queue.vhdl
-Error (10500): VHDL syntax error at rob_alt.vhdl(88) near text ")"; mismatched closing parenthesis  File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob_alt.vhdl Line: 88
-Info (12021): Found 0 design units, including 0 entities, in source file rob_alt.vhdl
-Error (10430): VHDL Primary Unit Declaration error at load_queue.vhdl(7): primary unit "store_buffer" already exists in library "work". Compile the two primary units into different libraries or assign them unique names. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number. File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/load_queue.vhdl Line: 7
-Error (10784): HDL error at store_buffer.vhdl(7): see declaration for object "store_buffer" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 7
-Info (12021): Found 0 design units, including 0 entities, in source file load_queue.vhdl
-Error (10430): VHDL Primary Unit Declaration error at rob.vhdl(7): primary unit "rob" already exists in library "work". Compile the two primary units into different libraries or assign them unique names. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number. File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 7
-Error (10784): HDL error at rob_alt.vhdl(7): see declaration for object "rob" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob_alt.vhdl Line: 7
-Info (12021): Found 0 design units, including 0 entities, in source file rob.vhdl
 Error (10500): VHDL syntax error at superscalar.vhdl(8) near text ")";  expecting an identifier, or "constant", or "file", or "signal", or "variable" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/superscalar.vhdl Line: 8
 Error (10500): VHDL syntax error at superscalar.vhdl(18) near text "begin";  expecting an identifier ("begin" is a reserved keyword), or "constant", or "file", or "signal", or "variable" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/superscalar.vhdl Line: 18
 Info (12021): Found 0 design units, including 0 entities, in source file superscalar.vhdl
+Info (12021): Found 2 design units, including 1 entities, in source file store_buffer.vhdl
+    Info (12022): Found design unit 1: store_buffer-Struct File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 64
+    Info (12023): Found entity 1: store_buffer File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 7
+Error (10500): VHDL syntax error at rob_alt.vhdl(88) near text ")"; mismatched closing parenthesis  File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob_alt.vhdl Line: 88
+Info (12021): Found 0 design units, including 0 entities, in source file rob_alt.vhdl
+Error (10430): VHDL Primary Unit Declaration error at rob.vhdl(7): primary unit "rob" already exists in library "work". Compile the two primary units into different libraries or assign them unique names. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number. File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 7
+Error (10784): HDL error at rob_alt.vhdl(7): see declaration for object "rob" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob_alt.vhdl Line: 7
+Error (10500): VHDL syntax error at rob.vhdl(80) near text "then";  expecting ")", or "," File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 80
+Error (10500): VHDL syntax error at rob.vhdl(85) near text "then";  expecting ")", or "," File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 85
+Error (10500): VHDL syntax error at rob.vhdl(90) near text "then";  expecting ")", or "," File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 90
+Error (10500): VHDL syntax error at rob.vhdl(241) near text ";";  expecting ")", or "," File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 241
+Error (10500): VHDL syntax error at rob.vhdl(258) near text ";";  expecting ")", or "," File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 258
+Error (10500): VHDL syntax error at rob.vhdl(272) near text ";";  expecting ")", or "," File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 272
+Info (12021): Found 0 design units, including 0 entities, in source file rob.vhdl
 Error (10500): VHDL syntax error at register_file.vhdl(9) near text ")";  expecting an identifier, or "constant", or "file", or "signal", or "variable" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/register_file.vhdl Line: 9
 Error (10500): VHDL syntax error at register_file.vhdl(35) near text "queue_used1";  expecting "end", or "begin", or a declaration statement File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/register_file.vhdl Line: 35
 Error (10523): Ignored construct register_file at register_file.vhdl(5) due to previous errors File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/register_file.vhdl Line: 5
@@ -199,15 +199,24 @@ Error (10500): VHDL syntax error at register_file.vhdl(89) near text ";";  expec
 Error (10500): VHDL syntax error at register_file.vhdl(142) near text "validity_op1";  expecting ";" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/register_file.vhdl Line: 142
 Error (10500): VHDL syntax error at register_file.vhdl(152) near text "validity_op2";  expecting ";" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/register_file.vhdl Line: 152
 Info (12021): Found 0 design units, including 0 entities, in source file register_file.vhdl
-Info (12021): Found 2 design units, including 1 entities, in source file integer_RS.vhd
-    Info (12022): Found design unit 1: int_RS-int_RS_arch File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/integer_RS.vhd Line: 34
-    Info (12023): Found entity 1: int_RS File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/integer_RS.vhd Line: 5
 Info (12021): Found 2 design units, including 1 entities, in source file LS_RS.vhd
     Info (12022): Found design unit 1: LS_RS-LS_RS_arch File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/LS_RS.vhd Line: 33
     Info (12023): Found entity 1: LS_RS File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/LS_RS.vhd Line: 5
+Error (10430): VHDL Primary Unit Declaration error at load_queue.vhdl(7): primary unit "store_buffer" already exists in library "work". Compile the two primary units into different libraries or assign them unique names. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number. File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/load_queue.vhdl Line: 7
+Error (10784): HDL error at store_buffer.vhdl(7): see declaration for object "store_buffer" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/store_buffer.vhdl Line: 7
+Info (12021): Found 0 design units, including 0 entities, in source file load_queue.vhdl
+Info (12021): Found 2 design units, including 1 entities, in source file fetch_block.vhdl
+    Info (12022): Found design unit 1: fetch_block-struct File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/fetch_block.vhdl Line: 22
+    Info (12023): Found entity 1: fetch_block File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/fetch_block.vhdl Line: 7
+Info (12021): Found 2 design units, including 1 entities, in source file decoder.vhdl
+    Info (12022): Found design unit 1: decoder-struct File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/decoder.vhdl Line: 44
+    Info (12023): Found entity 1: decoder File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/decoder.vhdl Line: 7
+Info (12021): Found 2 design units, including 1 entities, in source file integer_RS.vhd
+    Info (12022): Found design unit 1: int_RS-int_RS_arch File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/integer_RS.vhd Line: 35
+    Info (12023): Found entity 1: int_RS File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/integer_RS.vhd Line: 5
 Error: Quartus Prime Analysis & Synthesis was unsuccessful. 24 errors, 1 warning
-    Error: Peak virtual memory: 413 megabytes
-    Error: Processing ended: Thu Nov 30 11:25:53 2023
+    Error: Peak virtual memory: 416 megabytes
+    Error: Processing ended: Thu Nov 30 12:17:25 2023
     Error: Elapsed time: 00:00:08
     Error: Total CPU time (on all processors): 00:00:23
 
