@@ -74,3 +74,4 @@ set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_
 set_global_assignment -name VHDL_FILE fetch_block.vhdl
 set_global_assignment -name VHDL_FILE decoder.vhdl
 set_global_assignment -name VHDL_FILE pc_register.vhdl
+set_global_assignment -name VHDL_FILE lmsm_block.vhdl
