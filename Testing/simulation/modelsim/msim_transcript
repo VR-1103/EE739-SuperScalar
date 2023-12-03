@@ -12,7 +12,7 @@
 # 
 # vcom -93 -work work {C:/Users/aryav/Desktop/EE739-SuperScalar/Project/rob.vhdl}
 # Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
-# Start time: 23:01:10 on Dec 03,2023
+# Start time: 00:55:57 on Dec 04,2023
 # vcom -reportprogress 300 -93 -work work C:/Users/aryav/Desktop/EE739-SuperScalar/Project/rob.vhdl 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -21,11 +21,11 @@
 # -- Compiling entity rob
 # -- Compiling architecture Struct of rob
 # ** Warning: C:/Users/aryav/Desktop/EE739-SuperScalar/Project/rob.vhdl(53): (vcom-1074) Non-locally static OTHERS choice is allowed only if it is the only choice of the only association.
-# End time: 23:01:10 on Dec 03,2023, Elapsed time: 0:00:00
+# End time: 00:55:57 on Dec 04,2023, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 1
 # vcom -93 -work work {C:/Users/aryav/Desktop/EE739-SuperScalar/Testing/Testing_ROB.vhd}
 # Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
-# Start time: 23:01:10 on Dec 03,2023
+# Start time: 00:55:57 on Dec 04,2023
 # vcom -reportprogress 300 -93 -work work C:/Users/aryav/Desktop/EE739-SuperScalar/Testing/Testing_ROB.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -34,71 +34,79 @@
 # -- Compiling entity testing_rob
 # -- Compiling architecture Struct of testing_rob
 # -- Loading entity rob
-# End time: 23:01:10 on Dec 03,2023, Elapsed time: 0:00:00
+# End time: 00:55:57 on Dec 04,2023, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # 
 vsim work.testing_rob
 # vsim work.testing_rob 
-# Start time: 23:01:29 on Dec 03,2023
+# Start time: 00:56:00 on Dec 04,2023
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
 # Loading ieee.numeric_std(body)
 # Loading work.testing_rob(struct)
 # Loading work.rob(struct)
-add wave -position end  sim:/testing_rob/the_rob/valid_retire2
-add wave -position end  sim:/testing_rob/the_rob/valid_retire1
-add wave -position 0  sim:/testing_rob/the_rob/clk
-force -freeze sim:/testing_rob/the_rob/clk 0 0, 1 {50 ps} -r 100
-# ** Warning: (vsim-8780) Forcing /testing_rob/clk as root of /testing_rob/the_rob/clk specified in the force.
-add wave -position end  sim:/testing_rob/the_rob/execute_word2
-add wave -position end  sim:/testing_rob/the_rob/execute_word3
+# ** Warning: NUMERIC_STD.TO_UNSIGNED: vector truncated
+#    Time: 0 ps  Iteration: 0  Instance: /testing_rob/the_rob File: C:/Users/aryav/Desktop/EE739-SuperScalar/Project/rob.vhdl
+add wave -position end  sim:/testing_rob/the_rob/clk
+add wave -position end  sim:/testing_rob/the_rob/head
+add wave -position end  sim:/testing_rob/the_rob/jump_location
+add wave -position end  sim:/testing_rob/the_rob/jump_tag
+add wave -position end  sim:/testing_rob/the_rob/retire_word1
+add wave -position end  sim:/testing_rob/the_rob/retire_word2
 add wave -position end  sim:/testing_rob/the_rob/rob_row(0)
 add wave -position end  sim:/testing_rob/the_rob/rob_row(1)
 add wave -position end  sim:/testing_rob/the_rob/rob_row(2)
 add wave -position end  sim:/testing_rob/the_rob/rob_row(3)
 add wave -position end  sim:/testing_rob/the_rob/rob_row(4)
 add wave -position end  sim:/testing_rob/the_rob/rob_row(5)
-add wave -position 3  sim:/testing_rob/the_rob/valid_execute2
-add wave -position 4  sim:/testing_rob/the_rob/valid_execute3
-force -freeze sim:/testing_rob/the_rob/valid_execute2 0 0
-force -freeze sim:/testing_rob/the_rob/valid_execute3 0 0
-run
-run
-force -freeze sim:/testing_rob/the_rob/valid_execute2 1 0
-force -freeze sim:/testing_rob/the_rob/valid_execute3 1 0
-force -freeze sim:/testing_rob/the_rob/execute_word2 01010000000 0
+add wave -position end  sim:/testing_rob/the_rob/valid_execute2
+add wave -position end  sim:/testing_rob/the_rob/valid_execute3
+add wave -position 13  sim:/testing_rob/the_rob/execute_word2
+add wave -position end  sim:/testing_rob/the_rob/execute_word3
+force -freeze sim:/testing_rob/the_rob/clk 0 0, 1 {50 ps} -r 100
+# ** Warning: (vsim-8780) Forcing /testing_rob/clk as root of /testing_rob/the_rob/clk specified in the force.
+force -freeze sim:/testing_rob/the_rob/execute_word2 00000000000 0
 # ** Warning: (vsim-8780) Forcing /testing_rob/execute_word2 as root of /testing_rob/the_rob/execute_word2 specified in the force.
-force -freeze sim:/testing_rob/the_rob/execute_word3 01000000000 0
+force -freeze sim:/testing_rob/the_rob/execute_word3 00100100010 0
 # ** Warning: (vsim-8780) Forcing /testing_rob/execute_word3 as root of /testing_rob/the_rob/execute_word3 specified in the force.
 run
-force -freeze sim:/testing_rob/the_rob/valid_execute2 0 0
-force -freeze sim:/testing_rob/the_rob/valid_execute3 0 0
+add wave -position 2  sim:/testing_rob/the_rob/flush_location
 run
-force -freeze sim:/testing_rob/the_rob/valid_execute2 1 0
-force -freeze sim:/testing_rob/the_rob/valid_execute3 1 0
+run
+run
+add wave -position 2  sim:/testing_rob/the_rob/valid_fetch
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: NUMERIC_STD.TO_UNSIGNED: vector truncated
+#    Time: 0 ps  Iteration: 0  Instance: /testing_rob/the_rob File: C:/Users/aryav/Desktop/EE739-SuperScalar/Project/rob.vhdl
+force -freeze sim:/testing_rob/the_rob/clk 0 0, 1 {50 ps} -r 100
+# ** Warning: (vsim-8780) Forcing /testing_rob/clk as root of /testing_rob/the_rob/clk specified in the force.
 force -freeze sim:/testing_rob/the_rob/execute_word2 00000000000 0
 # ** Warning: (vsim-8780) Forcing /testing_rob/execute_word2 as root of /testing_rob/the_rob/execute_word2 specified in the force.
 force -freeze sim:/testing_rob/the_rob/valid_execute3 0 0
 run
-add wave -position 2  sim:/testing_rob/the_rob/retire_word1
-add wave -position 4  sim:/testing_rob/the_rob/retire_word2
-run
-force -freeze sim:/testing_rob/the_rob/valid_execute2 0 0
-force -freeze sim:/testing_rob/the_rob/valid_execute3 1 0
-force -freeze sim:/testing_rob/the_rob/execute_word3 00010000000 0
-# ** Warning: (vsim-8780) Forcing /testing_rob/execute_word3 as root of /testing_rob/the_rob/execute_word3 specified in the force.
-run
-run
-force -freeze sim:/testing_rob/the_rob/valid_execute2 1 0
-force -freeze sim:/testing_rob/the_rob/execute_word2 00100000000 0
+# GetModuleFileName: The specified module could not be found.
+# 
+# 
+force -freeze sim:/testing_rob/the_rob/execute_word2 00100100010 0
 # ** Warning: (vsim-8780) Forcing /testing_rob/execute_word2 as root of /testing_rob/the_rob/execute_word2 specified in the force.
-force -freeze sim:/testing_rob/the_rob/execute_word3 00110000000 0
-# ** Warning: (vsim-8780) Forcing /testing_rob/execute_word3 as root of /testing_rob/the_rob/execute_word3 specified in the force.
 run
+run
+run
+add wave -position end  sim:/testing_rob/the_rob/tail
+run
+run
+add wave -position end  sim:/testing_rob/the_rob/valid_dispatch1
 force -freeze sim:/testing_rob/the_rob/valid_execute2 0 0
-force -freeze sim:/testing_rob/the_rob/valid_execute3 0 0
+add wave -position end  sim:/testing_rob/the_rob/dispatch_word1
+force -freeze sim:/testing_rob/the_rob/dispatch_word1 0110000010010100000 0
+# ** Warning: (vsim-8780) Forcing /testing_rob/dispatch_word1 as root of /testing_rob/the_rob/dispatch_word1 specified in the force.
+force -freeze sim:/testing_rob/the_rob/valid_dispatch1 1 0
 run
 run
+add wave -position 14  sim:/testing_rob/the_rob/rob_row(6)
 run
 run
+# End time: 01:21:50 on Dec 04,2023, Elapsed time: 0:25:50
+# Errors: 0, Warnings: 5
