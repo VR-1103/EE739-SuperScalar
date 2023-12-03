@@ -61,4 +61,4 @@ Design policy:
 
 1. From LS pipeline, arbiter gets a signal for load request, and an address. It gets back the data from mem and sends to LS pipeline. This is asynchronous so chill.
 
-2. From store buffer, arbiter gets a request for store, mem_addr, and data. When the signal for load request is low, it sends a store request to mem, until then, it doesnt. Store buffer gets back a 'store_happened' bit in the clk cycle in which the store request was sent to mem, so that retirement can happen.
+2. For store buffer: when ls_pipeline is not asking for data, the port_is_free bit is set to high. Then, if store_buffer wants to store something, it sends a request along with address and data to arbiter, which is forwarded to memory asynchronously.
