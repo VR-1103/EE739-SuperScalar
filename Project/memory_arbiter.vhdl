@@ -18,7 +18,7 @@ entity memory_arbiter is
 			data_to_mem_for_store: out std_logic_vector(len_data-1 downto 0);
 			data_from_store: in std_logic_vector(len_data-1 downto 0);
 			request_to_store: out std_logic;
-			store_happened: out std_logic);
+			port_is_free: out std_logic);
 end entity;
 
 architecture Struct of memory_arbiter is
@@ -30,24 +30,10 @@ begin
 	---Store work
 	addr_to_mem_for_store <= addr_from_store;
 	data_to_mem_for_store <= data_from_store;
-	---Did store even happen---
-	request_to_store <= '0' when from_store_buffer = '0' else
-								'0' when from_ls_pipeline = '1' else
-								'1';
-	request <= '0' when from_store_buffer = '0' else
-								'0' when from_ls_pipeline = '1' else
-								'1';
-	op: process(clk)
-	begin
-		if rising_edge(clk) then
-			if request = '1' then
-				store_happened <= '1';
-			else
-				store_happened <= '0';
-			end if;
-		else null;
-		end if;
-	end process;
+	---Is port free?---
+	port_is_free <= not from_ls_pipeline;
+	---Does store buffer want to store---
+	request_to_store <= from_store_buffer;
 	
 	
 end architecture;
