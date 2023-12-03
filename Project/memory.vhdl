@@ -8,12 +8,13 @@ entity memory is
 				size_mem: integer:= 32);
 	port(clk: in std_logic;
 			from_fetch1,from_fetch2: in std_logic_vector(len_mem_addr-1 downto 0);
-			from_ls_pipeline: in std_logic_vector(len_mem_addr-1 downto 0);
-			from_store_buffer: in std_logic_vector(len_mem_addr-1 downto 0);
-			data_from_store: in std_logic_vector(len_data-1 downto 0);
-			valid_store: in std_logic;
+			from_ls_pipeline: in std_logic_vector(len_mem_addr-1 downto 0); ---coming from arbiter---
+			from_store_buffer: in std_logic_vector(len_mem_addr-1 downto 0); ---coming from arbiter---
+			data_from_store: in std_logic_vector(len_data-1 downto 0); ---coming from arbiter---
+			valid_store: in std_logic; ---connected to 'request_to_store' port of arbiter---
 			to_fetch1,to_fetch2: out std_logic_vector(len_data-1 downto 0);
-			to_ls_pipeline: out std_logic_vector(len_data-1 downto 0));
+			to_ls_pipeline: out std_logic_vector(len_data-1 downto 0) ---going to arbiter---
+			);
 end entity;
 
 architecture struct of memory is
@@ -33,4 +34,5 @@ begin
 			end if;
 		else null;
 		end if;
+	end process;
 end architecture;
