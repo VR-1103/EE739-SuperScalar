@@ -65,3 +65,40 @@ force -freeze sim:/testing_rob/the_rob/valid_execute2 0 0
 force -freeze sim:/testing_rob/the_rob/valid_execute3 0 0
 run
 run
+force -freeze sim:/testing_rob/the_rob/valid_execute2 1 0
+force -freeze sim:/testing_rob/the_rob/valid_execute3 1 0
+force -freeze sim:/testing_rob/the_rob/execute_word2 01010000000 0
+# ** Warning: (vsim-8780) Forcing /testing_rob/execute_word2 as root of /testing_rob/the_rob/execute_word2 specified in the force.
+force -freeze sim:/testing_rob/the_rob/execute_word3 01000000000 0
+# ** Warning: (vsim-8780) Forcing /testing_rob/execute_word3 as root of /testing_rob/the_rob/execute_word3 specified in the force.
+run
+force -freeze sim:/testing_rob/the_rob/valid_execute2 0 0
+force -freeze sim:/testing_rob/the_rob/valid_execute3 0 0
+run
+force -freeze sim:/testing_rob/the_rob/valid_execute2 1 0
+force -freeze sim:/testing_rob/the_rob/valid_execute3 1 0
+force -freeze sim:/testing_rob/the_rob/execute_word2 00000000000 0
+# ** Warning: (vsim-8780) Forcing /testing_rob/execute_word2 as root of /testing_rob/the_rob/execute_word2 specified in the force.
+force -freeze sim:/testing_rob/the_rob/valid_execute3 0 0
+run
+add wave -position 2  sim:/testing_rob/the_rob/retire_word1
+add wave -position 4  sim:/testing_rob/the_rob/retire_word2
+run
+force -freeze sim:/testing_rob/the_rob/valid_execute2 0 0
+force -freeze sim:/testing_rob/the_rob/valid_execute3 1 0
+force -freeze sim:/testing_rob/the_rob/execute_word3 00010000000 0
+# ** Warning: (vsim-8780) Forcing /testing_rob/execute_word3 as root of /testing_rob/the_rob/execute_word3 specified in the force.
+run
+run
+force -freeze sim:/testing_rob/the_rob/valid_execute2 1 0
+force -freeze sim:/testing_rob/the_rob/execute_word2 00100000000 0
+# ** Warning: (vsim-8780) Forcing /testing_rob/execute_word2 as root of /testing_rob/the_rob/execute_word2 specified in the force.
+force -freeze sim:/testing_rob/the_rob/execute_word3 00110000000 0
+# ** Warning: (vsim-8780) Forcing /testing_rob/execute_word3 as root of /testing_rob/the_rob/execute_word3 specified in the force.
+run
+force -freeze sim:/testing_rob/the_rob/valid_execute2 0 0
+force -freeze sim:/testing_rob/the_rob/valid_execute3 0 0
+run
+run
+run
+run
