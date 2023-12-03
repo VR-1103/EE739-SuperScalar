@@ -40,7 +40,7 @@ Design policy:
 
 5. When a load instruction reaches the top of ROB, we will check if `head` has `spec` bit = '1'. If so, flush the load queue as well as the ROB.
 
-## load_queue (new)
+## load_queue (new) (slightly out of date)
 Design policy:
 
 1. The queue is a table in which theres a busy bit which tells if a particular location in the table is free or not.
@@ -56,3 +56,9 @@ Design policy:
 6. Then it sees if there is a load instr at the top of ROB. If so, it checks whether the corresponding location in load_queue was aliased. If it was, then it tells this to the ROB.
 
 7. Lastly, if the ROB tells that a load instr was safely retired, load_queue makes the corresponding location ka busy bit 0, essentially making the row empty.
+
+## Memory and Memory Arbiter
+
+1. From LS pipeline, arbiter gets a signal for load request, and an address. It gets back the data from mem and sends to LS pipeline. This is asynchronous so chill.
+
+2. From store buffer, arbiter gets a request for store, mem_addr, and data. When the signal for load request is low, it sends a store request to mem, until then, it doesnt. Store buffer gets back a 'store_happened' bit in the clk cycle in which the store request was sent to mem, so that retirement can happen.
