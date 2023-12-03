@@ -32,17 +32,17 @@ entity decoder is
 			disable_fetch: out std_logic;
 			----requirements for working with prf----
 			op_required1,op_required2: out std_logic_vector(1 downto 0); ---tells prf how many operands required
-			op_addr1,op_addr2: out std_logic_vector(len_arf+len_arf-1 downto 0); ---at max can hold addr of 2 operands
+			op_addr1,op_addr2: out std_logic_vector(len_arf+len_arf-1 downto 0); ---at max can hold addr of 2 operands,if only 1 operand is asked, addr will be at (len_arf-1 downto 0)
 			dest_required1,dest_required2: out std_logic; ---whether destination is required
 			dest_addr1,dest_addr2: out std_logic_vector(len_arf-1 downto 0); ---arf addr of destination
-			op_data1,op_data2: in std_logic_vector(len_data+len_data-1 downto 0); ---at max data of 2 operands
-			op_valid1,op_valid2: in std_logic_vector(1 downto 0);
+			op_data1,op_data2: in std_logic_vector(len_data+len_data-1 downto 0); ---at max data of 2 operands, if only 1 operand is asked, send the data to (len_data-1 downto 0)
+			op_valid1,op_valid2: in std_logic_vector(1 downto 0); ----similarly if only 1 oeprand, validity of 0'th bit will be considered
 			dest_rrf1,dest_rrf2: in std_logic_vector(len_rrf-1 downto 0); ---addr of destination rrf
-			cz_required1,cz_required2: out std_logic;
-			cz1,cz2: in std_logic_vector(len_data-1 downto 0);
-			cz_valid1,cz_valid2: in std_logic;
-			cz_dest_required1,cz_dest_required2: out std_logic;
-			cz_rrf1,cz_rrf2: in std_logic_vector(len_rrf-1 downto 0)); --We never require both c or z
+			cz_required1,cz_required2: out std_logic; ---00 if neither, 01 if z, 10 if c, 11 will never happen, honestly if prf has one status register, then ig it doesnt matter, only matters how pipeline is using the status register ka data
+			cz1,cz2: in std_logic_vector(len_data-1 downto 0); ---whatever is asked, send that---
+			cz_valid1,cz_valid2: in std_logic; ---whether its valid or not
+			cz_dest_required1,cz_dest_required2: out std_logic; ---whenever the instr will change c/z/both, this will be high
+			cz_rrf1,cz_rrf2: in std_logic_vector(len_rrf-1 downto 0)); ---send the rrf for new location of status register---
 end entity;
 
 architecture struct of decoder is
