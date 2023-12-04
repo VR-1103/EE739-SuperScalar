@@ -1,0 +1,1762 @@
+Analysis & Synthesis report for Testing_ROB
+Sun Dec  3 01:59:36 2023
+Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Analysis & Synthesis Summary
+  3. Analysis & Synthesis Settings
+  4. Parallel Compilation
+  5. Analysis & Synthesis Source Files Read
+  6. Analysis & Synthesis Resource Usage Summary
+  7. Analysis & Synthesis Resource Utilization by Entity
+  8. Registers Removed During Synthesis
+  9. Removed Registers Triggering Further Register Optimizations
+ 10. General Register Statistics
+ 11. Inverted Register Statistics
+ 12. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 13. Parameter Settings for User Entity Instance: Top-level Entity: |Testing_ROB
+ 14. Post-Synthesis Netlist Statistics for Top Partition
+ 15. Elapsed Time Per Partition
+ 16. Analysis & Synthesis Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2023  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++-------------------------------------------------------------------------------------+
+; Analysis & Synthesis Summary                                                        ;
++------------------------------------+------------------------------------------------+
+; Analysis & Synthesis Status        ; Successful - Sun Dec  3 01:59:36 2023          ;
+; Quartus Prime Version              ; 22.1std.2 Build 922 07/20/2023 SC Lite Edition ;
+; Revision Name                      ; Testing_ROB                                    ;
+; Top-level Entity Name              ; testing_rob                                    ;
+; Family                             ; MAX 10                                         ;
+; Total logic elements               ; 148                                            ;
+;     Total combinational functions  ; 122                                            ;
+;     Dedicated logic registers      ; 60                                             ;
+; Total registers                    ; 60                                             ;
+; Total pins                         ; 148                                            ;
+; Total virtual pins                 ; 0                                              ;
+; Total memory bits                  ; 0                                              ;
+; Embedded Multiplier 9-bit elements ; 0                                              ;
+; Total PLLs                         ; 0                                              ;
+; UFM blocks                         ; 0                                              ;
+; ADC blocks                         ; 0                                              ;
++------------------------------------+------------------------------------------------+
+
+
++------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Settings                                                                              ;
++------------------------------------------------------------------+--------------------+--------------------+
+; Option                                                           ; Setting            ; Default Value      ;
++------------------------------------------------------------------+--------------------+--------------------+
+; Device                                                           ; 10M50SAE144C8G     ;                    ;
+; Top-level entity name                                            ; Testing_ROB        ; Testing_ROB        ;
+; Family name                                                      ; MAX 10             ; Cyclone V          ;
+; Use smart compilation                                            ; Off                ; Off                ;
+; Enable parallel Assembler and Timing Analyzer during compilation ; On                 ; On                 ;
+; Enable compact report table                                      ; Off                ; Off                ;
+; Restructure Multiplexers                                         ; Auto               ; Auto               ;
+; Create Debugging Nodes for IP Cores                              ; Off                ; Off                ;
+; Preserve fewer node names                                        ; On                 ; On                 ;
+; Intel FPGA IP Evaluation Mode                                    ; Enable             ; Enable             ;
+; Verilog Version                                                  ; Verilog_2001       ; Verilog_2001       ;
+; VHDL Version                                                     ; VHDL_1993          ; VHDL_1993          ;
+; State Machine Processing                                         ; Auto               ; Auto               ;
+; Safe State Machine                                               ; Off                ; Off                ;
+; Extract Verilog State Machines                                   ; On                 ; On                 ;
+; Extract VHDL State Machines                                      ; On                 ; On                 ;
+; Ignore Verilog initial constructs                                ; Off                ; Off                ;
+; Iteration limit for constant Verilog loops                       ; 5000               ; 5000               ;
+; Iteration limit for non-constant Verilog loops                   ; 250                ; 250                ;
+; Add Pass-Through Logic to Inferred RAMs                          ; On                 ; On                 ;
+; Infer RAMs from Raw Logic                                        ; On                 ; On                 ;
+; Parallel Synthesis                                               ; On                 ; On                 ;
+; DSP Block Balancing                                              ; Auto               ; Auto               ;
+; NOT Gate Push-Back                                               ; On                 ; On                 ;
+; Power-Up Don't Care                                              ; On                 ; On                 ;
+; Remove Redundant Logic Cells                                     ; Off                ; Off                ;
+; Remove Duplicate Registers                                       ; On                 ; On                 ;
+; Ignore CARRY Buffers                                             ; Off                ; Off                ;
+; Ignore CASCADE Buffers                                           ; Off                ; Off                ;
+; Ignore GLOBAL Buffers                                            ; Off                ; Off                ;
+; Ignore ROW GLOBAL Buffers                                        ; Off                ; Off                ;
+; Ignore LCELL Buffers                                             ; Off                ; Off                ;
+; Ignore SOFT Buffers                                              ; On                 ; On                 ;
+; Limit AHDL Integers to 32 Bits                                   ; Off                ; Off                ;
+; Optimization Technique                                           ; Balanced           ; Balanced           ;
+; Carry Chain Length                                               ; 70                 ; 70                 ;
+; Auto Carry Chains                                                ; On                 ; On                 ;
+; Auto Open-Drain Pins                                             ; On                 ; On                 ;
+; Perform WYSIWYG Primitive Resynthesis                            ; Off                ; Off                ;
+; Auto ROM Replacement                                             ; On                 ; On                 ;
+; Auto RAM Replacement                                             ; On                 ; On                 ;
+; Auto DSP Block Replacement                                       ; On                 ; On                 ;
+; Auto Shift Register Replacement                                  ; Auto               ; Auto               ;
+; Allow Shift Register Merging across Hierarchies                  ; Auto               ; Auto               ;
+; Auto Clock Enable Replacement                                    ; On                 ; On                 ;
+; Strict RAM Replacement                                           ; Off                ; Off                ;
+; Allow Synchronous Control Signals                                ; On                 ; On                 ;
+; Force Use of Synchronous Clear Signals                           ; Off                ; Off                ;
+; Auto RAM Block Balancing                                         ; On                 ; On                 ;
+; Auto RAM to Logic Cell Conversion                                ; Off                ; Off                ;
+; Auto Resource Sharing                                            ; Off                ; Off                ;
+; Allow Any RAM Size For Recognition                               ; Off                ; Off                ;
+; Allow Any ROM Size For Recognition                               ; Off                ; Off                ;
+; Allow Any Shift Register Size For Recognition                    ; Off                ; Off                ;
+; Use LogicLock Constraints during Resource Balancing              ; On                 ; On                 ;
+; Ignore translate_off and synthesis_off directives                ; Off                ; Off                ;
+; Timing-Driven Synthesis                                          ; On                 ; On                 ;
+; Report Parameter Settings                                        ; On                 ; On                 ;
+; Report Source Assignments                                        ; On                 ; On                 ;
+; Report Connectivity Checks                                       ; On                 ; On                 ;
+; Ignore Maximum Fan-Out Assignments                               ; Off                ; Off                ;
+; Synchronization Register Chain Length                            ; 2                  ; 2                  ;
+; Power Optimization During Synthesis                              ; Normal compilation ; Normal compilation ;
+; HDL message level                                                ; Level2             ; Level2             ;
+; Suppress Register Optimization Related Messages                  ; Off                ; Off                ;
+; Number of Removed Registers Reported in Synthesis Report         ; 5000               ; 5000               ;
+; Number of Swept Nodes Reported in Synthesis Report               ; 5000               ; 5000               ;
+; Number of Inverted Registers Reported in Synthesis Report        ; 100                ; 100                ;
+; Clock MUX Protection                                             ; On                 ; On                 ;
+; Auto Gated Clock Conversion                                      ; Off                ; Off                ;
+; Block Design Naming                                              ; Auto               ; Auto               ;
+; SDC constraint protection                                        ; Off                ; Off                ;
+; Synthesis Effort                                                 ; Auto               ; Auto               ;
+; Shift Register Replacement - Allow Asynchronous Clear Signal     ; On                 ; On                 ;
+; Pre-Mapping Resynthesis Optimization                             ; Off                ; Off                ;
+; Analysis & Synthesis Message Level                               ; Medium             ; Medium             ;
+; Disable Register Merging Across Hierarchies                      ; Auto               ; Auto               ;
+; Resource Aware Inference For Block RAM                           ; On                 ; On                 ;
++------------------------------------------------------------------+--------------------+--------------------+
+
+
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 8           ;
+; Maximum allowed            ; 4           ;
+;                            ;             ;
+; Average used               ; 1.00        ;
+; Maximum used               ; 4           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
+;     Processor 2            ;   0.0%      ;
+;     Processors 3-4         ;   0.0%      ;
++----------------------------+-------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                          ;
++----------------------------------+-----------------+-----------------+----------------------------------------------------------------+---------+
+; File Name with User-Entered Path ; Used in Netlist ; File Type       ; File Name with Absolute Path                                   ; Library ;
++----------------------------------+-----------------+-----------------+----------------------------------------------------------------+---------+
+; ../Project/rob.vhdl              ; yes             ; User VHDL File  ; /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl ;         ;
++----------------------------------+-----------------+-----------------+----------------------------------------------------------------+---------+
+
+
++---------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary             ;
++---------------------------------------------+-----------+
+; Resource                                    ; Usage     ;
++---------------------------------------------+-----------+
+; Estimated Total logic elements              ; 148       ;
+;                                             ;           ;
+; Total combinational functions               ; 122       ;
+; Logic element usage by number of LUT inputs ;           ;
+;     -- 4 input functions                    ; 71        ;
+;     -- 3 input functions                    ; 30        ;
+;     -- <=2 input functions                  ; 21        ;
+;                                             ;           ;
+; Logic elements by mode                      ;           ;
+;     -- normal mode                          ; 122       ;
+;     -- arithmetic mode                      ; 0         ;
+;                                             ;           ;
+; Total registers                             ; 60        ;
+;     -- Dedicated logic registers            ; 60        ;
+;     -- I/O registers                        ; 0         ;
+;                                             ;           ;
+; I/O pins                                    ; 148       ;
+;                                             ;           ;
+; Embedded Multiplier 9-bit elements          ; 0         ;
+;                                             ;           ;
+; Maximum fan-out node                        ; clk~input ;
+; Maximum fan-out                             ; 60        ;
+; Total fan-out                               ; 722       ;
+; Average fan-out                             ; 1.51      ;
++---------------------------------------------+-----------+
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                ;
++----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------+-------------+--------------+
+; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name ; Entity Name ; Library Name ;
++----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------+-------------+--------------+
+; |testing_rob               ; 122 (122)           ; 60 (60)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 148  ; 0            ; 0          ; |testing_rob        ; testing_rob ; work         ;
++----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------+-------------+--------------+
+Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+
++-----------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                                ;
++------------------------------------------+----------------------------------------+
+; Register name                            ; Reason for Removal                     ;
++------------------------------------------+----------------------------------------+
+; tail[0..5]                               ; Stuck at GND due to stuck port data_in ;
+; rob_row[45][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[46][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[47][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[48][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[49][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[50][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[51][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[52][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[53][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[54][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[55][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[56][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[57][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[58][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[59][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[60][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[61][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[62][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[63][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[44][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[43][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[42][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[41][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[40][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[39][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[38][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[37][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[36][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[35][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[34][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[33][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[32][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[31][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[30][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[29][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[28][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[27][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[26][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[25][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[24][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[23][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[22][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[21][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[20][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[19][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[18][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[17][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[16][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[15][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[14][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[13][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[12][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[11][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[10][1]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[9][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[8][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[7][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[6][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[5][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[4][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[3][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[2][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[1][1]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[5][3]                            ; Merged with rob_row[46][20]            ;
+; rob_row[34][6]                           ; Merged with rob_row[46][20]            ;
+; rob_row[4][4]                            ; Merged with rob_row[46][20]            ;
+; rob_row[49][8]                           ; Merged with rob_row[46][20]            ;
+; rob_row[3][5]                            ; Merged with rob_row[46][20]            ;
+; rob_row[33][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[2][6]                            ; Merged with rob_row[46][20]            ;
+; rob_row[61][15]                          ; Merged with rob_row[46][20]            ;
+; rob_row[1][7]                            ; Merged with rob_row[46][20]            ;
+; rob_row[32][8]                           ; Merged with rob_row[46][20]            ;
+; rob_row[32][15]                          ; Merged with rob_row[46][20]            ;
+; rob_row[31][5]                           ; Merged with rob_row[46][20]            ;
+; rob_row[62][18]                          ; Merged with rob_row[46][20]            ;
+; rob_row[31][16]                          ; Merged with rob_row[46][20]            ;
+; rob_row[54][18]                          ; Merged with rob_row[46][20]            ;
+; rob_row[30][6]                           ; Merged with rob_row[46][20]            ;
+; rob_row[62][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[29][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[30][17]                          ; Merged with rob_row[46][20]            ;
+; rob_row[63][17]                          ; Merged with rob_row[46][20]            ;
+; rob_row[29][18]                          ; Merged with rob_row[46][20]            ;
+; rob_row[54][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[28][8]                           ; Merged with rob_row[46][20]            ;
+; rob_row[63][6]                           ; Merged with rob_row[46][20]            ;
+; rob_row[28][19]                          ; Merged with rob_row[46][20]            ;
+; rob_row[50][14]                          ; Merged with rob_row[46][20]            ;
+; rob_row[27][12]                          ; Merged with rob_row[46][20]            ;
+; rob_row[45][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[27][20]                          ; Merged with rob_row[46][20]            ;
+; rob_row[55][17]                          ; Merged with rob_row[46][20]            ;
+; rob_row[26][13]                          ; Merged with rob_row[46][20]            ;
+; rob_row[45][18]                          ; Merged with rob_row[46][20]            ;
+; rob_row[25][3]                           ; Merged with rob_row[46][20]            ;
+; rob_row[48][16]                          ; Merged with rob_row[46][20]            ;
+; rob_row[25][14]                          ; Merged with rob_row[46][20]            ;
+; rob_row[44][8]                           ; Merged with rob_row[46][20]            ;
+; rob_row[24][4]                           ; Merged with rob_row[46][20]            ;
+; rob_row[55][6]                           ; Merged with rob_row[46][20]            ;
+; rob_row[24][15]                          ; Merged with rob_row[46][20]            ;
+; rob_row[44][19]                          ; Merged with rob_row[46][20]            ;
+; rob_row[23][5]                           ; Merged with rob_row[46][20]            ;
+; rob_row[50][3]                           ; Merged with rob_row[46][20]            ;
+; rob_row[23][16]                          ; Merged with rob_row[46][20]            ;
+; rob_row[43][12]                          ; Merged with rob_row[46][20]            ;
+; rob_row[22][6]                           ; Merged with rob_row[46][20]            ;
+; rob_row[56][16]                          ; Merged with rob_row[46][20]            ;
+; rob_row[22][17]                          ; Merged with rob_row[46][20]            ;
+; rob_row[43][20]                          ; Merged with rob_row[46][20]            ;
+; rob_row[21][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[47][17]                          ; Merged with rob_row[46][20]            ;
+; rob_row[21][18]                          ; Merged with rob_row[46][20]            ;
+; rob_row[42][13]                          ; Merged with rob_row[46][20]            ;
+; rob_row[20][8]                           ; Merged with rob_row[46][20]            ;
+; rob_row[56][5]                           ; Merged with rob_row[46][20]            ;
+; rob_row[20][19]                          ; Merged with rob_row[46][20]            ;
+; rob_row[41][3]                           ; Merged with rob_row[46][20]            ;
+; rob_row[19][12]                          ; Merged with rob_row[46][20]            ;
+; rob_row[51][13]                          ; Merged with rob_row[46][20]            ;
+; rob_row[19][20]                          ; Merged with rob_row[46][20]            ;
+; rob_row[41][14]                          ; Merged with rob_row[46][20]            ;
+; rob_row[18][13]                          ; Merged with rob_row[46][20]            ;
+; rob_row[57][15]                          ; Merged with rob_row[46][20]            ;
+; rob_row[17][3]                           ; Merged with rob_row[46][20]            ;
+; rob_row[40][4]                           ; Merged with rob_row[46][20]            ;
+; rob_row[17][14]                          ; Merged with rob_row[46][20]            ;
+; rob_row[48][5]                           ; Merged with rob_row[46][20]            ;
+; rob_row[16][4]                           ; Merged with rob_row[46][20]            ;
+; rob_row[40][15]                          ; Merged with rob_row[46][20]            ;
+; rob_row[16][15]                          ; Merged with rob_row[46][20]            ;
+; rob_row[57][4]                           ; Merged with rob_row[46][20]            ;
+; rob_row[15][5]                           ; Merged with rob_row[46][20]            ;
+; rob_row[39][5]                           ; Merged with rob_row[46][20]            ;
+; rob_row[15][16]                          ; Merged with rob_row[46][20]            ;
+; rob_row[52][20]                          ; Merged with rob_row[46][20]            ;
+; rob_row[14][6]                           ; Merged with rob_row[46][20]            ;
+; rob_row[39][16]                          ; Merged with rob_row[46][20]            ;
+; rob_row[14][17]                          ; Merged with rob_row[46][20]            ;
+; rob_row[58][14]                          ; Merged with rob_row[46][20]            ;
+; rob_row[13][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[38][6]                           ; Merged with rob_row[46][20]            ;
+; rob_row[13][18]                          ; Merged with rob_row[46][20]            ;
+; rob_row[46][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[12][8]                           ; Merged with rob_row[46][20]            ;
+; rob_row[38][17]                          ; Merged with rob_row[46][20]            ;
+; rob_row[12][19]                          ; Merged with rob_row[46][20]            ;
+; rob_row[58][3]                           ; Merged with rob_row[46][20]            ;
+; rob_row[11][12]                          ; Merged with rob_row[46][20]            ;
+; rob_row[37][7]                           ; Merged with rob_row[46][20]            ;
+; rob_row[11][20]                          ; Merged with rob_row[46][20]            ;
+; rob_row[52][12]                          ; Merged with rob_row[46][20]            ;
+; rob_row[10][13]                          ; Merged with rob_row[46][20]            ;
+; rob_row[37][18]                          ; Merged with rob_row[46][20]            ;
+; rob_row[9][3]                            ; Merged with rob_row[46][20]            ;
+; rob_row[59][13]                          ; Merged with rob_row[46][20]            ;
+; rob_row[9][14]                           ; Merged with rob_row[46][20]            ;
+; rob_row[36][8]                           ; Merged with rob_row[46][20]            ;
+; rob_row[8][4]                            ; Merged with rob_row[46][20]            ;
+; rob_row[49][15]                          ; Merged with rob_row[46][20]            ;
+; rob_row[8][15]                           ; Merged with rob_row[46][20]            ;
+; rob_row[36][19]                          ; Merged with rob_row[46][20]            ;
+; rob_row[40][18]                          ; Merged with rob_row[46][19]            ;
+; rob_row[16][18]                          ; Merged with rob_row[46][19]            ;
+; rob_row[48][4]                           ; Merged with rob_row[46][19]            ;
+; rob_row[16][20]                          ; Merged with rob_row[46][19]            ;
+; rob_row[40][20]                          ; Merged with rob_row[46][19]            ;
+; rob_row[15][4]                           ; Merged with rob_row[46][19]            ;
+; rob_row[57][3]                           ; Merged with rob_row[46][19]            ;
+; rob_row[15][6]                           ; Merged with rob_row[46][19]            ;
+; rob_row[39][4]                           ; Merged with rob_row[46][19]            ;
+; rob_row[15][8]                           ; Merged with rob_row[46][19]            ;
+; rob_row[51][3]                           ; Merged with rob_row[46][19]            ;
+; rob_row[15][13]                          ; Merged with rob_row[46][19]            ;
+; rob_row[39][6]                           ; Merged with rob_row[46][19]            ;
+; rob_row[15][15]                          ; Merged with rob_row[46][19]            ;
+; rob_row[58][19]                          ; Merged with rob_row[46][19]            ;
+; rob_row[15][17]                          ; Merged with rob_row[46][19]            ;
+; rob_row[39][8]                           ; Merged with rob_row[46][19]            ;
+; rob_row[15][19]                          ; Merged with rob_row[46][19]            ;
+; rob_row[47][14]                          ; Merged with rob_row[46][19]            ;
+; rob_row[14][3]                           ; Merged with rob_row[46][19]            ;
+; rob_row[39][13]                          ; Merged with rob_row[46][19]            ;
+; rob_row[14][5]                           ; Merged with rob_row[46][19]            ;
+; rob_row[58][17]                          ; Merged with rob_row[46][19]            ;
+; rob_row[14][7]                           ; Merged with rob_row[46][19]            ;
+; rob_row[39][15]                          ; Merged with rob_row[46][19]            ;
+; rob_row[14][12]                          ; Merged with rob_row[46][19]            ;
+; rob_row[52][19]                          ; Merged with rob_row[46][19]            ;
+; rob_row[14][14]                          ; Merged with rob_row[46][19]            ;
+; rob_row[39][17]                          ; Merged with rob_row[46][19]            ;
+; rob_row[14][16]                          ; Merged with rob_row[46][19]            ;
+; rob_row[58][15]                          ; Merged with rob_row[46][19]            ;
+; rob_row[14][18]                          ; Merged with rob_row[46][19]            ;
+; rob_row[39][19]                          ; Merged with rob_row[46][19]            ;
+; rob_row[14][20]                          ; Merged with rob_row[46][19]            ;
+; rob_row[49][20]                          ; Merged with rob_row[46][19]            ;
+; rob_row[13][4]                           ; Merged with rob_row[46][19]            ;
+; rob_row[38][3]                           ; Merged with rob_row[46][19]            ;
+; rob_row[13][6]                           ; Merged with rob_row[46][19]            ;
+; rob_row[58][13]                          ; Merged with rob_row[46][19]            ;
+; rob_row[13][8]                           ; Merged with rob_row[46][19]            ;
+; rob_row[38][5]                           ; Merged with rob_row[46][19]            ;
+; rob_row[13][13]                          ; Merged with rob_row[46][19]            ;
+; rob_row[52][17]                          ; Merged with rob_row[46][19]            ;
+; rob_row[13][15]                          ; Merged with rob_row[46][19]            ;
+; rob_row[38][7]                           ; Merged with rob_row[46][19]            ;
+; rob_row[13][17]                          ; Merged with rob_row[46][19]            ;
+; rob_row[58][8]                           ; Merged with rob_row[46][19]            ;
+; rob_row[13][19]                          ; Merged with rob_row[46][19]            ;
+; rob_row[38][12]                          ; Merged with rob_row[46][19]            ;
+; rob_row[12][3]                           ; Merged with rob_row[46][19]            ;
+; rob_row[12][5]                           ; Merged with rob_row[46][19]            ;
+; rob_row[38][14]                          ; Merged with rob_row[46][19]            ;
+; rob_row[12][7]                           ; Merged with rob_row[46][19]            ;
+; rob_row[58][6]                           ; Merged with rob_row[46][19]            ;
+; rob_row[12][12]                          ; Merged with rob_row[46][19]            ;
+; rob_row[38][16]                          ; Merged with rob_row[46][19]            ;
+; rob_row[12][14]                          ; Merged with rob_row[46][19]            ;
+; rob_row[52][15]                          ; Merged with rob_row[46][19]            ;
+; rob_row[12][16]                          ; Merged with rob_row[46][19]            ;
+; rob_row[38][18]                          ; Merged with rob_row[46][19]            ;
+; rob_row[12][18]                          ; Merged with rob_row[46][19]            ;
+; rob_row[58][4]                           ; Merged with rob_row[46][19]            ;
+; rob_row[12][20]                          ; Merged with rob_row[46][19]            ;
+; rob_row[38][20]                          ; Merged with rob_row[46][19]            ;
+; rob_row[11][4]                           ; Merged with rob_row[46][19]            ;
+; rob_row[49][18]                          ; Merged with rob_row[46][19]            ;
+; rob_row[11][6]                           ; Merged with rob_row[46][19]            ;
+; rob_row[37][4]                           ; Merged with rob_row[46][19]            ;
+; rob_row[11][8]                           ; Merged with rob_row[46][19]            ;
+; rob_row[59][20]                          ; Merged with rob_row[46][19]            ;
+; rob_row[11][13]                          ; Merged with rob_row[46][19]            ;
+; rob_row[37][6]                           ; Merged with rob_row[46][19]            ;
+; rob_row[11][15]                          ; Merged with rob_row[46][19]            ;
+; rob_row[52][13]                          ; Merged with rob_row[46][19]            ;
+; rob_row[11][17]                          ; Merged with rob_row[46][19]            ;
+; rob_row[37][8]                           ; Merged with rob_row[46][19]            ;
+; rob_row[11][19]                          ; Merged with rob_row[46][19]            ;
+; rob_row[59][18]                          ; Merged with rob_row[46][19]            ;
+; rob_row[10][3]                           ; Merged with rob_row[46][19]            ;
+; rob_row[37][13]                          ; Merged with rob_row[46][19]            ;
+; rob_row[10][5]                           ; Merged with rob_row[46][19]            ;
+; rob_row[47][12]                          ; Merged with rob_row[46][19]            ;
+; rob_row[10][7]                           ; Merged with rob_row[46][19]            ;
+; rob_row[37][15]                          ; Merged with rob_row[46][19]            ;
+; rob_row[10][12]                          ; Merged with rob_row[46][19]            ;
+; rob_row[59][16]                          ; Merged with rob_row[46][19]            ;
+; rob_row[10][14]                          ; Merged with rob_row[46][19]            ;
+; rob_row[37][17]                          ; Merged with rob_row[46][19]            ;
+; rob_row[10][16]                          ; Merged with rob_row[46][19]            ;
+; rob_row[52][8]                           ; Merged with rob_row[46][19]            ;
+; rob_row[10][18]                          ; Merged with rob_row[46][19]            ;
+; rob_row[37][19]                          ; Merged with rob_row[46][19]            ;
+; rob_row[10][20]                          ; Merged with rob_row[46][19]            ;
+; rob_row[59][14]                          ; Merged with rob_row[46][19]            ;
+; rob_row[9][4]                            ; Merged with rob_row[46][19]            ;
+; rob_row[36][3]                           ; Merged with rob_row[46][19]            ;
+; rob_row[9][6]                            ; Merged with rob_row[46][19]            ;
+; rob_row[49][16]                          ; Merged with rob_row[46][19]            ;
+; rob_row[9][8]                            ; Merged with rob_row[46][19]            ;
+; rob_row[36][5]                           ; Merged with rob_row[46][19]            ;
+; rob_row[7][5]                            ; Merged with rob_row[46][18]            ;
+; rob_row[60][20]                          ; Merged with rob_row[46][18]            ;
+; rob_row[7][16]                           ; Merged with rob_row[46][18]            ;
+; rob_row[35][12]                          ; Merged with rob_row[46][18]            ;
+; rob_row[6][6]                            ; Merged with rob_row[46][18]            ;
+; rob_row[53][19]                          ; Merged with rob_row[46][18]            ;
+; rob_row[6][17]                           ; Merged with rob_row[46][18]            ;
+; rob_row[35][20]                          ; Merged with rob_row[46][18]            ;
+; rob_row[5][7]                            ; Merged with rob_row[46][18]            ;
+; rob_row[60][12]                          ; Merged with rob_row[46][18]            ;
+; rob_row[5][18]                           ; Merged with rob_row[46][18]            ;
+; rob_row[34][13]                          ; Merged with rob_row[46][18]            ;
+; rob_row[4][8]                            ; Merged with rob_row[46][18]            ;
+; rob_row[47][6]                           ; Merged with rob_row[46][18]            ;
+; rob_row[4][19]                           ; Merged with rob_row[46][18]            ;
+; rob_row[33][3]                           ; Merged with rob_row[46][18]            ;
+; rob_row[3][12]                           ; Merged with rob_row[46][18]            ;
+; rob_row[61][19]                          ; Merged with rob_row[46][18]            ;
+; rob_row[3][20]                           ; Merged with rob_row[46][18]            ;
+; rob_row[33][14]                          ; Merged with rob_row[46][18]            ;
+; rob_row[2][13]                           ; Merged with rob_row[46][18]            ;
+; rob_row[53][8]                           ; Merged with rob_row[46][18]            ;
+; rob_row[1][3]                            ; Merged with rob_row[46][18]            ;
+; rob_row[32][4]                           ; Merged with rob_row[46][18]            ;
+; rob_row[1][14]                           ; Merged with rob_row[46][18]            ;
+; rob_row[61][8]                           ; Merged with rob_row[46][18]            ;
+; rob_row[32][13]                          ; Merged with rob_row[46][18]            ;
+; rob_row[61][6]                           ; Merged with rob_row[46][18]            ;
+; rob_row[32][17]                          ; Merged with rob_row[46][18]            ;
+; rob_row[31][3]                           ; Merged with rob_row[46][18]            ;
+; rob_row[62][20]                          ; Merged with rob_row[46][18]            ;
+; rob_row[31][7]                           ; Merged with rob_row[46][18]            ;
+; rob_row[54][20]                          ; Merged with rob_row[46][18]            ;
+; rob_row[31][14]                          ; Merged with rob_row[46][18]            ;
+; rob_row[62][16]                          ; Merged with rob_row[46][18]            ;
+; rob_row[31][18]                          ; Merged with rob_row[46][18]            ;
+; rob_row[50][20]                          ; Merged with rob_row[46][18]            ;
+; rob_row[30][4]                           ; Merged with rob_row[46][18]            ;
+; rob_row[62][12]                          ; Merged with rob_row[46][18]            ;
+; rob_row[30][8]                           ; Merged with rob_row[46][18]            ;
+; rob_row[54][16]                          ; Merged with rob_row[46][18]            ;
+; rob_row[30][15]                          ; Merged with rob_row[46][18]            ;
+; rob_row[62][5]                           ; Merged with rob_row[46][18]            ;
+; rob_row[29][5]                           ; Merged with rob_row[46][18]            ;
+; rob_row[30][19]                          ; Merged with rob_row[46][18]            ;
+; rob_row[63][19]                          ; Merged with rob_row[46][18]            ;
+; rob_row[29][12]                          ; Merged with rob_row[46][18]            ;
+; rob_row[54][12]                          ; Merged with rob_row[46][18]            ;
+; rob_row[29][16]                          ; Merged with rob_row[46][18]            ;
+; rob_row[63][15]                          ; Merged with rob_row[46][18]            ;
+; rob_row[29][20]                          ; Merged with rob_row[46][18]            ;
+; rob_row[50][16]                          ; Merged with rob_row[46][18]            ;
+; rob_row[28][6]                           ; Merged with rob_row[46][18]            ;
+; rob_row[63][8]                           ; Merged with rob_row[46][18]            ;
+; rob_row[28][13]                          ; Merged with rob_row[46][18]            ;
+; rob_row[54][5]                           ; Merged with rob_row[46][18]            ;
+; rob_row[28][17]                          ; Merged with rob_row[46][18]            ;
+; rob_row[63][4]                           ; Merged with rob_row[46][18]            ;
+; rob_row[27][3]                           ; Merged with rob_row[46][18]            ;
+; rob_row[48][18]                          ; Merged with rob_row[46][18]            ;
+; rob_row[27][7]                           ; Merged with rob_row[46][18]            ;
+; rob_row[45][5]                           ; Merged with rob_row[46][18]            ;
+; rob_row[27][14]                          ; Merged with rob_row[46][18]            ;
+; rob_row[55][19]                          ; Merged with rob_row[46][18]            ;
+; rob_row[27][18]                          ; Merged with rob_row[46][18]            ;
+; rob_row[45][12]                          ; Merged with rob_row[46][18]            ;
+; rob_row[26][4]                           ; Merged with rob_row[46][18]            ;
+; rob_row[50][12]                          ; Merged with rob_row[46][18]            ;
+; rob_row[26][8]                           ; Merged with rob_row[46][18]            ;
+; rob_row[45][16]                          ; Merged with rob_row[46][18]            ;
+; rob_row[26][15]                          ; Merged with rob_row[46][18]            ;
+; rob_row[55][15]                          ; Merged with rob_row[46][18]            ;
+; rob_row[26][19]                          ; Merged with rob_row[46][18]            ;
+; rob_row[45][20]                          ; Merged with rob_row[46][18]            ;
+; rob_row[25][5]                           ; Merged with rob_row[46][18]            ;
+; rob_row[47][19]                          ; Merged with rob_row[46][18]            ;
+; rob_row[25][12]                          ; Merged with rob_row[46][18]            ;
+; rob_row[44][6]                           ; Merged with rob_row[46][18]            ;
+; rob_row[25][16]                          ; Merged with rob_row[46][18]            ;
+; rob_row[55][8]                           ; Merged with rob_row[46][18]            ;
+; rob_row[25][20]                          ; Merged with rob_row[46][18]            ;
+; rob_row[44][13]                          ; Merged with rob_row[46][18]            ;
+; rob_row[24][6]                           ; Merged with rob_row[46][18]            ;
+; rob_row[50][5]                           ; Merged with rob_row[46][18]            ;
+; rob_row[24][13]                          ; Merged with rob_row[46][18]            ;
+; rob_row[44][17]                          ; Merged with rob_row[46][18]            ;
+; rob_row[24][17]                          ; Merged with rob_row[46][18]            ;
+; rob_row[55][4]                           ; Merged with rob_row[46][18]            ;
+; rob_row[23][3]                           ; Merged with rob_row[46][18]            ;
+; rob_row[43][3]                           ; Merged with rob_row[46][18]            ;
+; rob_row[23][7]                           ; Merged with rob_row[46][18]            ;
+; rob_row[48][14]                          ; Merged with rob_row[46][18]            ;
+; rob_row[23][14]                          ; Merged with rob_row[46][18]            ;
+; rob_row[43][7]                           ; Merged with rob_row[46][18]            ;
+; rob_row[23][18]                          ; Merged with rob_row[46][18]            ;
+; rob_row[56][18]                          ; Merged with rob_row[46][18]            ;
+; rob_row[22][4]                           ; Merged with rob_row[46][18]            ;
+; rob_row[43][14]                          ; Merged with rob_row[46][18]            ;
+; rob_row[22][8]                           ; Merged with rob_row[46][18]            ;
+; rob_row[51][19]                          ; Merged with rob_row[46][18]            ;
+; rob_row[22][3]                           ; Merged with rob_row[46][17]            ;
+; rob_row[43][13]                          ; Merged with rob_row[46][17]            ;
+; rob_row[22][5]                           ; Merged with rob_row[46][17]            ;
+; rob_row[56][17]                          ; Merged with rob_row[46][17]            ;
+; rob_row[22][7]                           ; Merged with rob_row[46][17]            ;
+; rob_row[43][15]                          ; Merged with rob_row[46][17]            ;
+; rob_row[22][12]                          ; Merged with rob_row[46][17]            ;
+; rob_row[48][13]                          ; Merged with rob_row[46][17]            ;
+; rob_row[22][14]                          ; Merged with rob_row[46][17]            ;
+; rob_row[43][17]                          ; Merged with rob_row[46][17]            ;
+; rob_row[22][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[56][15]                          ; Merged with rob_row[46][17]            ;
+; rob_row[22][18]                          ; Merged with rob_row[46][17]            ;
+; rob_row[43][19]                          ; Merged with rob_row[46][17]            ;
+; rob_row[22][20]                          ; Merged with rob_row[46][17]            ;
+; rob_row[51][18]                          ; Merged with rob_row[46][17]            ;
+; rob_row[21][4]                           ; Merged with rob_row[46][17]            ;
+; rob_row[42][3]                           ; Merged with rob_row[46][17]            ;
+; rob_row[21][6]                           ; Merged with rob_row[46][17]            ;
+; rob_row[56][13]                          ; Merged with rob_row[46][17]            ;
+; rob_row[21][8]                           ; Merged with rob_row[46][17]            ;
+; rob_row[42][5]                           ; Merged with rob_row[46][17]            ;
+; rob_row[21][13]                          ; Merged with rob_row[46][17]            ;
+; rob_row[21][15]                          ; Merged with rob_row[46][17]            ;
+; rob_row[42][7]                           ; Merged with rob_row[46][17]            ;
+; rob_row[21][17]                          ; Merged with rob_row[46][17]            ;
+; rob_row[56][8]                           ; Merged with rob_row[46][17]            ;
+; rob_row[21][19]                          ; Merged with rob_row[46][17]            ;
+; rob_row[42][12]                          ; Merged with rob_row[46][17]            ;
+; rob_row[20][3]                           ; Merged with rob_row[46][17]            ;
+; rob_row[51][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[20][5]                           ; Merged with rob_row[46][17]            ;
+; rob_row[42][14]                          ; Merged with rob_row[46][17]            ;
+; rob_row[20][7]                           ; Merged with rob_row[46][17]            ;
+; rob_row[56][6]                           ; Merged with rob_row[46][17]            ;
+; rob_row[20][12]                          ; Merged with rob_row[46][17]            ;
+; rob_row[42][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[20][14]                          ; Merged with rob_row[46][17]            ;
+; rob_row[48][8]                           ; Merged with rob_row[46][17]            ;
+; rob_row[20][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[42][18]                          ; Merged with rob_row[46][17]            ;
+; rob_row[20][18]                          ; Merged with rob_row[46][17]            ;
+; rob_row[56][4]                           ; Merged with rob_row[46][17]            ;
+; rob_row[20][20]                          ; Merged with rob_row[46][17]            ;
+; rob_row[42][20]                          ; Merged with rob_row[46][17]            ;
+; rob_row[19][4]                           ; Merged with rob_row[46][17]            ;
+; rob_row[51][14]                          ; Merged with rob_row[46][17]            ;
+; rob_row[19][6]                           ; Merged with rob_row[46][17]            ;
+; rob_row[41][4]                           ; Merged with rob_row[46][17]            ;
+; rob_row[19][8]                           ; Merged with rob_row[46][17]            ;
+; rob_row[57][20]                          ; Merged with rob_row[46][17]            ;
+; rob_row[19][13]                          ; Merged with rob_row[46][17]            ;
+; rob_row[41][6]                           ; Merged with rob_row[46][17]            ;
+; rob_row[19][15]                          ; Merged with rob_row[46][17]            ;
+; rob_row[47][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[19][17]                          ; Merged with rob_row[46][17]            ;
+; rob_row[41][8]                           ; Merged with rob_row[46][17]            ;
+; rob_row[19][19]                          ; Merged with rob_row[46][17]            ;
+; rob_row[57][18]                          ; Merged with rob_row[46][17]            ;
+; rob_row[18][3]                           ; Merged with rob_row[46][17]            ;
+; rob_row[41][13]                          ; Merged with rob_row[46][17]            ;
+; rob_row[18][5]                           ; Merged with rob_row[46][17]            ;
+; rob_row[51][12]                          ; Merged with rob_row[46][17]            ;
+; rob_row[18][7]                           ; Merged with rob_row[46][17]            ;
+; rob_row[41][15]                          ; Merged with rob_row[46][17]            ;
+; rob_row[18][12]                          ; Merged with rob_row[46][17]            ;
+; rob_row[57][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[18][14]                          ; Merged with rob_row[46][17]            ;
+; rob_row[41][17]                          ; Merged with rob_row[46][17]            ;
+; rob_row[18][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[48][6]                           ; Merged with rob_row[46][17]            ;
+; rob_row[18][18]                          ; Merged with rob_row[46][17]            ;
+; rob_row[41][19]                          ; Merged with rob_row[46][17]            ;
+; rob_row[18][20]                          ; Merged with rob_row[46][17]            ;
+; rob_row[57][14]                          ; Merged with rob_row[46][17]            ;
+; rob_row[17][4]                           ; Merged with rob_row[46][17]            ;
+; rob_row[40][3]                           ; Merged with rob_row[46][17]            ;
+; rob_row[17][6]                           ; Merged with rob_row[46][17]            ;
+; rob_row[51][7]                           ; Merged with rob_row[46][17]            ;
+; rob_row[17][8]                           ; Merged with rob_row[46][17]            ;
+; rob_row[40][5]                           ; Merged with rob_row[46][17]            ;
+; rob_row[17][13]                          ; Merged with rob_row[46][17]            ;
+; rob_row[57][12]                          ; Merged with rob_row[46][17]            ;
+; rob_row[17][15]                          ; Merged with rob_row[46][17]            ;
+; rob_row[40][7]                           ; Merged with rob_row[46][17]            ;
+; rob_row[17][17]                          ; Merged with rob_row[46][17]            ;
+; rob_row[46][8]                           ; Merged with rob_row[46][17]            ;
+; rob_row[17][19]                          ; Merged with rob_row[46][17]            ;
+; rob_row[40][12]                          ; Merged with rob_row[46][17]            ;
+; rob_row[16][3]                           ; Merged with rob_row[46][17]            ;
+; rob_row[57][7]                           ; Merged with rob_row[46][17]            ;
+; rob_row[16][5]                           ; Merged with rob_row[46][17]            ;
+; rob_row[40][14]                          ; Merged with rob_row[46][17]            ;
+; rob_row[16][7]                           ; Merged with rob_row[46][17]            ;
+; rob_row[51][5]                           ; Merged with rob_row[46][17]            ;
+; rob_row[16][12]                          ; Merged with rob_row[46][17]            ;
+; rob_row[40][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[16][14]                          ; Merged with rob_row[46][17]            ;
+; rob_row[57][5]                           ; Merged with rob_row[46][17]            ;
+; rob_row[16][16]                          ; Merged with rob_row[46][17]            ;
+; rob_row[22][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[43][18]                          ; Merged with rob_row[46][16]            ;
+; rob_row[22][19]                          ; Merged with rob_row[46][16]            ;
+; rob_row[56][14]                          ; Merged with rob_row[46][16]            ;
+; rob_row[21][5]                           ; Merged with rob_row[46][16]            ;
+; rob_row[42][4]                           ; Merged with rob_row[46][16]            ;
+; rob_row[21][12]                          ; Merged with rob_row[46][16]            ;
+; rob_row[46][12]                          ; Merged with rob_row[46][16]            ;
+; rob_row[21][16]                          ; Merged with rob_row[46][16]            ;
+; rob_row[42][8]                           ; Merged with rob_row[46][16]            ;
+; rob_row[21][20]                          ; Merged with rob_row[46][16]            ;
+; rob_row[56][7]                           ; Merged with rob_row[46][16]            ;
+; rob_row[20][6]                           ; Merged with rob_row[46][16]            ;
+; rob_row[42][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[20][13]                          ; Merged with rob_row[46][16]            ;
+; rob_row[51][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[20][17]                          ; Merged with rob_row[46][16]            ;
+; rob_row[42][19]                          ; Merged with rob_row[46][16]            ;
+; rob_row[19][3]                           ; Merged with rob_row[46][16]            ;
+; rob_row[56][3]                           ; Merged with rob_row[46][16]            ;
+; rob_row[19][7]                           ; Merged with rob_row[46][16]            ;
+; rob_row[41][5]                           ; Merged with rob_row[46][16]            ;
+; rob_row[19][14]                          ; Merged with rob_row[46][16]            ;
+; rob_row[48][7]                           ; Merged with rob_row[46][16]            ;
+; rob_row[19][18]                          ; Merged with rob_row[46][16]            ;
+; rob_row[41][12]                          ; Merged with rob_row[46][16]            ;
+; rob_row[18][4]                           ; Merged with rob_row[46][16]            ;
+; rob_row[57][17]                          ; Merged with rob_row[46][16]            ;
+; rob_row[18][8]                           ; Merged with rob_row[46][16]            ;
+; rob_row[41][16]                          ; Merged with rob_row[46][16]            ;
+; rob_row[18][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[51][8]                           ; Merged with rob_row[46][16]            ;
+; rob_row[18][19]                          ; Merged with rob_row[46][16]            ;
+; rob_row[41][20]                          ; Merged with rob_row[46][16]            ;
+; rob_row[17][5]                           ; Merged with rob_row[46][16]            ;
+; rob_row[57][13]                          ; Merged with rob_row[46][16]            ;
+; rob_row[17][12]                          ; Merged with rob_row[46][16]            ;
+; rob_row[40][6]                           ; Merged with rob_row[46][16]            ;
+; rob_row[17][16]                          ; Merged with rob_row[46][16]            ;
+; rob_row[47][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[17][20]                          ; Merged with rob_row[46][16]            ;
+; rob_row[40][13]                          ; Merged with rob_row[46][16]            ;
+; rob_row[16][6]                           ; Merged with rob_row[46][16]            ;
+; rob_row[57][6]                           ; Merged with rob_row[46][16]            ;
+; rob_row[16][13]                          ; Merged with rob_row[46][16]            ;
+; rob_row[40][17]                          ; Merged with rob_row[46][16]            ;
+; rob_row[16][17]                          ; Merged with rob_row[46][16]            ;
+; rob_row[51][4]                           ; Merged with rob_row[46][16]            ;
+; rob_row[15][3]                           ; Merged with rob_row[46][16]            ;
+; rob_row[39][3]                           ; Merged with rob_row[46][16]            ;
+; rob_row[15][7]                           ; Merged with rob_row[46][16]            ;
+; rob_row[58][20]                          ; Merged with rob_row[46][16]            ;
+; rob_row[15][14]                          ; Merged with rob_row[46][16]            ;
+; rob_row[39][7]                           ; Merged with rob_row[46][16]            ;
+; rob_row[15][18]                          ; Merged with rob_row[46][16]            ;
+; rob_row[48][3]                           ; Merged with rob_row[46][16]            ;
+; rob_row[14][4]                           ; Merged with rob_row[46][16]            ;
+; rob_row[39][14]                          ; Merged with rob_row[46][16]            ;
+; rob_row[14][8]                           ; Merged with rob_row[46][16]            ;
+; rob_row[58][16]                          ; Merged with rob_row[46][16]            ;
+; rob_row[14][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[39][18]                          ; Merged with rob_row[46][16]            ;
+; rob_row[14][19]                          ; Merged with rob_row[46][16]            ;
+; rob_row[52][18]                          ; Merged with rob_row[46][16]            ;
+; rob_row[13][5]                           ; Merged with rob_row[46][16]            ;
+; rob_row[38][4]                           ; Merged with rob_row[46][16]            ;
+; rob_row[13][12]                          ; Merged with rob_row[46][16]            ;
+; rob_row[58][12]                          ; Merged with rob_row[46][16]            ;
+; rob_row[13][16]                          ; Merged with rob_row[46][16]            ;
+; rob_row[38][8]                           ; Merged with rob_row[46][16]            ;
+; rob_row[13][20]                          ; Merged with rob_row[46][16]            ;
+; rob_row[12][6]                           ; Merged with rob_row[46][16]            ;
+; rob_row[38][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[12][13]                          ; Merged with rob_row[46][16]            ;
+; rob_row[58][5]                           ; Merged with rob_row[46][16]            ;
+; rob_row[12][17]                          ; Merged with rob_row[46][16]            ;
+; rob_row[38][19]                          ; Merged with rob_row[46][16]            ;
+; rob_row[11][3]                           ; Merged with rob_row[46][16]            ;
+; rob_row[52][14]                          ; Merged with rob_row[46][16]            ;
+; rob_row[11][7]                           ; Merged with rob_row[46][16]            ;
+; rob_row[37][5]                           ; Merged with rob_row[46][16]            ;
+; rob_row[11][14]                          ; Merged with rob_row[46][16]            ;
+; rob_row[59][19]                          ; Merged with rob_row[46][16]            ;
+; rob_row[11][18]                          ; Merged with rob_row[46][16]            ;
+; rob_row[37][12]                          ; Merged with rob_row[46][16]            ;
+; rob_row[10][4]                           ; Merged with rob_row[46][16]            ;
+; rob_row[49][17]                          ; Merged with rob_row[46][16]            ;
+; rob_row[10][8]                           ; Merged with rob_row[46][16]            ;
+; rob_row[37][16]                          ; Merged with rob_row[46][16]            ;
+; rob_row[10][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[59][15]                          ; Merged with rob_row[46][16]            ;
+; rob_row[10][19]                          ; Merged with rob_row[46][16]            ;
+; rob_row[37][20]                          ; Merged with rob_row[46][16]            ;
+; rob_row[9][5]                            ; Merged with rob_row[46][16]            ;
+; rob_row[52][7]                           ; Merged with rob_row[46][16]            ;
+; rob_row[9][12]                           ; Merged with rob_row[46][16]            ;
+; rob_row[36][6]                           ; Merged with rob_row[46][16]            ;
+; rob_row[9][16]                           ; Merged with rob_row[46][16]            ;
+; rob_row[59][8]                           ; Merged with rob_row[46][16]            ;
+; rob_row[9][20]                           ; Merged with rob_row[46][16]            ;
+; rob_row[9][13]                           ; Merged with rob_row[46][15]            ;
+; rob_row[59][12]                          ; Merged with rob_row[46][15]            ;
+; rob_row[9][15]                           ; Merged with rob_row[46][15]            ;
+; rob_row[36][7]                           ; Merged with rob_row[46][15]            ;
+; rob_row[9][17]                           ; Merged with rob_row[46][15]            ;
+; rob_row[52][6]                           ; Merged with rob_row[46][15]            ;
+; rob_row[9][19]                           ; Merged with rob_row[46][15]            ;
+; rob_row[36][12]                          ; Merged with rob_row[46][15]            ;
+; rob_row[8][3]                            ; Merged with rob_row[46][15]            ;
+; rob_row[59][7]                           ; Merged with rob_row[46][15]            ;
+; rob_row[8][5]                            ; Merged with rob_row[46][15]            ;
+; rob_row[36][14]                          ; Merged with rob_row[46][15]            ;
+; rob_row[8][7]                            ; Merged with rob_row[46][15]            ;
+; rob_row[46][6]                           ; Merged with rob_row[46][15]            ;
+; rob_row[8][12]                           ; Merged with rob_row[46][15]            ;
+; rob_row[36][16]                          ; Merged with rob_row[46][15]            ;
+; rob_row[8][14]                           ; Merged with rob_row[46][15]            ;
+; rob_row[59][5]                           ; Merged with rob_row[46][15]            ;
+; rob_row[8][16]                           ; Merged with rob_row[46][15]            ;
+; rob_row[36][18]                          ; Merged with rob_row[46][15]            ;
+; rob_row[8][18]                           ; Merged with rob_row[46][15]            ;
+; rob_row[52][4]                           ; Merged with rob_row[46][15]            ;
+; rob_row[8][20]                           ; Merged with rob_row[46][15]            ;
+; rob_row[36][20]                          ; Merged with rob_row[46][15]            ;
+; rob_row[7][4]                            ; Merged with rob_row[46][15]            ;
+; rob_row[59][3]                           ; Merged with rob_row[46][15]            ;
+; rob_row[7][6]                            ; Merged with rob_row[46][15]            ;
+; rob_row[35][4]                           ; Merged with rob_row[46][15]            ;
+; rob_row[7][8]                            ; Merged with rob_row[46][15]            ;
+; rob_row[49][14]                          ; Merged with rob_row[46][15]            ;
+; rob_row[7][13]                           ; Merged with rob_row[46][15]            ;
+; rob_row[35][6]                           ; Merged with rob_row[46][15]            ;
+; rob_row[7][15]                           ; Merged with rob_row[46][15]            ;
+; rob_row[60][19]                          ; Merged with rob_row[46][15]            ;
+; rob_row[7][17]                           ; Merged with rob_row[46][15]            ;
+; rob_row[35][8]                           ; Merged with rob_row[46][15]            ;
+; rob_row[7][19]                           ; Merged with rob_row[46][15]            ;
+; rob_row[53][20]                          ; Merged with rob_row[46][15]            ;
+; rob_row[6][3]                            ; Merged with rob_row[46][15]            ;
+; rob_row[35][13]                          ; Merged with rob_row[46][15]            ;
+; rob_row[6][5]                            ; Merged with rob_row[46][15]            ;
+; rob_row[60][17]                          ; Merged with rob_row[46][15]            ;
+; rob_row[6][7]                            ; Merged with rob_row[46][15]            ;
+; rob_row[35][15]                          ; Merged with rob_row[46][15]            ;
+; rob_row[6][12]                           ; Merged with rob_row[46][15]            ;
+; rob_row[47][7]                           ; Merged with rob_row[46][15]            ;
+; rob_row[6][14]                           ; Merged with rob_row[46][15]            ;
+; rob_row[35][17]                          ; Merged with rob_row[46][15]            ;
+; rob_row[6][16]                           ; Merged with rob_row[46][15]            ;
+; rob_row[60][15]                          ; Merged with rob_row[46][15]            ;
+; rob_row[6][18]                           ; Merged with rob_row[46][15]            ;
+; rob_row[35][19]                          ; Merged with rob_row[46][15]            ;
+; rob_row[6][20]                           ; Merged with rob_row[46][15]            ;
+; rob_row[53][18]                          ; Merged with rob_row[46][15]            ;
+; rob_row[5][4]                            ; Merged with rob_row[46][15]            ;
+; rob_row[34][3]                           ; Merged with rob_row[46][15]            ;
+; rob_row[5][6]                            ; Merged with rob_row[46][15]            ;
+; rob_row[60][13]                          ; Merged with rob_row[46][15]            ;
+; rob_row[5][8]                            ; Merged with rob_row[46][15]            ;
+; rob_row[34][5]                           ; Merged with rob_row[46][15]            ;
+; rob_row[5][13]                           ; Merged with rob_row[46][15]            ;
+; rob_row[49][12]                          ; Merged with rob_row[46][15]            ;
+; rob_row[5][15]                           ; Merged with rob_row[46][15]            ;
+; rob_row[34][7]                           ; Merged with rob_row[46][15]            ;
+; rob_row[5][17]                           ; Merged with rob_row[46][15]            ;
+; rob_row[60][8]                           ; Merged with rob_row[46][15]            ;
+; rob_row[5][19]                           ; Merged with rob_row[46][15]            ;
+; rob_row[34][12]                          ; Merged with rob_row[46][15]            ;
+; rob_row[4][3]                            ; Merged with rob_row[46][15]            ;
+; rob_row[53][16]                          ; Merged with rob_row[46][15]            ;
+; rob_row[4][5]                            ; Merged with rob_row[46][15]            ;
+; rob_row[34][14]                          ; Merged with rob_row[46][15]            ;
+; rob_row[4][7]                            ; Merged with rob_row[46][15]            ;
+; rob_row[60][6]                           ; Merged with rob_row[46][15]            ;
+; rob_row[4][12]                           ; Merged with rob_row[46][15]            ;
+; rob_row[34][16]                          ; Merged with rob_row[46][15]            ;
+; rob_row[4][14]                           ; Merged with rob_row[46][15]            ;
+; rob_row[4][16]                           ; Merged with rob_row[46][15]            ;
+; rob_row[34][18]                          ; Merged with rob_row[46][15]            ;
+; rob_row[4][18]                           ; Merged with rob_row[46][15]            ;
+; rob_row[60][4]                           ; Merged with rob_row[46][15]            ;
+; rob_row[4][20]                           ; Merged with rob_row[46][15]            ;
+; rob_row[34][20]                          ; Merged with rob_row[46][15]            ;
+; rob_row[3][4]                            ; Merged with rob_row[46][15]            ;
+; rob_row[53][14]                          ; Merged with rob_row[46][15]            ;
+; rob_row[3][6]                            ; Merged with rob_row[46][15]            ;
+; rob_row[33][4]                           ; Merged with rob_row[46][15]            ;
+; rob_row[3][8]                            ; Merged with rob_row[46][15]            ;
+; rob_row[61][20]                          ; Merged with rob_row[46][15]            ;
+; rob_row[3][13]                           ; Merged with rob_row[46][15]            ;
+; rob_row[33][6]                           ; Merged with rob_row[46][15]            ;
+; rob_row[3][15]                           ; Merged with rob_row[46][15]            ;
+; rob_row[49][7]                           ; Merged with rob_row[46][15]            ;
+; rob_row[3][17]                           ; Merged with rob_row[46][15]            ;
+; rob_row[33][8]                           ; Merged with rob_row[46][15]            ;
+; rob_row[3][19]                           ; Merged with rob_row[46][15]            ;
+; rob_row[61][18]                          ; Merged with rob_row[46][15]            ;
+; rob_row[2][3]                            ; Merged with rob_row[46][15]            ;
+; rob_row[33][13]                          ; Merged with rob_row[46][15]            ;
+; rob_row[2][5]                            ; Merged with rob_row[46][15]            ;
+; rob_row[53][12]                          ; Merged with rob_row[46][14]            ;
+; rob_row[2][7]                            ; Merged with rob_row[46][14]            ;
+; rob_row[33][15]                          ; Merged with rob_row[46][14]            ;
+; rob_row[2][12]                           ; Merged with rob_row[46][14]            ;
+; rob_row[61][16]                          ; Merged with rob_row[46][14]            ;
+; rob_row[2][14]                           ; Merged with rob_row[46][14]            ;
+; rob_row[33][17]                          ; Merged with rob_row[46][14]            ;
+; rob_row[2][16]                           ; Merged with rob_row[46][14]            ;
+; rob_row[47][5]                           ; Merged with rob_row[46][14]            ;
+; rob_row[2][18]                           ; Merged with rob_row[46][14]            ;
+; rob_row[33][19]                          ; Merged with rob_row[46][14]            ;
+; rob_row[2][20]                           ; Merged with rob_row[46][14]            ;
+; rob_row[61][14]                          ; Merged with rob_row[46][14]            ;
+; rob_row[1][4]                            ; Merged with rob_row[46][14]            ;
+; rob_row[32][3]                           ; Merged with rob_row[46][14]            ;
+; rob_row[1][6]                            ; Merged with rob_row[46][14]            ;
+; rob_row[53][7]                           ; Merged with rob_row[46][14]            ;
+; rob_row[1][8]                            ; Merged with rob_row[46][14]            ;
+; rob_row[32][5]                           ; Merged with rob_row[46][14]            ;
+; rob_row[1][13]                           ; Merged with rob_row[46][14]            ;
+; rob_row[61][12]                          ; Merged with rob_row[46][14]            ;
+; rob_row[1][15]                           ; Merged with rob_row[46][14]            ;
+; rob_row[32][7]                           ; Merged with rob_row[46][14]            ;
+; rob_row[1][17]                           ; Merged with rob_row[46][14]            ;
+; rob_row[49][5]                           ; Merged with rob_row[46][14]            ;
+; rob_row[1][19]                           ; Merged with rob_row[46][14]            ;
+; rob_row[32][12]                          ; Merged with rob_row[46][14]            ;
+; rob_row[61][7]                           ; Merged with rob_row[46][14]            ;
+; rob_row[53][5]                           ; Merged with rob_row[46][14]            ;
+; rob_row[46][3]                           ; Merged with rob_row[46][14]            ;
+; rob_row[48][20]                          ; Merged with rob_row[46][14]            ;
+; rob_row[50][18]                          ; Merged with rob_row[46][14]            ;
+; rob_row[54][14]                          ; Merged with rob_row[46][14]            ;
+; rob_row[62][3]                           ; Merged with rob_row[46][14]            ;
+; rob_row[29][3]                           ; Merged with rob_row[46][14]            ;
+; rob_row[54][13]                          ; Merged with rob_row[46][13]            ;
+; rob_row[29][8]                           ; Merged with rob_row[46][13]            ;
+; rob_row[63][18]                          ; Merged with rob_row[46][13]            ;
+; rob_row[29][13]                          ; Merged with rob_row[46][13]            ;
+; rob_row[50][17]                          ; Merged with rob_row[46][13]            ;
+; rob_row[29][15]                          ; Merged with rob_row[46][13]            ;
+; rob_row[63][16]                          ; Merged with rob_row[46][13]            ;
+; rob_row[29][17]                          ; Merged with rob_row[46][13]            ;
+; rob_row[54][8]                           ; Merged with rob_row[46][13]            ;
+; rob_row[29][19]                          ; Merged with rob_row[46][13]            ;
+; rob_row[63][14]                          ; Merged with rob_row[46][13]            ;
+; rob_row[28][3]                           ; Merged with rob_row[46][13]            ;
+; rob_row[48][19]                          ; Merged with rob_row[46][13]            ;
+; rob_row[28][5]                           ; Merged with rob_row[46][13]            ;
+; rob_row[63][12]                          ; Merged with rob_row[46][13]            ;
+; rob_row[28][7]                           ; Merged with rob_row[46][13]            ;
+; rob_row[54][6]                           ; Merged with rob_row[46][13]            ;
+; rob_row[28][12]                          ; Merged with rob_row[46][13]            ;
+; rob_row[63][7]                           ; Merged with rob_row[46][13]            ;
+; rob_row[28][14]                          ; Merged with rob_row[46][13]            ;
+; rob_row[50][15]                          ; Merged with rob_row[46][13]            ;
+; rob_row[28][16]                          ; Merged with rob_row[46][13]            ;
+; rob_row[63][5]                           ; Merged with rob_row[46][13]            ;
+; rob_row[28][18]                          ; Merged with rob_row[46][13]            ;
+; rob_row[54][4]                           ; Merged with rob_row[46][13]            ;
+; rob_row[28][20]                          ; Merged with rob_row[46][13]            ;
+; rob_row[63][3]                           ; Merged with rob_row[46][13]            ;
+; rob_row[27][4]                           ; Merged with rob_row[46][13]            ;
+; rob_row[47][20]                          ; Merged with rob_row[46][13]            ;
+; rob_row[27][6]                           ; Merged with rob_row[46][13]            ;
+; rob_row[45][4]                           ; Merged with rob_row[46][13]            ;
+; rob_row[27][8]                           ; Merged with rob_row[46][13]            ;
+; rob_row[55][20]                          ; Merged with rob_row[46][13]            ;
+; rob_row[27][13]                          ; Merged with rob_row[46][13]            ;
+; rob_row[45][6]                           ; Merged with rob_row[46][13]            ;
+; rob_row[27][15]                          ; Merged with rob_row[46][13]            ;
+; rob_row[50][13]                          ; Merged with rob_row[46][13]            ;
+; rob_row[27][17]                          ; Merged with rob_row[46][13]            ;
+; rob_row[45][8]                           ; Merged with rob_row[46][13]            ;
+; rob_row[27][19]                          ; Merged with rob_row[46][13]            ;
+; rob_row[55][18]                          ; Merged with rob_row[46][13]            ;
+; rob_row[26][3]                           ; Merged with rob_row[46][13]            ;
+; rob_row[45][13]                          ; Merged with rob_row[46][13]            ;
+; rob_row[26][5]                           ; Merged with rob_row[46][13]            ;
+; rob_row[48][17]                          ; Merged with rob_row[46][13]            ;
+; rob_row[26][7]                           ; Merged with rob_row[46][13]            ;
+; rob_row[45][15]                          ; Merged with rob_row[46][13]            ;
+; rob_row[26][12]                          ; Merged with rob_row[46][13]            ;
+; rob_row[55][16]                          ; Merged with rob_row[46][13]            ;
+; rob_row[26][14]                          ; Merged with rob_row[46][13]            ;
+; rob_row[45][17]                          ; Merged with rob_row[46][13]            ;
+; rob_row[26][16]                          ; Merged with rob_row[46][13]            ;
+; rob_row[50][8]                           ; Merged with rob_row[46][13]            ;
+; rob_row[26][18]                          ; Merged with rob_row[46][13]            ;
+; rob_row[45][19]                          ; Merged with rob_row[46][13]            ;
+; rob_row[26][20]                          ; Merged with rob_row[46][13]            ;
+; rob_row[55][14]                          ; Merged with rob_row[46][13]            ;
+; rob_row[25][4]                           ; Merged with rob_row[46][13]            ;
+; rob_row[44][3]                           ; Merged with rob_row[46][13]            ;
+; rob_row[25][6]                           ; Merged with rob_row[46][13]            ;
+; rob_row[25][8]                           ; Merged with rob_row[46][13]            ;
+; rob_row[44][5]                           ; Merged with rob_row[46][13]            ;
+; rob_row[25][13]                          ; Merged with rob_row[46][13]            ;
+; rob_row[55][12]                          ; Merged with rob_row[46][13]            ;
+; rob_row[25][15]                          ; Merged with rob_row[46][13]            ;
+; rob_row[44][7]                           ; Merged with rob_row[46][13]            ;
+; rob_row[25][17]                          ; Merged with rob_row[46][13]            ;
+; rob_row[50][6]                           ; Merged with rob_row[46][13]            ;
+; rob_row[25][19]                          ; Merged with rob_row[46][13]            ;
+; rob_row[44][12]                          ; Merged with rob_row[46][13]            ;
+; rob_row[24][3]                           ; Merged with rob_row[46][13]            ;
+; rob_row[55][7]                           ; Merged with rob_row[46][13]            ;
+; rob_row[24][5]                           ; Merged with rob_row[46][13]            ;
+; rob_row[44][14]                          ; Merged with rob_row[46][13]            ;
+; rob_row[24][7]                           ; Merged with rob_row[46][13]            ;
+; rob_row[48][15]                          ; Merged with rob_row[46][13]            ;
+; rob_row[24][12]                          ; Merged with rob_row[46][13]            ;
+; rob_row[44][16]                          ; Merged with rob_row[46][13]            ;
+; rob_row[24][14]                          ; Merged with rob_row[46][13]            ;
+; rob_row[55][5]                           ; Merged with rob_row[46][13]            ;
+; rob_row[24][16]                          ; Merged with rob_row[46][13]            ;
+; rob_row[44][18]                          ; Merged with rob_row[46][13]            ;
+; rob_row[24][18]                          ; Merged with rob_row[46][13]            ;
+; rob_row[50][4]                           ; Merged with rob_row[46][13]            ;
+; rob_row[24][20]                          ; Merged with rob_row[46][13]            ;
+; rob_row[44][20]                          ; Merged with rob_row[46][13]            ;
+; rob_row[23][4]                           ; Merged with rob_row[46][13]            ;
+; rob_row[55][3]                           ; Merged with rob_row[46][13]            ;
+; rob_row[23][6]                           ; Merged with rob_row[46][13]            ;
+; rob_row[43][4]                           ; Merged with rob_row[46][13]            ;
+; rob_row[23][8]                           ; Merged with rob_row[46][13]            ;
+; rob_row[47][18]                          ; Merged with rob_row[46][13]            ;
+; rob_row[23][13]                          ; Merged with rob_row[46][13]            ;
+; rob_row[43][6]                           ; Merged with rob_row[46][13]            ;
+; rob_row[23][15]                          ; Merged with rob_row[46][13]            ;
+; rob_row[56][19]                          ; Merged with rob_row[46][13]            ;
+; rob_row[23][17]                          ; Merged with rob_row[46][13]            ;
+; rob_row[43][8]                           ; Merged with rob_row[46][13]            ;
+; rob_row[23][19]                          ; Merged with rob_row[46][13]            ;
+; rob_row[51][20]                          ; Merged with rob_row[46][13]            ;
+; rob_row[36][13]                          ; Merged with rob_row[46][5]             ;
+; rob_row[8][6]                            ; Merged with rob_row[46][5]             ;
+; rob_row[47][8]                           ; Merged with rob_row[46][5]             ;
+; rob_row[8][13]                           ; Merged with rob_row[46][5]             ;
+; rob_row[36][17]                          ; Merged with rob_row[46][5]             ;
+; rob_row[8][17]                           ; Merged with rob_row[46][5]             ;
+; rob_row[59][4]                           ; Merged with rob_row[46][5]             ;
+; rob_row[7][3]                            ; Merged with rob_row[46][5]             ;
+; rob_row[35][3]                           ; Merged with rob_row[46][5]             ;
+; rob_row[7][7]                            ; Merged with rob_row[46][5]             ;
+; rob_row[52][3]                           ; Merged with rob_row[46][5]             ;
+; rob_row[7][14]                           ; Merged with rob_row[46][5]             ;
+; rob_row[35][7]                           ; Merged with rob_row[46][5]             ;
+; rob_row[7][18]                           ; Merged with rob_row[46][5]             ;
+; rob_row[60][18]                          ; Merged with rob_row[46][5]             ;
+; rob_row[6][4]                            ; Merged with rob_row[46][5]             ;
+; rob_row[35][14]                          ; Merged with rob_row[46][5]             ;
+; rob_row[6][8]                            ; Merged with rob_row[46][5]             ;
+; rob_row[49][13]                          ; Merged with rob_row[46][5]             ;
+; rob_row[6][15]                           ; Merged with rob_row[46][5]             ;
+; rob_row[35][18]                          ; Merged with rob_row[46][5]             ;
+; rob_row[6][19]                           ; Merged with rob_row[46][5]             ;
+; rob_row[60][14]                          ; Merged with rob_row[46][5]             ;
+; rob_row[5][5]                            ; Merged with rob_row[46][5]             ;
+; rob_row[34][4]                           ; Merged with rob_row[46][5]             ;
+; rob_row[5][12]                           ; Merged with rob_row[46][5]             ;
+; rob_row[53][17]                          ; Merged with rob_row[46][5]             ;
+; rob_row[5][16]                           ; Merged with rob_row[46][5]             ;
+; rob_row[34][8]                           ; Merged with rob_row[46][5]             ;
+; rob_row[5][20]                           ; Merged with rob_row[46][5]             ;
+; rob_row[60][7]                           ; Merged with rob_row[46][5]             ;
+; rob_row[4][6]                            ; Merged with rob_row[46][5]             ;
+; rob_row[34][15]                          ; Merged with rob_row[46][5]             ;
+; rob_row[4][13]                           ; Merged with rob_row[46][5]             ;
+; rob_row[4][17]                           ; Merged with rob_row[46][5]             ;
+; rob_row[34][19]                          ; Merged with rob_row[46][5]             ;
+; rob_row[3][3]                            ; Merged with rob_row[46][5]             ;
+; rob_row[60][3]                           ; Merged with rob_row[46][5]             ;
+; rob_row[3][7]                            ; Merged with rob_row[46][5]             ;
+; rob_row[33][5]                           ; Merged with rob_row[46][5]             ;
+; rob_row[3][14]                           ; Merged with rob_row[46][5]             ;
+; rob_row[53][13]                          ; Merged with rob_row[46][5]             ;
+; rob_row[3][18]                           ; Merged with rob_row[46][5]             ;
+; rob_row[33][12]                          ; Merged with rob_row[46][5]             ;
+; rob_row[2][4]                            ; Merged with rob_row[46][5]             ;
+; rob_row[61][17]                          ; Merged with rob_row[46][5]             ;
+; rob_row[2][8]                            ; Merged with rob_row[46][5]             ;
+; rob_row[33][16]                          ; Merged with rob_row[46][5]             ;
+; rob_row[2][15]                           ; Merged with rob_row[46][5]             ;
+; rob_row[49][6]                           ; Merged with rob_row[46][5]             ;
+; rob_row[2][19]                           ; Merged with rob_row[46][5]             ;
+; rob_row[33][20]                          ; Merged with rob_row[46][5]             ;
+; rob_row[1][5]                            ; Merged with rob_row[46][5]             ;
+; rob_row[61][13]                          ; Merged with rob_row[46][5]             ;
+; rob_row[1][12]                           ; Merged with rob_row[46][5]             ;
+; rob_row[32][6]                           ; Merged with rob_row[46][5]             ;
+; rob_row[1][16]                           ; Merged with rob_row[46][5]             ;
+; rob_row[53][6]                           ; Merged with rob_row[46][5]             ;
+; rob_row[1][20]                           ; Merged with rob_row[46][5]             ;
+; rob_row[46][4]                           ; Merged with rob_row[46][5]             ;
+; rob_row[32][14]                          ; Merged with rob_row[46][5]             ;
+; rob_row[47][4]                           ; Merged with rob_row[46][5]             ;
+; rob_row[32][16]                          ; Merged with rob_row[46][5]             ;
+; rob_row[61][5]                           ; Merged with rob_row[46][5]             ;
+; rob_row[32][18]                          ; Merged with rob_row[46][5]             ;
+; rob_row[49][4]                           ; Merged with rob_row[46][5]             ;
+; rob_row[32][20]                          ; Merged with rob_row[46][5]             ;
+; rob_row[61][3]                           ; Merged with rob_row[46][5]             ;
+; rob_row[31][4]                           ; Merged with rob_row[46][5]             ;
+; rob_row[53][3]                           ; Merged with rob_row[46][5]             ;
+; rob_row[31][6]                           ; Merged with rob_row[46][5]             ;
+; rob_row[62][19]                          ; Merged with rob_row[46][5]             ;
+; rob_row[31][8]                           ; Merged with rob_row[46][5]             ;
+; rob_row[49][3]                           ; Merged with rob_row[46][5]             ;
+; rob_row[31][13]                          ; Merged with rob_row[46][5]             ;
+; rob_row[62][17]                          ; Merged with rob_row[46][5]             ;
+; rob_row[31][15]                          ; Merged with rob_row[46][5]             ;
+; rob_row[54][19]                          ; Merged with rob_row[46][5]             ;
+; rob_row[31][17]                          ; Merged with rob_row[46][5]             ;
+; rob_row[62][15]                          ; Merged with rob_row[46][5]             ;
+; rob_row[31][19]                          ; Merged with rob_row[46][5]             ;
+; rob_row[47][3]                           ; Merged with rob_row[46][5]             ;
+; rob_row[30][3]                           ; Merged with rob_row[46][5]             ;
+; rob_row[62][13]                          ; Merged with rob_row[46][5]             ;
+; rob_row[30][5]                           ; Merged with rob_row[46][5]             ;
+; rob_row[54][17]                          ; Merged with rob_row[46][5]             ;
+; rob_row[30][7]                           ; Merged with rob_row[46][5]             ;
+; rob_row[62][8]                           ; Merged with rob_row[46][5]             ;
+; rob_row[30][12]                          ; Merged with rob_row[46][5]             ;
+; rob_row[50][19]                          ; Merged with rob_row[46][5]             ;
+; rob_row[30][14]                          ; Merged with rob_row[46][5]             ;
+; rob_row[62][6]                           ; Merged with rob_row[46][5]             ;
+; rob_row[30][16]                          ; Merged with rob_row[46][5]             ;
+; rob_row[54][15]                          ; Merged with rob_row[46][5]             ;
+; rob_row[30][18]                          ; Merged with rob_row[46][5]             ;
+; rob_row[62][4]                           ; Merged with rob_row[46][5]             ;
+; rob_row[29][4]                           ; Merged with rob_row[46][5]             ;
+; rob_row[30][20]                          ; Merged with rob_row[46][5]             ;
+; rob_row[63][20]                          ; Merged with rob_row[46][5]             ;
+; rob_row[29][6]                           ; Merged with rob_row[46][5]             ;
+; rob_row[21][14]                          ; Merged with rob_row[47][13]            ;
+; rob_row[12][4]                           ; Merged with rob_row[47][13]            ;
+; rob_row[38][13]                          ; Merged with rob_row[47][13]            ;
+; rob_row[25][7]                           ; Merged with rob_row[47][13]            ;
+; rob_row[4][15]                           ; Merged with rob_row[47][13]            ;
+; rob_row[42][6]                           ; Merged with rob_row[47][13]            ;
+; rob_row[17][18]                          ; Merged with rob_row[47][13]            ;
+; rob_row[58][7]                           ; Merged with rob_row[47][13]            ;
+; rob_row[8][8]                            ; Merged with rob_row[47][13]            ;
+; rob_row[34][17]                          ; Merged with rob_row[47][13]            ;
+; rob_row[27][5]                           ; Merged with rob_row[47][13]            ;
+; rob_row[32][19]                          ; Merged with rob_row[47][13]            ;
+; rob_row[44][4]                           ; Merged with rob_row[47][13]            ;
+; rob_row[23][12]                          ; Merged with rob_row[47][13]            ;
+; rob_row[56][12]                          ; Merged with rob_row[47][13]            ;
+; rob_row[19][16]                          ; Merged with rob_row[47][13]            ;
+; rob_row[40][8]                           ; Merged with rob_row[47][13]            ;
+; rob_row[15][20]                          ; Merged with rob_row[47][13]            ;
+; rob_row[52][16]                          ; Merged with rob_row[47][13]            ;
+; rob_row[10][6]                           ; Merged with rob_row[47][13]            ;
+; rob_row[36][15]                          ; Merged with rob_row[47][13]            ;
+; rob_row[6][13]                           ; Merged with rob_row[47][13]            ;
+; rob_row[60][5]                           ; Merged with rob_row[47][13]            ;
+; rob_row[2][17]                           ; Merged with rob_row[47][13]            ;
+; rob_row[61][4]                           ; Merged with rob_row[47][13]            ;
+; rob_row[28][4]                           ; Merged with rob_row[47][13]            ;
+; rob_row[31][20]                          ; Merged with rob_row[47][13]            ;
+; rob_row[45][3]                           ; Merged with rob_row[47][13]            ;
+; rob_row[26][6]                           ; Merged with rob_row[47][13]            ;
+; rob_row[55][13]                          ; Merged with rob_row[47][13]            ;
+; rob_row[24][8]                           ; Merged with rob_row[47][13]            ;
+; rob_row[43][5]                           ; Merged with rob_row[47][13]            ;
+; rob_row[22][13]                          ; Merged with rob_row[47][13]            ;
+; rob_row[51][17]                          ; Merged with rob_row[47][13]            ;
+; rob_row[20][15]                          ; Merged with rob_row[47][13]            ;
+; rob_row[41][7]                           ; Merged with rob_row[47][13]            ;
+; rob_row[18][17]                          ; Merged with rob_row[47][13]            ;
+; rob_row[57][8]                           ; Merged with rob_row[47][13]            ;
+; rob_row[16][19]                          ; Merged with rob_row[47][13]            ;
+; rob_row[39][12]                          ; Merged with rob_row[47][13]            ;
+; rob_row[13][3]                           ; Merged with rob_row[47][13]            ;
+; rob_row[49][19]                          ; Merged with rob_row[47][13]            ;
+; rob_row[11][5]                           ; Merged with rob_row[47][13]            ;
+; rob_row[37][14]                          ; Merged with rob_row[47][13]            ;
+; rob_row[9][7]                            ; Merged with rob_row[47][13]            ;
+; rob_row[59][6]                           ; Merged with rob_row[47][13]            ;
+; rob_row[7][12]                           ; Merged with rob_row[47][13]            ;
+; rob_row[35][16]                          ; Merged with rob_row[47][13]            ;
+; rob_row[5][14]                           ; Merged with rob_row[47][13]            ;
+; rob_row[53][15]                          ; Merged with rob_row[47][13]            ;
+; rob_row[3][16]                           ; Merged with rob_row[47][13]            ;
+; rob_row[33][18]                          ; Merged with rob_row[47][13]            ;
+; rob_row[1][18]                           ; Merged with rob_row[47][13]            ;
+; rob_row[53][4]                           ; Merged with rob_row[47][13]            ;
+; rob_row[31][12]                          ; Merged with rob_row[47][13]            ;
+; rob_row[62][14]                          ; Merged with rob_row[47][13]            ;
+; rob_row[29][14]                          ; Merged with rob_row[47][13]            ;
+; rob_row[30][13]                          ; Merged with rob_row[47][13]            ;
+; rob_row[63][13]                          ; Merged with rob_row[47][13]            ;
+; rob_row[28][15]                          ; Merged with rob_row[47][13]            ;
+; rob_row[54][3]                           ; Merged with rob_row[47][13]            ;
+; rob_row[27][16]                          ; Merged with rob_row[47][13]            ;
+; rob_row[45][14]                          ; Merged with rob_row[47][13]            ;
+; rob_row[26][17]                          ; Merged with rob_row[47][13]            ;
+; rob_row[50][7]                           ; Merged with rob_row[47][13]            ;
+; rob_row[25][18]                          ; Merged with rob_row[47][13]            ;
+; rob_row[44][15]                          ; Merged with rob_row[47][13]            ;
+; rob_row[24][19]                          ; Merged with rob_row[47][13]            ;
+; rob_row[56][20]                          ; Merged with rob_row[47][13]            ;
+; rob_row[23][20]                          ; Merged with rob_row[47][13]            ;
+; rob_row[43][16]                          ; Merged with rob_row[47][13]            ;
+; rob_row[21][3]                           ; Merged with rob_row[47][13]            ;
+; rob_row[48][12]                          ; Merged with rob_row[47][13]            ;
+; rob_row[20][4]                           ; Merged with rob_row[47][13]            ;
+; rob_row[42][17]                          ; Merged with rob_row[47][13]            ;
+; rob_row[19][5]                           ; Merged with rob_row[47][13]            ;
+; rob_row[57][19]                          ; Merged with rob_row[47][13]            ;
+; rob_row[18][6]                           ; Merged with rob_row[47][13]            ;
+; rob_row[41][18]                          ; Merged with rob_row[47][13]            ;
+; rob_row[17][7]                           ; Merged with rob_row[47][13]            ;
+; rob_row[51][6]                           ; Merged with rob_row[47][13]            ;
+; rob_row[16][8]                           ; Merged with rob_row[47][13]            ;
+; rob_row[40][19]                          ; Merged with rob_row[47][13]            ;
+; rob_row[15][12]                          ; Merged with rob_row[47][13]            ;
+; rob_row[58][18]                          ; Merged with rob_row[47][13]            ;
+; rob_row[14][13]                          ; Merged with rob_row[47][13]            ;
+; rob_row[39][20]                          ; Merged with rob_row[47][13]            ;
+; rob_row[13][14]                          ; Merged with rob_row[47][13]            ;
+; rob_row[12][15]                          ; Merged with rob_row[47][13]            ;
+; rob_row[37][3]                           ; Merged with rob_row[47][13]            ;
+; rob_row[11][16]                          ; Merged with rob_row[47][13]            ;
+; rob_row[59][17]                          ; Merged with rob_row[47][13]            ;
+; rob_row[10][17]                          ; Merged with rob_row[47][13]            ;
+; rob_row[36][4]                           ; Merged with rob_row[47][13]            ;
+; rob_row[9][18]                           ; Merged with rob_row[47][13]            ;
+; rob_row[52][5]                           ; Merged with rob_row[47][13]            ;
+; rob_row[8][19]                           ; Merged with rob_row[47][13]            ;
+; rob_row[35][5]                           ; Merged with rob_row[47][13]            ;
+; rob_row[7][20]                           ; Merged with rob_row[47][13]            ;
+; rob_row[60][16]                          ; Merged with rob_row[47][13]            ;
+; rob_row[46][5]                           ; Merged with rob_row[46][20]            ;
+; rob_row[46][16]                          ; Merged with rob_row[46][20]            ;
+; rob_row[46][19]                          ; Merged with rob_row[46][20]            ;
+; rob_row[46][13]                          ; Merged with rob_row[46][20]            ;
+; rob_row[46][15]                          ; Merged with rob_row[46][20]            ;
+; rob_row[46][17]                          ; Merged with rob_row[46][20]            ;
+; rob_row[47][13]                          ; Merged with rob_row[46][20]            ;
+; rob_row[46][18]                          ; Merged with rob_row[46][20]            ;
+; rob_row[46][14]                          ; Merged with rob_row[46][20]            ;
+; rob_row[46][20]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[1][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[2][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[3][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[4][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[5][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[6][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[7][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[8][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[9][21]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[10][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[11][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[12][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[13][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[14][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[15][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[16][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[17][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[18][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[19][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[20][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[21][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[22][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[23][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[24][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[25][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[26][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[27][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[28][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[29][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[30][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[31][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[32][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[33][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[34][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[35][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[36][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[37][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[38][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[39][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[40][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[41][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[42][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[43][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[44][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[45][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[46][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[47][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[48][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[49][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[50][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[51][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[52][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[53][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[54][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[55][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[56][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[57][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[58][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[59][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[60][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[61][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[62][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[63][21]                          ; Stuck at GND due to stuck port data_in ;
+; rob_row[2][2]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[34][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[18][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[50][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[10][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[42][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[26][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[58][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[6][2]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[38][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[22][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[54][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[14][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[46][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[30][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[62][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[33][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[17][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[49][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[9][2]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[41][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[25][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[57][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[5][2]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[37][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[21][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[53][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[13][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[45][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[29][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[61][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[3][2]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[35][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[19][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[51][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[11][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[43][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[27][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[59][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[7][2]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[39][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[23][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[55][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[15][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[47][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[31][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[63][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[16][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[48][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[8][2]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[40][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[24][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[56][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[32][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[4][2]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[36][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[20][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[52][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[12][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[44][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[28][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[60][2]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[2][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[34][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[18][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[50][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[10][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[42][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[26][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[58][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[6][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[38][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[22][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[54][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[14][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[46][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[30][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[62][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[1][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[33][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[17][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[49][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[9][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[41][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[25][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[57][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[5][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[37][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[21][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[53][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[13][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[45][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[29][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[61][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[3][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[35][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[19][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[51][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[11][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[43][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[27][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[59][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[7][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[39][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[23][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[55][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[15][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[47][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[31][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[63][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[16][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[48][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[8][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[40][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[24][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[56][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[32][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[4][0]                            ; Stuck at GND due to stuck port data_in ;
+; rob_row[36][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[20][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[52][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[12][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[44][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[28][0]                           ; Stuck at GND due to stuck port data_in ;
+; rob_row[60][0]                           ; Stuck at GND due to stuck port data_in ;
+; valid_retire2~reg0                       ; Stuck at GND due to stuck port sclear  ;
+; retire_store[1]~reg0                     ; Stuck at GND due to stuck port sclear  ;
+; head_plus_is_store                       ; Lost fanout                            ;
+; valid_retire_load2~reg0                  ; Stuck at GND due to stuck port sclear  ;
+; head_plus_is_load                        ; Lost fanout                            ;
+; head[1..5]                               ; Stuck at GND due to stuck port data_in ;
+; retire_word2[0]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_word2[1]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_word2[2]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_word2[3]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_word2[4]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_word2[5]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_load2[0]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_load2[1]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_load2[2]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_load2[3]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; retire_load2[4]~reg0                     ; Stuck at GND due to stuck port data_in ;
+; Total Number of Removed Registers = 1223 ;                                        ;
++------------------------------------------+----------------------------------------+
+
+
++---------------------------------------------------------------------------------------------------------------------------------------+
+; Removed Registers Triggering Further Register Optimizations                                                                           ;
++-----------------+---------------------------+-----------------------------------------------------------------------------------------+
+; Register name   ; Reason for Removal        ; Registers Removed due to This Register                                                  ;
++-----------------+---------------------------+-----------------------------------------------------------------------------------------+
+; rob_row[46][20] ; Stuck at GND              ; rob_row[2][2], rob_row[18][2], rob_row[50][2], rob_row[10][2], rob_row[42][2],          ;
+;                 ; due to stuck port data_in ; rob_row[26][2], rob_row[58][2], rob_row[6][2], rob_row[38][2], rob_row[22][2],          ;
+;                 ;                           ; rob_row[54][2], rob_row[14][2], rob_row[46][2], rob_row[30][2], rob_row[62][2],         ;
+;                 ;                           ; rob_row[33][2], rob_row[17][2], rob_row[49][2], rob_row[9][2], rob_row[25][2],          ;
+;                 ;                           ; rob_row[57][2], rob_row[5][2], rob_row[37][2], rob_row[21][2], rob_row[53][2],          ;
+;                 ;                           ; rob_row[13][2], rob_row[45][2], rob_row[29][2], rob_row[3][2], rob_row[35][2],          ;
+;                 ;                           ; rob_row[19][2], rob_row[51][2], rob_row[11][2], rob_row[43][2], rob_row[27][2],         ;
+;                 ;                           ; rob_row[59][2], rob_row[7][2], rob_row[39][2], rob_row[23][2], rob_row[55][2],          ;
+;                 ;                           ; rob_row[15][2], rob_row[47][2], rob_row[31][2], rob_row[63][2], rob_row[16][2],         ;
+;                 ;                           ; rob_row[48][2], rob_row[8][2], rob_row[40][2], rob_row[24][2], rob_row[56][2],          ;
+;                 ;                           ; rob_row[32][2], rob_row[4][2], rob_row[20][2], rob_row[52][2], rob_row[12][2],          ;
+;                 ;                           ; rob_row[44][2], rob_row[28][2], retire_word2[0]~reg0, retire_word2[1]~reg0,             ;
+;                 ;                           ; retire_word2[2]~reg0, retire_word2[3]~reg0, retire_word2[4]~reg0, retire_word2[5]~reg0, ;
+;                 ;                           ; retire_load2[0]~reg0, retire_load2[1]~reg0, retire_load2[2]~reg0, retire_load2[3]~reg0, ;
+;                 ;                           ; retire_load2[4]~reg0                                                                    ;
+; tail[0]         ; Stuck at GND              ; rob_row[57][1], rob_row[58][1], rob_row[59][1], rob_row[60][1], rob_row[61][1],         ;
+;                 ; due to stuck port data_in ; rob_row[62][1], rob_row[63][1], rob_row[61][2], rob_row[60][2]                          ;
+; rob_row[1][21]  ; Stuck at GND              ; rob_row[1][0], retire_store[1]~reg0, valid_retire_load2~reg0, head_plus_is_load         ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[45][1]  ; Stuck at GND              ; valid_retire2~reg0, head_plus_is_store                                                  ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[33][21] ; Stuck at GND              ; rob_row[34][2], rob_row[33][0]                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[35][21] ; Stuck at GND              ; rob_row[36][2], rob_row[35][0]                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[40][21] ; Stuck at GND              ; rob_row[41][2], rob_row[40][0]                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[46][21] ; Stuck at GND              ; rob_row[46][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[63][21] ; Stuck at GND              ; rob_row[63][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[34][21] ; Stuck at GND              ; rob_row[34][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[62][21] ; Stuck at GND              ; rob_row[62][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[36][21] ; Stuck at GND              ; rob_row[36][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[37][21] ; Stuck at GND              ; rob_row[37][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[38][21] ; Stuck at GND              ; rob_row[38][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[39][21] ; Stuck at GND              ; rob_row[39][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[61][21] ; Stuck at GND              ; rob_row[61][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[41][21] ; Stuck at GND              ; rob_row[41][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[42][21] ; Stuck at GND              ; rob_row[42][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[43][21] ; Stuck at GND              ; rob_row[43][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[44][21] ; Stuck at GND              ; rob_row[44][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[45][21] ; Stuck at GND              ; rob_row[45][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[60][21] ; Stuck at GND              ; rob_row[60][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[47][21] ; Stuck at GND              ; rob_row[47][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[48][21] ; Stuck at GND              ; rob_row[48][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[49][21] ; Stuck at GND              ; rob_row[49][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[50][21] ; Stuck at GND              ; rob_row[50][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[51][21] ; Stuck at GND              ; rob_row[51][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[52][21] ; Stuck at GND              ; rob_row[52][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[53][21] ; Stuck at GND              ; rob_row[53][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[54][21] ; Stuck at GND              ; rob_row[54][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[55][21] ; Stuck at GND              ; rob_row[55][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[56][21] ; Stuck at GND              ; rob_row[56][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[57][21] ; Stuck at GND              ; rob_row[57][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[58][21] ; Stuck at GND              ; rob_row[58][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[59][21] ; Stuck at GND              ; rob_row[59][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[17][21] ; Stuck at GND              ; rob_row[17][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[2][21]  ; Stuck at GND              ; rob_row[2][0]                                                                           ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[3][21]  ; Stuck at GND              ; rob_row[3][0]                                                                           ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[4][21]  ; Stuck at GND              ; rob_row[4][0]                                                                           ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[5][21]  ; Stuck at GND              ; rob_row[5][0]                                                                           ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[6][21]  ; Stuck at GND              ; rob_row[6][0]                                                                           ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[7][21]  ; Stuck at GND              ; rob_row[7][0]                                                                           ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[8][21]  ; Stuck at GND              ; rob_row[8][0]                                                                           ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[9][21]  ; Stuck at GND              ; rob_row[9][0]                                                                           ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[10][21] ; Stuck at GND              ; rob_row[10][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[11][21] ; Stuck at GND              ; rob_row[11][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[12][21] ; Stuck at GND              ; rob_row[12][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[13][21] ; Stuck at GND              ; rob_row[13][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[14][21] ; Stuck at GND              ; rob_row[14][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[15][21] ; Stuck at GND              ; rob_row[15][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[16][21] ; Stuck at GND              ; rob_row[16][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[32][21] ; Stuck at GND              ; rob_row[32][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[18][21] ; Stuck at GND              ; rob_row[18][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[19][21] ; Stuck at GND              ; rob_row[19][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[20][21] ; Stuck at GND              ; rob_row[20][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[21][21] ; Stuck at GND              ; rob_row[21][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[22][21] ; Stuck at GND              ; rob_row[22][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[23][21] ; Stuck at GND              ; rob_row[23][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[24][21] ; Stuck at GND              ; rob_row[24][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[25][21] ; Stuck at GND              ; rob_row[25][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[26][21] ; Stuck at GND              ; rob_row[26][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[27][21] ; Stuck at GND              ; rob_row[27][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[28][21] ; Stuck at GND              ; rob_row[28][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[29][21] ; Stuck at GND              ; rob_row[29][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[30][21] ; Stuck at GND              ; rob_row[30][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
+; rob_row[31][21] ; Stuck at GND              ; rob_row[31][0]                                                                          ;
+;                 ; due to stuck port data_in ;                                                                                         ;
++-----------------+---------------------------+-----------------------------------------------------------------------------------------+
+
+
++------------------------------------------------------+
+; General Register Statistics                          ;
++----------------------------------------------+-------+
+; Statistic                                    ; Value ;
++----------------------------------------------+-------+
+; Total registers                              ; 60    ;
+; Number of registers using Synchronous Clear  ; 1     ;
+; Number of registers using Synchronous Load   ; 0     ;
+; Number of registers using Asynchronous Clear ; 0     ;
+; Number of registers using Asynchronous Load  ; 0     ;
+; Number of registers using Clock Enable       ; 10    ;
+; Number of registers using Preset             ; 0     ;
++----------------------------------------------+-------+
+
+
++--------------------------------------------------+
+; Inverted Register Statistics                     ;
++----------------------------------------+---------+
+; Inverted Register                      ; Fan out ;
++----------------------------------------+---------+
+; jump_tag[2]                            ; 4       ;
+; jump_tag[3]                            ; 4       ;
+; jump_tag[4]                            ; 4       ;
+; jump_tag[0]                            ; 2       ;
+; jump_tag[1]                            ; 2       ;
+; Total number of inverted registers = 5 ;         ;
++----------------------------------------+---------+
+
+
++----------------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                     ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+--------------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output           ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+--------------------------------------+
+; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |testing_rob|valid_retire_load1~reg0 ;
+; 3:1                ; 5 bits    ; 10 LEs        ; 5 LEs                ; 5 LEs                  ; Yes        ; |testing_rob|head[5]                 ;
+; 134:1              ; 5 bits    ; 445 LEs       ; 15 LEs               ; 430 LEs                ; Yes        ; |testing_rob|jump_location[0]        ;
+; 135:1              ; 5 bits    ; 450 LEs       ; 15 LEs               ; 435 LEs                ; Yes        ; |testing_rob|jump_tag[0]             ;
+; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |testing_rob|Mux0                    ;
+; 7:1                ; 2 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; No         ; |testing_rob|Mux0                    ;
+; 7:1                ; 2 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; No         ; |testing_rob|Mux1                    ;
+; 8:1                ; 2 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; No         ; |testing_rob|Mux0                    ;
+; 16:1               ; 2 bits    ; 20 LEs        ; 20 LEs               ; 0 LEs                  ; No         ; |testing_rob|Mux0                    ;
+; 32:1               ; 2 bits    ; 42 LEs        ; 42 LEs               ; 0 LEs                  ; No         ; |testing_rob|Mux0                    ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+--------------------------------------+
+
+
++-----------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: Top-level Entity: |Testing_ROB ;
++----------------+-------+----------------------------------------------------+
+; Parameter Name ; Value ; Type                                               ;
++----------------+-------+----------------------------------------------------+
+; len_PC         ; 5     ; Signed Integer                                     ;
+; len_RRF        ; 6     ; Signed Integer                                     ;
+; len_ARF        ; 3     ; Signed Integer                                     ;
+; len_op         ; 4     ; Signed Integer                                     ;
+; size_rob       ; 64    ; Signed Integer                                     ;
+; log_size_rob   ; 6     ; Signed Integer                                     ;
+; row_len        ; 22    ; Signed Integer                                     ;
++----------------+-------+----------------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------+
+; Post-Synthesis Netlist Statistics for Top Partition ;
++-----------------------+-----------------------------+
+; Type                  ; Count                       ;
++-----------------------+-----------------------------+
+; boundary_port         ; 148                         ;
+; cycloneiii_ff         ; 60                          ;
+;     ENA               ; 10                          ;
+;     SCLR              ; 1                           ;
+;     plain             ; 49                          ;
+; cycloneiii_lcell_comb ; 123                         ;
+;     normal            ; 123                         ;
+;         0 data inputs ; 1                           ;
+;         2 data inputs ; 21                          ;
+;         3 data inputs ; 30                          ;
+;         4 data inputs ; 71                          ;
+;                       ;                             ;
+; Max LUT depth         ; 10.00                       ;
+; Average LUT depth     ; 5.60                        ;
++-----------------------+-----------------------------+
+
+
++-------------------------------+
+; Elapsed Time Per Partition    ;
++----------------+--------------+
+; Partition Name ; Elapsed Time ;
++----------------+--------------+
+; Top            ; 00:00:11     ;
++----------------+--------------+
+
+
++-------------------------------+
+; Analysis & Synthesis Messages ;
++-------------------------------+
+Info: *******************************************************************
+Info: Running Quartus Prime Analysis & Synthesis
+    Info: Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
+    Info: Processing started: Sun Dec  3 01:59:09 2023
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off Testing_ROB -c Testing_ROB
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
+Info (12021): Found 2 design units, including 1 entities, in source file /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl
+    Info (12022): Found design unit 1: testing_rob-Struct File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 49
+    Info (12023): Found entity 1: testing_rob File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 6
+Info (12127): Elaborating entity "Testing_ROB" for the top level hierarchy
+Warning (13024): Output pins are stuck at VCC or GND
+    Warning (13410): Pin "retire_word2[0]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_word2[1]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_word2[2]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_word2[3]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_word2[4]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_word2[5]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "valid_retire2" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 28
+    Warning (13410): Pin "retire_store[1]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_load2[0]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_load2[1]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_load2[2]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_load2[3]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "retire_load2[4]" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 79
+    Warning (13410): Pin "valid_retire_load2" is stuck at GND File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 39
+Info (286030): Timing-Driven Synthesis is running
+Info (17049): 2 registers lost all their fanouts during netlist optimizations.
+Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
+    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
+Warning (21074): Design contains 23 input pin(s) that do not drive logic
+    Warning (15610): No output dependent on input pin "dispatch_word1[7]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word1[8]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word1[9]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[0]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[1]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[2]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[3]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[4]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[5]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[6]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[7]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[8]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[9]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[10]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[11]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[12]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[13]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[14]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[15]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[16]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[17]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "dispatch_word2[18]" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 18
+    Warning (15610): No output dependent on input pin "valid_dispatch1" File: /home/shobhit/Desktop/Acads/EE739-SuperScalar/Project/rob.vhdl Line: 19
+Info (21057): Implemented 303 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 107 input pins
+    Info (21059): Implemented 41 output pins
+    Info (21061): Implemented 155 logic cells
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 40 warnings
+    Info: Peak virtual memory: 481 megabytes
+    Info: Processing ended: Sun Dec  3 01:59:36 2023
+    Info: Elapsed time: 00:00:27
+    Info: Total CPU time (on all processors): 00:00:57
+
+

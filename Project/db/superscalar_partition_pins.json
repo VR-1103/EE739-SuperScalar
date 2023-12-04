@@ -1,0 +1,29 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "RS_stall",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "RS_flush",
+					"strict" : false
+				},
+				{
+					"name" : "valid_in1",
+					"strict" : false
+				},
+				{
+					"name" : "valid_in2",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

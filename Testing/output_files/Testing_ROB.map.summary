@@ -1,0 +1,16 @@
+Analysis & Synthesis Status : Successful - Sun Dec  3 01:59:36 2023
+Quartus Prime Version : 22.1std.2 Build 922 07/20/2023 SC Lite Edition
+Revision Name : Testing_ROB
+Top-level Entity Name : testing_rob
+Family : MAX 10
+Total logic elements : 148
+    Total combinational functions : 122
+    Dedicated logic registers : 60
+Total registers : 60
+Total pins : 148
+Total virtual pins : 0
+Total memory bits : 0
+Embedded Multiplier 9-bit elements : 0
+Total PLLs : 0
+UFM blocks : 0
+ADC blocks : 0

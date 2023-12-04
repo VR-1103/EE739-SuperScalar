@@ -1,8 +1,8 @@
-/Testing/db
-/Testing/output_files
-/Project/db
-/Project/output_files
-/Testing/incremental_db
-/Testing/simulation
-/Testing/Testing_nativelink_simulation.rpt
-/Project/incremental_db
+./Testing/db
+./Testing/output_files
+./Project/db
+./Project/output_files
+./Testing/incremental_db
+./Testing/simulation
+./Testing/Testing_nativelink_simulation.rpt
+./Project/incremental_db
