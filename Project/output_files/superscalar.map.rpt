@@ -1,5 +1,5 @@
 Analysis & Synthesis report for superscalar
-Mon Dec 04 08:24:44 2023
+Mon Dec 04 15:24:07 2023
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -10,17 +10,7 @@ Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
   2. Analysis & Synthesis Summary
   3. Analysis & Synthesis Settings
   4. Parallel Compilation
-  5. Analysis & Synthesis Source Files Read
-  6. Analysis & Synthesis Resource Usage Summary
-  7. Analysis & Synthesis Resource Utilization by Entity
-  8. User-Specified and Inferred Latches
-  9. Registers Removed During Synthesis
- 10. General Register Statistics
- 11. Multiplexer Restructuring Statistics (Restructuring Performed)
- 12. Parameter Settings for User Entity Instance: Top-level Entity: |decoder
- 13. Post-Synthesis Netlist Statistics for Top Partition
- 14. Elapsed Time Per Partition
- 15. Analysis & Synthesis Messages
+  5. Analysis & Synthesis Messages
 
 
 
@@ -47,22 +37,22 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Mon Dec 04 08:24:44 2023       ;
+; Analysis & Synthesis Status        ; Failed - Mon Dec 04 15:24:07 2023           ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; superscalar                                 ;
 ; Top-level Entity Name              ; decoder                                     ;
 ; Family                             ; MAX 10                                      ;
-; Total logic elements               ; 429                                         ;
-;     Total combinational functions  ; 96                                          ;
-;     Dedicated logic registers      ; 378                                         ;
-; Total registers                    ; 378                                         ;
-; Total pins                         ; 586                                         ;
-; Total virtual pins                 ; 0                                           ;
-; Total memory bits                  ; 0                                           ;
-; Embedded Multiplier 9-bit elements ; 0                                           ;
-; Total PLLs                         ; 0                                           ;
-; UFM blocks                         ; 0                                           ;
-; ADC blocks                         ; 0                                           ;
+; Total logic elements               ; N/A until Partition Merge                   ;
+;     Total combinational functions  ; N/A until Partition Merge                   ;
+;     Dedicated logic registers      ; N/A until Partition Merge                   ;
+; Total registers                    ; N/A until Partition Merge                   ;
+; Total pins                         ; N/A until Partition Merge                   ;
+; Total virtual pins                 ; N/A until Partition Merge                   ;
+; Total memory bits                  ; N/A until Partition Merge                   ;
+; Embedded Multiplier 9-bit elements ; N/A until Partition Merge                   ;
+; Total PLLs                         ; N/A until Partition Merge                   ;
+; UFM blocks                         ; N/A until Partition Merge                   ;
+; ADC blocks                         ; N/A until Partition Merge                   ;
 +------------------------------------+---------------------------------------------+
 
 
@@ -161,197 +151,11 @@ https://fpgasoftware.intel.com/eula.
 ; Maximum allowed            ; 12          ;
 ;                            ;             ;
 ; Average used               ; 1.00        ;
-; Maximum used               ; 12          ;
+; Maximum used               ; 1           ;
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processor 2            ;   0.0%      ;
-;     Processors 3-12        ;   0.0%      ;
 +----------------------------+-------------+
-
-
-+---------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                                  ;
-+----------------------------------+-----------------+-----------------+------------------------------------------------------------------------+---------+
-; File Name with User-Entered Path ; Used in Netlist ; File Type       ; File Name with Absolute Path                                           ; Library ;
-+----------------------------------+-----------------+-----------------+------------------------------------------------------------------------+---------+
-; decoder.vhdl                     ; yes             ; User VHDL File  ; C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl ;         ;
-+----------------------------------+-----------------+-----------------+------------------------------------------------------------------------+---------+
-
-
-+---------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary             ;
-+---------------------------------------------+-----------+
-; Resource                                    ; Usage     ;
-+---------------------------------------------+-----------+
-; Estimated Total logic elements              ; 429       ;
-;                                             ;           ;
-; Total combinational functions               ; 96        ;
-; Logic element usage by number of LUT inputs ;           ;
-;     -- 4 input functions                    ; 29        ;
-;     -- 3 input functions                    ; 37        ;
-;     -- <=2 input functions                  ; 30        ;
-;                                             ;           ;
-; Logic elements by mode                      ;           ;
-;     -- normal mode                          ; 96        ;
-;     -- arithmetic mode                      ; 0         ;
-;                                             ;           ;
-; Total registers                             ; 378       ;
-;     -- Dedicated logic registers            ; 378       ;
-;     -- I/O registers                        ; 0         ;
-;                                             ;           ;
-; I/O pins                                    ; 586       ;
-;                                             ;           ;
-; Embedded Multiplier 9-bit elements          ; 0         ;
-;                                             ;           ;
-; Maximum fan-out node                        ; clk~input ;
-; Maximum fan-out                             ; 378       ;
-; Total fan-out                               ; 1992      ;
-; Average fan-out                             ; 1.21      ;
-+---------------------------------------------+-----------+
-
-
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                ;
-+----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------+-------------+--------------+
-; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name ; Entity Name ; Library Name ;
-+----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------+-------------+--------------+
-; |decoder                   ; 96 (96)             ; 378 (378)                 ; 0           ; 0          ; 0            ; 0       ; 0         ; 586  ; 0            ; 0          ; |decoder            ; decoder     ; work         ;
-+----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------+-------------+--------------+
-Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
-
-
-+---------------------------------------------------------------------------------------------------+
-; User-Specified and Inferred Latches                                                               ;
-+----------------------------------------------------+---------------------+------------------------+
-; Latch Name                                         ; Latch Enable Signal ; Free of Timing Hazards ;
-+----------------------------------------------------+---------------------+------------------------+
-; op_addr1[0]$latch                                  ; op_addr1[2]         ; yes                    ;
-; op_addr1[1]$latch                                  ; op_addr1[2]         ; yes                    ;
-; op_addr1[2]$latch                                  ; op_addr1[2]         ; yes                    ;
-; op_addr2[0]$latch                                  ; op_addr2[2]         ; yes                    ;
-; op_addr2[1]$latch                                  ; op_addr2[2]         ; yes                    ;
-; op_addr2[2]$latch                                  ; op_addr2[2]         ; yes                    ;
-; Number of user-specified and inferred latches = 6  ;                     ;                        ;
-+----------------------------------------------------+---------------------+------------------------+
-Note: All latches listed above may not be present at the end of synthesis due to various synthesis optimizations.
-
-
-+---------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                              ;
-+----------------------------------------+----------------------------------------+
-; Register name                          ; Reason for Removal                     ;
-+----------------------------------------+----------------------------------------+
-; ls_dispatch2[22]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[23]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[24]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[25]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[26]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[27]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[28]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[46]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[47]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[48]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[49]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch2[50]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[22]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[23]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[24]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[25]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[26]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[27]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[28]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[46]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[47]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[48]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[49]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; ls_dispatch1[50]~reg0                  ; Stuck at GND due to stuck port data_in ;
-; int_dispatch2[64]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch2[65]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch2[66]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch2[67]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch2[68]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch1[64]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch1[65]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch1[66]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch1[67]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; int_dispatch1[68]~reg0                 ; Stuck at GND due to stuck port data_in ;
-; Total Number of Removed Registers = 34 ;                                        ;
-+----------------------------------------+----------------------------------------+
-
-
-+------------------------------------------------------+
-; General Register Statistics                          ;
-+----------------------------------------------+-------+
-; Statistic                                    ; Value ;
-+----------------------------------------------+-------+
-; Total registers                              ; 378   ;
-; Number of registers using Synchronous Clear  ; 0     ;
-; Number of registers using Synchronous Load   ; 0     ;
-; Number of registers using Asynchronous Clear ; 0     ;
-; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 0     ;
-; Number of registers using Preset             ; 0     ;
-+----------------------------------------------+-------+
-
-
-+------------------------------------------------------------------------------------------------------------------------------------------+
-; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                           ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
-; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
-; 3:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |decoder|dest1             ;
-; 3:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |decoder|dest2             ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
-
-
-+-------------------------------------------------------------------------+
-; Parameter Settings for User Entity Instance: Top-level Entity: |decoder ;
-+---------------------+-------+-------------------------------------------+
-; Parameter Name      ; Value ; Type                                      ;
-+---------------------+-------+-------------------------------------------+
-; len_PC              ; 5     ; Signed Integer                            ;
-; len_instr           ; 16    ; Signed Integer                            ;
-; len_arf             ; 3     ; Signed Integer                            ;
-; len_rrf             ; 6     ; Signed Integer                            ;
-; len_data            ; 16    ; Signed Integer                            ;
-; len_control         ; 5     ; Signed Integer                            ;
-; len_status          ; 16    ; Signed Integer                            ;
-; len_rob_dispatch    ; 19    ; Signed Integer                            ;
-; len_int_rs_dispatch ; 78    ; Signed Integer                            ;
-; len_ls_rs_dispatch  ; 60    ; Signed Integer                            ;
-+---------------------+-------+-------------------------------------------+
-Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
-
-
-+-----------------------------------------------------+
-; Post-Synthesis Netlist Statistics for Top Partition ;
-+-----------------------+-----------------------------+
-; Type                  ; Count                       ;
-+-----------------------+-----------------------------+
-; boundary_port         ; 586                         ;
-; cycloneiii_ff         ; 378                         ;
-;     plain             ; 378                         ;
-; cycloneiii_lcell_comb ; 100                         ;
-;     normal            ; 100                         ;
-;         0 data inputs ; 1                           ;
-;         1 data inputs ; 5                           ;
-;         2 data inputs ; 28                          ;
-;         3 data inputs ; 37                          ;
-;         4 data inputs ; 29                          ;
-;                       ;                             ;
-; Max LUT depth         ; 3.00                        ;
-; Average LUT depth     ; 0.54                        ;
-+-----------------------+-----------------------------+
-
-
-+-------------------------------+
-; Elapsed Time Per Partition    ;
-+----------------+--------------+
-; Partition Name ; Elapsed Time ;
-+----------------+--------------+
-; Top            ; 00:00:01     ;
-+----------------+--------------+
 
 
 +-------------------------------+
@@ -360,10 +164,48 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
-    Info: Processing started: Mon Dec 04 08:24:25 2023
+    Info: Processing started: Mon Dec 04 15:23:36 2023
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off superscalar -c superscalar
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 12 of the 12 processors detected
+Error (10500): VHDL syntax error at register_file.vhdl(9) near text ")";  expecting an identifier, or "constant", or "file", or "signal", or "variable" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 9
+Error (10500): VHDL syntax error at register_file.vhdl(35) near text "queue_used1";  expecting "end", or "begin", or a declaration statement File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 35
+Error (10523): Ignored construct register_file at register_file.vhdl(5) due to previous errors File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 5
+Error (10500): VHDL syntax error at register_file.vhdl(53) near text ";";  expecting ")", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 53
+Error (10500): VHDL syntax error at register_file.vhdl(60) near text ";";  expecting ")", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 60
+Error (10500): VHDL syntax error at register_file.vhdl(66) near text ";";  expecting ")", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 66
+Error (10500): VHDL syntax error at register_file.vhdl(76) near text ";";  expecting ")", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 76
+Error (10500): VHDL syntax error at register_file.vhdl(83) near text ";";  expecting ")", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 83
+Error (10500): VHDL syntax error at register_file.vhdl(89) near text ";";  expecting ")", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 89
+Error (10500): VHDL syntax error at register_file.vhdl(142) near text "validity_op1";  expecting ";" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 142
+Error (10500): VHDL syntax error at register_file.vhdl(152) near text "validity_op2";  expecting ";" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/register_file.vhdl Line: 152
+Info (12021): Found 0 design units, including 0 entities, in source file register_file.vhdl
+Info (12021): Found 12 design units, including 6 entities, in source file pipelines.vhd
+    Info (12022): Found design unit 1: reg_generic-reg File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 14
+    Info (12022): Found design unit 2: int_alu-implementation File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 53
+    Info (12022): Found design unit 3: integer_pipeline-implementation File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 261
+    Info (12022): Found design unit 4: load_alu1-implementation File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 320
+    Info (12022): Found design unit 5: load_exe2-implementation File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 365
+    Info (12022): Found design unit 6: load_pipeline-implementation File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 423
+    Info (12023): Found entity 1: reg_generic File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 5
+    Info (12023): Found entity 2: int_alu File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 35
+    Info (12023): Found entity 3: integer_pipeline File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 237
+    Info (12023): Found entity 4: load_alu1 File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 307
+    Info (12023): Found entity 5: load_exe2 File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 352
+    Info (12023): Found entity 6: load_pipeline File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 394
+Error (10430): VHDL Primary Unit Declaration error at alu.vhd(5): primary unit "reg_generic" already exists in library "work". Compile the two primary units into different libraries or assign them unique names. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number. File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/alu.vhd Line: 5
+Error (10784): HDL error at pipelines.vhd(5): see declaration for object "reg_generic" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/pipelines.vhd Line: 5
+Error (10523): Ignored construct int_alu at alu.vhd(36) due to previous errors File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/alu.vhd Line: 36
+Error (10523): Ignored construct integer_pipeline at alu.vhd(236) due to previous errors File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/alu.vhd Line: 236
+Error (10523): Ignored construct load_alu1 at alu.vhd(307) due to previous errors File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/alu.vhd Line: 307
+Error (10500): VHDL syntax error at alu.vhd(325) near text ",";  expecting an identifier, or a string literal File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/alu.vhd Line: 325
+Error (10500): VHDL syntax error at alu.vhd(334) near text "<=";  expecting "!", or "=>" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/alu.vhd Line: 334
+Error (10523): Ignored construct load_exe2 at alu.vhd(339) due to previous errors File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/alu.vhd Line: 339
+Error (10523): Ignored construct load_pipeline at alu.vhd(380) due to previous errors File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/alu.vhd Line: 380
+Info (12021): Found 0 design units, including 0 entities, in source file alu.vhd
+Info (12021): Found 2 design units, including 1 entities, in source file ls_rs.vhd
+    Info (12022): Found design unit 1: LS_RS-LS_RS_arch File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/LS_RS.vhd Line: 33
+    Info (12023): Found entity 1: LS_RS File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/LS_RS.vhd Line: 5
 Info (12021): Found 2 design units, including 1 entities, in source file store_buffer.vhdl
     Info (12022): Found design unit 1: store_buffer-Struct File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/store_buffer.vhdl Line: 64
     Info (12023): Found entity 1: store_buffer File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/store_buffer.vhdl Line: 6
@@ -394,92 +236,23 @@ Info (12021): Found 2 design units, including 1 entities, in source file memory_
 Info (12021): Found 2 design units, including 1 entities, in source file memory.vhdl
     Info (12022): Found design unit 1: memory-struct File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/memory.vhdl Line: 21
     Info (12023): Found entity 1: memory File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/memory.vhdl Line: 5
-Info (12127): Elaborating entity "decoder" for the top level hierarchy
-Warning (10540): VHDL Signal Declaration warning at decoder.vhdl(56): used explicit default value for signal "control_maybe1" because signal was never assigned a value File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 56
-Warning (10540): VHDL Signal Declaration warning at decoder.vhdl(56): used explicit default value for signal "control_maybe2" because signal was never assigned a value File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 56
-Warning (10036): Verilog HDL or VHDL warning at decoder.vhdl(58): object "instr1_disable" assigned a value but never read File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 58
-Warning (10036): Verilog HDL or VHDL warning at decoder.vhdl(58): object "instr2_disable" assigned a value but never read File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 58
-Warning (10873): Using initial value X (don't care) for net "store_dispatch2[16..1]" at decoder.vhdl(30) File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-Info (10041): Inferred latch for "op_addr2[0]" at decoder.vhdl(83) File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 83
-Info (10041): Inferred latch for "op_addr2[1]" at decoder.vhdl(83) File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 83
-Info (10041): Inferred latch for "op_addr2[2]" at decoder.vhdl(83) File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 83
-Info (10041): Inferred latch for "op_addr1[0]" at decoder.vhdl(78) File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 78
-Info (10041): Inferred latch for "op_addr1[1]" at decoder.vhdl(78) File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 78
-Info (10041): Inferred latch for "op_addr1[2]" at decoder.vhdl(78) File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 78
-Warning (13012): Latch op_addr1[0]$latch has unsafe behavior File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 78
-    Warning (13013): Ports D and ENA on the latch are fed by the same signal fetch1[12] File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 20
-Warning (13012): Latch op_addr1[1]$latch has unsafe behavior File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 78
-    Warning (13013): Ports D and ENA on the latch are fed by the same signal fetch1[12] File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 20
-Warning (13012): Latch op_addr1[2]$latch has unsafe behavior File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 78
-    Warning (13013): Ports D and ENA on the latch are fed by the same signal fetch1[12] File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 20
-Warning (13012): Latch op_addr2[0]$latch has unsafe behavior File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 83
-    Warning (13013): Ports D and ENA on the latch are fed by the same signal fetch2[12] File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 20
-Warning (13012): Latch op_addr2[1]$latch has unsafe behavior File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 83
-    Warning (13013): Ports D and ENA on the latch are fed by the same signal fetch2[12] File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 20
-Warning (13012): Latch op_addr2[2]$latch has unsafe behavior File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 83
-    Warning (13013): Ports D and ENA on the latch are fed by the same signal fetch2[12] File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 20
-Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "int_dispatch1[64]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch1[65]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch1[66]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch1[67]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch1[68]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch2[64]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch2[65]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch2[66]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch2[67]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "int_dispatch2[68]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[22]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[23]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[24]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[25]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[26]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[27]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[28]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[46]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[47]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[48]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[49]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch1[50]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[22]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[23]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[24]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[25]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[26]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[27]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[28]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[46]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[47]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[48]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[49]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "ls_dispatch2[50]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 132
-    Warning (13410): Pin "store_dispatch2[1]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[2]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[3]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[4]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[5]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[6]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[7]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[8]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[9]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[10]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[11]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[12]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[13]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[14]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[15]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-    Warning (13410): Pin "store_dispatch2[16]" is stuck at GND File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/decoder.vhdl Line: 30
-Info (286030): Timing-Driven Synthesis is running
-Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
-    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 1025 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 171 input pins
-    Info (21059): Implemented 415 output pins
-    Info (21061): Implemented 439 logic cells
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 69 warnings
-    Info: Peak virtual memory: 4839 megabytes
-    Info: Processing ended: Mon Dec 04 08:24:44 2023
-    Info: Elapsed time: 00:00:19
-    Info: Total CPU time (on all processors): 00:00:29
+Error (10500): VHDL syntax error at PRF.vhd(60) near text "=";  expecting ":", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 60
+Error (10500): VHDL syntax error at PRF.vhd(91) near text "arf_addr_in";  expecting ";" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 91
+Error (10500): VHDL syntax error at PRF.vhd(91) near text "to";  expecting ")", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 91
+Error (10500): VHDL syntax error at PRF.vhd(103) near text "arf_addr_in";  expecting ";" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 103
+Error (10500): VHDL syntax error at PRF.vhd(103) near text "to";  expecting ")", or "," File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 103
+Error (10622): VHDL syntax error at PRF.vhd(115): _data_end is an illegal identifier in VHDL File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 115
+Error (10622): VHDL syntax error at PRF.vhd(127): _data_end is an illegal identifier in VHDL File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 127
+Error (10622): VHDL syntax error at PRF.vhd(139): _data_end is an illegal identifier in VHDL File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 139
+Error (10622): VHDL syntax error at PRF.vhd(151): _data_end is an illegal identifier in VHDL File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 151
+Error (10500): VHDL syntax error at PRF.vhd(166) near text "data_out3";  expecting ";" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 166
+Error (10500): VHDL syntax error at PRF.vhd(178) near text "status_out3";  expecting ";" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 178
+Error (10500): VHDL syntax error at PRF.vhd(189) near text "architecture";  expecting "process" File: C:/Users/vedik/Documents/GitHub/EE739-SuperScalar/Project/PRF.vhd Line: 189
+Info (12021): Found 0 design units, including 0 entities, in source file prf.vhd
+Error: Quartus Prime Analysis & Synthesis was unsuccessful. 32 errors, 1 warning
+    Error: Peak virtual memory: 4784 megabytes
+    Error: Processing ended: Mon Dec 04 15:24:07 2023
+    Error: Elapsed time: 00:00:31
+    Error: Total CPU time (on all processors): 00:00:23
 
 

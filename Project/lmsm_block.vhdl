@@ -20,20 +20,20 @@ architecture Struct of lmsm_block is
 	signal status: std_logic:= '0';
 	signal reg: integer:= 0;
 	signal current_lmsm: std_logic_vector(len_PC+len_data-1 downto 0);
-	signal imm: std_logic_vector(6-1 downto 0);
+	signal imm: std_logic_vector(6-1 downto 0) := (others => '0');
 begin
 	op: process(clk)
 	begin
 		if rising_edge(clk) then
 			if disable = '0' then
 				if status = '0' then
-					if not instr1(len_data-1 downto len_data-3) = "011" then
+					if instr1(len_data-1 downto len_data-3) /= "011" then
 						instr1_out <= instr1;
 						instr_valid_out1 <= instr_valid1;
 		--				imm <= "000000";
 		--				reg <= 0;
 		--				was_lmsm <= '0';
-						if not instr2(len_data-1 downto len_data-3) = "011" then
+						if instr2(len_data-1 downto len_data-3) /= "011" then
 							instr2_out <= instr2;
 							instr_valid_out2 <= instr_valid2;
 							imm <= "000000";
@@ -73,7 +73,7 @@ begin
 							instr1_out(len_data-11 downto len_data-16) <= imm;
 							instr_valid_out1 <= '0';
 							if instr1(1) = '1' then
-								instr2_out(len_PC+len_data-1 downto len_data) <= instr1(len_PC+len_data-1 downto 0);
+								instr2_out(len_PC+len_data-1 downto len_data) <= instr1(len_PC+len_data-1 downto len_data);
 								instr2_out(len_data-1 downto len_data-4) <= "010" & instr1(len_data-4);
 								instr2_out(len_data-5 downto len_data-7) <= std_logic_vector(to_unsigned(reg+1,3));
 								instr2_out(len_data-8 downto len_data-10) <= instr1(len_data-5 downto len_data-7);
@@ -100,7 +100,7 @@ begin
 							instr1_out <= instr1;
 							instr_valid_out1 <= '1';
 							if instr1(1) = '1' then
-								instr2_out(len_PC+len_data-1 downto len_data) <= instr1(len_PC+len_data-1 downto 0);
+								instr2_out(len_PC+len_data-1 downto len_data) <= instr1(len_PC+len_data-1 downto len_data);
 								instr2_out(len_data-1 downto len_data-4) <= "010" & instr1(len_data-4);
 								instr2_out(len_data-5 downto len_data-7) <= std_logic_vector(to_unsigned(reg+1,3));
 								instr2_out(len_data-8 downto len_data-10) <= instr1(len_data-5 downto len_data-7);
@@ -144,7 +144,7 @@ begin
 							instr1_out(len_data-11 downto len_data-16) <= imm;
 							instr_valid_out1 <= '0';
 							if current_lmsm(1) = '1' then
-								instr2_out(len_PC+len_data-1 downto len_data) <= current_lmsm(len_PC+len_data-1 downto 0);
+								instr2_out(len_PC+len_data-1 downto len_data) <= current_lmsm(len_PC+len_data-1 downto len_data);
 								instr2_out(len_data-1 downto len_data-4) <= "010" & current_lmsm(len_data-4);
 								instr2_out(len_data-5 downto len_data-7) <= std_logic_vector(to_unsigned(reg+1,3));
 								instr2_out(len_data-8 downto len_data-10) <= current_lmsm(len_data-5 downto len_data-7);

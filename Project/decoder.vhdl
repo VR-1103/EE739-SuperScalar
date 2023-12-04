@@ -46,7 +46,7 @@ entity decoder is
 end entity;
 
 architecture struct of decoder is
-	signal fetch1_prev,fetch2_prev: std_logic_vector(len_PC+len_instr-1 downto 0):= (others => '0');
+	signal fetch1_prev,fetch2_prev: std_logic_vector(len_PC+len_instr-1 downto 0);
 	signal fetch_disable1_prev,fetch_disable2_prev: std_logic;
 	-----We need a pipelined thingy basically.----
 	signal op_maybe1,op_maybe2: std_logic_vector(1 downto 0);

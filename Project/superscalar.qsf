@@ -42,7 +42,7 @@ set_global_assignment -name DEVICE 10M25SAE144C8G
 set_global_assignment -name TOP_LEVEL_ENTITY decoder
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 20.1.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:22:58  OCTOBER 31, 2023"
-set_global_assignment -name LAST_QUARTUS_VERSION "22.1std.2 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "20.1.1 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -62,7 +62,6 @@ set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
-set_global_assignment -name VHDL_FILE register_file.vhdl
 set_global_assignment -name VHDL_FILE pipelines.vhd
 set_global_assignment -name VHDL_FILE alu.vhd
 set_global_assignment -name VHDL_FILE LS_RS.vhd
