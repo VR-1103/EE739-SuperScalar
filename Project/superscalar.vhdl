@@ -9,12 +9,6 @@ entity superscalar is
 end entity;
 
 architecture struct of superscalar is
-	
-	component register_file is
-	end component register_file;
-	
-	signal g,p: std_logic_vector(31 downto 0);
-
-	begin
+begin
 
 end architecture struct;
