@@ -194,6 +194,7 @@ begin
 				
 			-- Take input from decoder, figure out renamed registers and send back data
 			if (decoder_op_required1 = "01" or decoder_op_required1 = "10") then
+			-- I tried to figure out this logic but at this point my brain had stopped working so i have left this part blank
 				
 			
 		end if;
