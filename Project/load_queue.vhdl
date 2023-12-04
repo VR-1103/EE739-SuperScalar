@@ -32,6 +32,7 @@ entity load_queue is
 --			 validity_of_instr: out std_logic;
 			 --post ROB stage--
 			 retired_rob_pc_addr: in std_logic_vector(len_PC-1 downto 0);
+			 retired_rob_imm: in std_logic_vector(6-1 downto 0);
 			 valid_retirement: in std_logic;
 			 --Send stall bit--
 			 stall: out std_logic);
@@ -50,7 +51,7 @@ end entity;
 
 architecture Struct of load_queue is
 	type load_row_type is array(0 to size_load - 1) of std_logic_vector(6+row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
-	constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
+	constant default_row : std_logic_vector(6+row_len - 1 downto 0) := (others => '0');
 	signal load_row : load_row_type := (others => default_row);
 begin
 	normal_op: process(clk)
@@ -211,7 +212,7 @@ begin
 			if (valid_retirement = '1') then
 				status := '0';
 				L7: for i in 0 to size_load-1 loop
-				if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = retired_rob_pc_addr)) then
+				if ((load_row(i)(row_len-1) = '1') and (load_row(i)(row_len-1-1 downto row_len-len_PC-1) = retired_rob_pc_addr) and (load_row(i)(6+row_len-1 downto row_len) = retired_rob_imm)) then
 					if status = '0' then
 						load_row(i)(row_len-1) <= '0';
 						status := '1';
