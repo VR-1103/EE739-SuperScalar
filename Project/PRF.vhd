@@ -25,7 +25,11 @@ entity PRF is
 			Dest_CZ_en1, Dest_CZ_en2, Dest_en1, Dest_en2: in std_logic;
 			
 			-- Ports from L/S pipeline
-			
+			LS_addr_in: in std_logic_vector(0 to len_RRF - 1);
+			LS_data_in: in std_logic_vector(0 to len_data - 1);
+			LS_status_data: in std_logic_vector(0 to 1);
+			LS_status_addr: in std_logic_vector(0 to len_RRF - 1);
+			LS_data_en, LS_status_en: in std_logic;
 			
 			-- Ports from decoder
 			decoder_op_required1, decoder_op_required2: in std_logic_vector(1 downto 0); ---tells prf how many operands required
@@ -154,6 +158,30 @@ begin
 			end if;
 			
 			-- Take input from L/S pipelines and send updated values
+			if (LS_data_en = '1') then
+				rrf_addr_in := LS_addr_in;
+				rrf_addr_in_integer := to_integer(unsigned(rrf_addr_in));
+				prf_table(rrf_addr_in_integer)(data_start to data_end) <= LS_data_in;
+				prf_table(rrf_addr_in_integer)(valid) <= '1' --data can now be used
+				data_out3 <= rrf_addr_in & LS_data_in;
+				data_out_valid3 <= '1';
+			else
+				data_out3 <= rrf_addr_in & LS_data_in;
+				data_out_valid3 <= '0';
+			end if;
+			
+			if (LS_status_en = '1') then
+				rrf_addr_in := LS_status_addr;
+				rrf_addr_in_integer := to_integer(unsigned(rrf_addr_in));
+				prf_table(rrf_addr_in_integer)(data_start to data_end) <= LS_status_data;
+				prf_table(rrf_addr_in_integer)(valid) <= '1' --data can now be used
+				status_out3 <= rrf_addr_in & LS_status_data;
+				status_valid3 <= '1';
+			else
+				status_out3 <= rrf_addr_in & LS_status_data;
+				status_valid3 <= '1';
+			end if;
+				
 			-- Take input from decoder, figure out renamed registers and send back data
 			
 			
