@@ -24,6 +24,9 @@ entity PRF is
 			Dest_CZ_Data1, Dest_CZ_Data2: in std_logic_vector(0 to 1);
 			Dest_CZ_en1, Dest_CZ_en2, Dest_en1, Dest_en2: in std_logic;
 			
+			-- Ports from L/S pipeline
+			
+			
 			-- Ports from decoder
 			decoder_op_required1, decoder_op_required2: in std_logic_vector(1 downto 0); ---tells prf how many operands required
 			decoder_op_addr1, decoder_op_addr2: in std_logic_vector(len_arf+len_arf-1 downto 0); ---at max can hold addr of 2 operands,if only 1 operand is asked, addr will be at (len_arf-1 downto 0)
@@ -37,8 +40,13 @@ entity PRF is
 			cz1,cz2: in std_logic_vector(len_data-1 downto 0); ---whatever is asked, send that---
 			cz_valid1,cz_valid2: in std_logic; ---whether its valid or not
 			cz_dest_required1,cz_dest_required2: out std_logic; ---whenever the instr will change c/z/both, this will be high
-			cz_rrf1,cz_rrf2: in std_logic_vector(len_rrf-1 downto 0)); ---send the rrf for new location of status register---);
+			cz_rrf1,cz_rrf2: in std_logic_vector(len_rrf-1 downto 0); ---send the rrf for new location of status register---);
 			
+			-- Ports going out to components with just updated data
+			data_out1, data_out_2, data_out3: out std_logic_vector(0 to len_RRF + len_data - 1);
+			data_out_valid1, data_out_valid2, data_out_valid3: out std_logic;
+			status_out1, status_out2, status_out3: out std_logic_vector(0 to len_RRF + 1);
+			status_valid1, status_valid2, status_valid3: out std_logic);
 end entity PRF;
 
 architecture find of PRF is
@@ -96,6 +104,57 @@ begin
 				prf_table(rrf_addr_in_integer)(busy) <= '0';
 			end if;
 			
+			-- Take input from integer pipelines and send updated values
+			if(Dest_en1 = '1') then
+				rrf_addr_in := Dest_addr_out1;
+				rrf_addr_in_integer := to_integer(unsigned(rrf_addr_in));
+				prf_table(rrf_addr_in_integer)(data_start to _data_end) <= Dest_data1;
+				prf_table(rrf_addr_in_integer)(valid) <= '1'; -- data in register can be used now
+				data_out1 <= rrf_addr_in & Dest_data1;
+				data_out_valid1 <= '1';
+			else
+				data_out1 <= rrf_addr_in & Dest_data1;
+				data_out_valid1 <= '0';
+			end if;
+			
+			if(Dest_en2 = '1') then
+				rrf_addr_in := Dest_addr_out2;
+				rrf_addr_in_integer := to_integer(unsigned(rrf_addr_in));
+				prf_table(rrf_addr_in_integer)(data_start to _data_end) <= Dest_data2;
+				prf_table(rrf_addr_in_integer)(valid) <= '1'; -- data in register can be used now
+				data_out2 <= rrf_addr_in & Dest_data2;
+				data_out_valid2 <= '1';
+			else
+				data_out2 <= rrf_addr_in & Dest_data2;
+				data_out_valid2 <= '0';
+			end if;
+			
+			if(Dest_CZ_en1 = '1') then
+				rrf_addr_in := Dest_CZ_addr_out1;
+				rrf_addr_in_integer := to_integer(unsigned(rrf_addr_in));
+				prf_table(rrf_addr_in_integer)(data_start to _data_end) <= Dest_CZ_data1 & "00000000000000"; --only first two bits are useful
+				prf_table(rrf_addr_in_integer)(valid) <= '1'; -- data in register can be used now
+				status_out1 <= rrf_addr_in & Dest_CZ_data1;
+				status_valid1 <= '1';
+			else
+				status_out1 <= rrf_addr_in & Dest_CZ_data1;
+				status_valid1 <= '0';
+			end if;
+			
+			if(Dest_CZ_en2 = '1') then
+				rrf_addr_in := Dest_CZ_addr_out2;
+				rrf_addr_in_integer := to_integer(unsigned(rrf_addr_in));
+				prf_table(rrf_addr_in_integer)(data_start to _data_end) <= Dest_CZ_data2 & "00000000000000"; --only first two bits are useful
+				prf_table(rrf_addr_in_integer)(valid) <= '1'; -- data in register can be used now
+				status_out2 <= rrf_addr_in & Dest_CZ_data2;
+				status_valid2 <= '1';
+			else
+				status_out2 <= rrf_addr_in & Dest_CZ_data2;
+				status_valid2 <= '0';
+			end if;
+			
+			-- Take input from L/S pipelines and send updated values
+			-- Take input from decoder, figure out renamed registers and send back data
 			
 			
 		end if;
