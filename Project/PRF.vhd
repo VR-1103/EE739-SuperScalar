@@ -56,10 +56,10 @@ end entity PRF;
 architecture find of PRF is
 	constant row_len: integer := 1 + len_RRF + len_RRF; -- Busy(1) + current_RRF_pointer(6) + current_ARF_pointer(6)
 	type f_table is array(0 to finder_table_size - 1) of std_logic_vector(0 to row_len - 1);
-	signal finder_table: f_table := (others => (others => '0'));
-	constant prf_row_len = 1 + 1 + len_data;
+	signal finder_table: f_table := (0 => "0000000000000"; 1=> "0000001000001", 2 => "0000010000010", 3 => "0000011000011", 4=> "0000100000100", 5=>"0000101000101", 6 => "0000110000110", 7 =>"0000111000111", others => (others => '0'));
+	constant prf_row_len = 1 + 1 + len_data; -- Busy(1) + Valid(1) + Data(16)
 	type p_table is array(0 to prf_table_size - 1) of std_logic_vector(0 to prf_row_len - 1);
-	signal prf_rable: p_table := (others => (others => '0'));
+	signal prf_rable: p_table := (others => "010000000000000000"); -- all registers are valid with value 0
 	
 	-- some indexes for ARF finder
 	constant busy: integer := 0;
@@ -80,6 +80,16 @@ begin
 		variable arf_addr_in: integer;
 		variable rrf_addr_in: std_logic_vector(0 to len_RRF - 1);
 		variable rrf_addr_in_integer: integer;
+		
+		-- for dealing with decoder
+		variable op1addr1, op1addr2, op2addr1, op2addr2: std_logic_vector(0 to len_arf - 1);
+		variable dest_arf: std_logic_vector(0 to len_arf - 1);
+		
+		shared variable index_op1addr1: integer := 8;
+		shared variable index_op1addr2: integer := 9;
+		shared variable index_op2addr1: integer := 10 
+		shared variable valid_op1addr1, valid_op1addr2, valid_op2addr1, valid_op2addr2, valid_dest1, valid_dest2: std_logic := '1';  
+		
 	begin
 	
 		if (rising_edge(clk)) then
@@ -183,7 +193,8 @@ begin
 			end if;
 				
 			-- Take input from decoder, figure out renamed registers and send back data
-			
+			if (decoder_op_required1 = "01" or decoder_op_required1 = "10") then
+				
 			
 		end if;
 end architecture;
