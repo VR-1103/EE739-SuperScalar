@@ -26,6 +26,7 @@ entity load_queue is
 			 valid_store_addr2: in std_logic; --if checking is actually required
 			 alias1,alias2: out std_logic;
 			 alias_pc1,alias_pc2: out std_logic_vector(len_PC-1 downto 0);
+			 alias_imm1,alias_imm2: out std_logic_vector(6-1 downto 0);
 --			 --ROB stage--
 --			 valid_rob_instr: in std_logic; --if it is even a load instr at the top of rob
 --			 rob_pc_addr: in std_logic_vector(len_PC-1 downto 0);
@@ -152,6 +153,7 @@ begin
 							load_row(i)(0) <= '0';
 							alias1 <= '1';
 							alias_pc1 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
+							alias_imm1 <= load_row(i)(6+row_len-1 downto row_len);
 							status := '1';
 						else null;
 						end if;
@@ -175,6 +177,7 @@ begin
 							load_row(i)(0) <= '0';
 							alias2 <= '1';
 							alias_pc2 <= load_row(i)(row_len-1-1 downto row_len-1-len_PC);
+							alias_imm2 <= load_row(i)(6+row_len-1 downto row_len);
 							status := '1';
 						else null;
 						end if;
