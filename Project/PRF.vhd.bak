@@ -1,0 +1,33 @@
+library ieee ;
+use ieee.std_logic_1164.all ;
+use ieee.std_logic_unsigned.ALL;
+use ieee.numeric_std.all;
+
+entity ARF_finder is
+	generic (len_RRF: integer := 6;
+				table_size: integer := 8;
+				len_ARF integer := 3);
+	port (rob_valid_update: in std_logic;
+			rob_update_r0: in std_logic;
+			rob_retire_valid1, rob_retre_valid2: in std_logic;
+			rob_retire_word1, rob_retire_word2: in std_logic(0 to len_RRF + len_ARF - 1));
+end entity ARF_finder
+
+architecture find of ARF_finder is
+	constant row_len: integer := 1 + len_RRF; -- Busy(1) + current_RRF_pointer(6)
+	type table is array(0 to table_size - 1) of std_logic_vector(0 to row_len - 1);
+	finder_table: table := (others => (others => '0'));
+	
+	-- some indexes
+	constant busy: integer := 0;
+	constant rrf_addr_start: integer := 1;
+	constant rrf_addr_end: integer := rrf_addr_start + len_RRF - 1;
+	
+begin
+	
+	finder_proc: process(clk)
+		variable i: integer := 0;
+	begin
+		if (rising_edge(clk)) then
+			-- Take input from rob 
+	

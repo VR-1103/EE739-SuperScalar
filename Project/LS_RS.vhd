@@ -7,14 +7,14 @@ entity LS_RS is
     generic(len_PC: integer := 5; -- Length of the PC which RS receives for each instruction
 				len_control: integer := 16; -- Length of the control word for the integer pipeline
             len_RRF: integer := 6; -- Length of the destination RRF which the RS receives for each instruction
-            len_operand: integer := 32; -- Length of the operand (reference register) or displacement. This is more than the length of the addresses in the PRF so that address can fit as well  
+            len_operand: integer := 16; -- Length of the operand (reference register) or displacement. This is more than the length of the addresses in the PRF so that address can fit as well  
             size_rs: integer := 64; -- Size of RS table
             log_size_rs: integer := 6; -- log2 of size. UPDATE EVERYTIME YOU UPDATE SIZE
-				input_RRF: integer := (len_RRF + len_operand); -- reg address + content
-				len_out: integer := (len_pc + len_control + len_operand + len_operand + len_RRF + len_RRF); -- output to pipeline
-				input_len: integer := (len_pc + 4 + len_control + 1 + len_operand + len_operand + len_RRF + len_RRF + 1);
+				input_RRF: integer := (6 + 16); -- reg address + content
+				len_out: integer := (5 + 16 + 16 + 16 + 6 + 6); -- output to pipeline
+				input_len: integer := (5 + 4 + 16 + 1 + 16 + 16 + 6 + 6 + 1);
 				-- This works like: pc(len_pc) + opcode(4) + control(len_control) + valid1(1) + opr1(len_operand) + Immediate(len_operand) + destination(len_RRF) + status_destination(len_RRF) + ready(1)
-            row_len: integer:= (1 + input_len));
+            row_len: integer:= (1 + 5 + 4 + 16 + 1 + 16 + 16 + 6 + 6 + 1));
 				-- This works like: busy(1) + input
 				
 				-- A bit to indicate whether status renamed register will be renamed or not should be included in the control word.
@@ -33,13 +33,12 @@ end entity;
 architecture LS_RS_arch of LS_RS is
 	type rs_table is array(0 to size_rs - 1) of std_logic_vector(0 to row_len - 1); 
 	signal LS_RS_table: rs_table := (others => (others=>'0'));
-	signal i: integer := 0;
-	signal in1_index : integer := 0; --predetermined index for where to put first of decoder output
-	signal in2_index : integer := 1; --predetermined index for where to put second of decoder output
-	signal in1_index_valid, in2_index_valid : std_logic := '1'; -- is predetermined index even valid?
-	signal pipe_done: std_logic := '0'; -- whether pipeline has already been assigned something
-	signal stall_determine: std_logic := '0'; -- determine stall based on predetermined indexes given above 
-	signal current_row: std_logic_vector(0 to row_len - 1) := (others => '0');
+	shared variable i: integer := 0;
+	shared variable in1_index : integer := 0; --predetermined index for where to put first of decoder output
+	shared variable in2_index : integer := 1; --predetermined index for where to put second of decoder output
+	shared variable in1_index_valid, in2_index_valid : std_logic := '1'; -- is predetermined index even valid?
+	shared variable pipe_done: std_logic := '0'; -- whether pipeline has already been assigned something
+	shared variable stall_determine: std_logic := '0'; -- determine stall based on predetermined indexes given above 
 	signal pipe_out: std_logic_vector(0 to len_out - 1) := (others => '0'); --buffer for output to pipeline
 	
 	-- bunch of indexes
@@ -65,7 +64,7 @@ architecture LS_RS_arch of LS_RS is
 		if(rising_edge(clk)) then
 		
 			-- Clear pipeline assigned variables
-			pipe_done <= '0';
+			pipe_done := '0';
 			
 			-- flush if necessary
 			if (RS_flush = '1') then 
@@ -78,72 +77,70 @@ architecture LS_RS_arch of LS_RS is
 			if (stall_determine = '0' and RS_flush = '0') then -- Ideally after a flush, input valid bits should be 0
 				if (valid_in1 = '1') then
 					LS_RS_table(in1_index) <= '1' & input_word1;
-					in1_index_valid <= '0';
+					in1_index_valid := '0';
 				end if;
 				if (valid_in2 = '1') then
 					LS_RS_table(in2_index) <= '1' & input_word2;
-					in2_index_valid <= '0';
+					in2_index_valid := '0';
 				end if;
 			end if;
 			
 		-- start traversing table. This is done regardless of a stall in RS  
 			traverse_loop: for i in 0 to size_rs -1 loop -- im fucking breaking my head over this loop
-				current_row <= LS_RS_table(i);
 					
-				if (current_row(busy_i) = '1') then --row is busy so contains an instr
+				if (LS_RS_table(i)(busy_i) = '1') then --row is busy so contains an instr
 				
 				-- Update operands and status and check if instr is ready
-					if (current_row(row_len - 1) = '0') then -- instruction is not ready
+					if (LS_RS_table(i)(row_len - 1) = '0') then -- instruction is not ready
 						
 						-- check if opr1 is valid
-						if (current_row(valid1_i) = '0') then 
-							if (current_row(opr1_start_i to opr1_end_addr_i) = rrf_reg1(0 to len_RRF - 1) and rrf_valid1 = '1') then
-								current_row(valid1_i) <= '1'; -- update opr1 to prf_1
-								current_row(opr1_start_i to opr1_end_i) <= rrf_reg1(len_RRF to input_RRF - 1);
+						if (LS_RS_table(i)(valid1_i) = '0') then 
+							if (LS_RS_table(i)(opr1_start_i to opr1_end_addr_i) = rrf_reg1(0 to len_RRF - 1) and rrf_valid1 = '1') then
+								LS_RS_table(i)(valid1_i) <= '1'; -- update opr1 to prf_1
+								LS_RS_table(i)(opr1_start_i to opr1_end_i) <= rrf_reg1(len_RRF to input_RRF - 1);
 							end if;
-							if (current_row(opr1_start_i to opr1_end_addr_i) = rrf_reg2(0 to len_RRF - 1) and rrf_valid2 = '1') then
-								current_row(valid1_i) <= '1'; -- update opr1 to prf_2
-								current_row(opr1_start_i to opr1_end_i) <= rrf_reg2(len_RRF to input_RRF - 1);
+							if (LS_RS_table(i)(opr1_start_i to opr1_end_addr_i) = rrf_reg2(0 to len_RRF - 1) and rrf_valid2 = '1') then
+								LS_RS_table(i)(valid1_i) <= '1'; -- update opr1 to prf_2
+								LS_RS_table(i)(opr1_start_i to opr1_end_i) <= rrf_reg2(len_RRF to input_RRF - 1);
 							end if;
-							if (current_row(opr1_start_i to opr1_end_addr_i) = rrf_reg3(0 to len_RRF - 1) and rrf_valid3 = '1') then
-								current_row(valid1_i) <= '1'; -- update opr1 to prf_3
-								current_row(opr1_start_i to opr1_end_i) <= rrf_reg3(len_RRF to input_RRF - 1);
+							if (LS_RS_table(i)(opr1_start_i to opr1_end_addr_i) = rrf_reg3(0 to len_RRF - 1) and rrf_valid3 = '1') then
+								LS_RS_table(i)(valid1_i) <= '1'; -- update opr1 to prf_3
+								LS_RS_table(i)(opr1_start_i to opr1_end_i) <= rrf_reg3(len_RRF to input_RRF - 1);
 							end if;
 						end if;
 						
 						--update ready bit
-						current_row(row_len - 1) <= current_row(valid1_i);
+						LS_RS_table(i)(row_len - 1) <= LS_RS_table(i)(valid1_i);
 					end if;
 					
 					-- Check if instruction is ready now after update/ was already ready
-					if (current_row(row_len - 1) = '1') then
+					if (LS_RS_table(i)(row_len - 1) = '1') then
 						if (pipe_done = '0' and pipe_busy = '0') then
-							pipe_out <= current_row(pc_start_i to pc_end_i) & current_row(control_start_i to control_end_i) & current_row(opr1_start_i to opr1_end_i) & current_row(opr2_start_i to opr2_end_i) & current_row(dest_start_i to dest_end_i) & current_row(status_dest_start_i to status_dest_end_i);
-							pipe_done <= '1'; --mark as valid
-							current_row(busy_i) <= '0'; -- make slot available
+							pipe_out <= LS_RS_table(i)(pc_start_i to pc_end_i) & LS_RS_table(i)(control_start_i to control_end_i) & LS_RS_table(i)(opr1_start_i to opr1_end_i) & LS_RS_table(i)(opr2_start_i to opr2_end_i) & LS_RS_table(i)(dest_start_i to dest_end_i) & LS_RS_table(i)(status_dest_start_i to status_dest_end_i);
+							pipe_done := '1'; --mark as valid
+							LS_RS_table(i)(busy_i) <= '0'; -- make slot available
 						end if;
 					end if;
 				end if;
 				
 				-- check if row is now free and assign a predetermined index for decoded instrs if it is
-				if (current_row(busy_i) = '0') then --row is free, can use for an input instruction in the next cycle
-					if (in1_index_valid <= '0') then 
+				if (LS_RS_table(i)(busy_i) = '0') then --row is free, can use for an input instruction in the next cycle
+					if (in1_index_valid = '0') then 
 						in1_index := i;
-						in1_index_valid <= '1';
+						in1_index_valid := '1';
 					else 
-						if (in2_index_valid <= '0') then
+						if (in2_index_valid = '0') then
 							in2_index := i;
-							in2_index_valid <= '1';
+							in2_index_valid := '1';
 						end if;
 					end if;
 				end if;
 				
-				--place the updated row back into the RS table and move onto the next iteration
-				LS_RS_table(i) <= current_row; 	
+				--place the updated row back into the RS table and move onto the next iteration	
 			end loop traverse_loop;
 			
 			-- Determine stall for next cycle and assign an output
-			stall_determine <= not(in1_index_valid and in2_index_valid); -- stall if there is not atleast two spaces available
+			stall_determine := not(in1_index_valid and in2_index_valid); -- stall if there is not atleast two spaces available
 			
 		end if;
 	end process RS_proc;

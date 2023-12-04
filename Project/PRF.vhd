@@ -1,0 +1,103 @@
+library ieee ;
+use ieee.std_logic_1164.all ;
+use ieee.std_logic_unsigned.ALL;
+use ieee.numeric_std.all;
+
+entity PRF is
+
+	generic (len_RRF: integer := 6;
+				len_RRF_status: integer := 6;
+				finder_table_size: integer := 8;
+				len_ARF: integer := 3;
+				len_data: integer := 16);
+				
+	port (-- Ports from rob
+			rob_valid_update: in std_logic;
+			rob_update_r0: in std_logic;
+			rob_retire_valid1, rob_retre_valid2: in std_logic;
+			rob_retire_word1, rob_retire_word2: in std_logic(0 to len_RRF + len_ARF - 1);
+			
+			-- Ports from integer pipeline
+			Dest_Addr_Out1, Dest_Addr_Out2: in std_logic_vector(len_RRF-1 downto 0);
+			Dest_CZ_Addr_Out1, Dest_CZ_Addr_Out2: in std_logic_vector(len_RRF_status-1 downto 0);
+			Dest_Data1, Dest_Data2: in std_logic_vector(15 downto 0);
+			Dest_CZ_Data1, Dest_CZ_Data2: in std_logic_vector(0 to 1);
+			Dest_CZ_en1, Dest_CZ_en2, Dest_en1, Dest_en2: in std_logic;
+			
+			-- Ports from decoder
+			decoder_op_required1, decoder_op_required2: in std_logic_vector(1 downto 0); ---tells prf how many operands required
+			decoder_op_addr1, decoder_op_addr2: in std_logic_vector(len_arf+len_arf-1 downto 0); ---at max can hold addr of 2 operands,if only 1 operand is asked, addr will be at (len_arf-1 downto 0)
+			decoder_dest_required1,decoder_dest_required2: in std_logic; ---whether destination is required
+			decoder_dest_addr1,decoder_dest_addr2: in std_logic_vector(len_arf-1 downto 0); ---arf addr of destination
+			
+			op_data1,op_data2: in std_logic_vector(len_data+len_data-1 downto 0); ---at max data of 2 operands, if only 1 operand is asked, send the data to (len_data-1 downto 0)
+			op_valid1,op_valid2: in std_logic_vector(1 downto 0); ----similarly if only 1 oeprand, validity of 0'th bit will be considered
+			dest_rrf1,dest_rrf2: in std_logic_vector(len_rrf-1 downto 0); ---addr of destination rrf
+			cz_required1,cz_required2: out std_logic; ---00 if neither, 01 if z, 10 if c, 11 will never happen, honestly if prf has one status register, then ig it doesnt matter, only matters how pipeline is using the status register ka data
+			cz1,cz2: in std_logic_vector(len_data-1 downto 0); ---whatever is asked, send that---
+			cz_valid1,cz_valid2: in std_logic; ---whether its valid or not
+			cz_dest_required1,cz_dest_required2: out std_logic; ---whenever the instr will change c/z/both, this will be high
+			cz_rrf1,cz_rrf2: in std_logic_vector(len_rrf-1 downto 0)); ---send the rrf for new location of status register---);
+			
+end entity PRF;
+
+architecture find of PRF is
+	constant row_len: integer := 1 + len_RRF + len_RRF; -- Busy(1) + current_RRF_pointer(6) + current_ARF_pointer(6)
+	type f_table is array(0 to finder_table_size - 1) of std_logic_vector(0 to row_len - 1);
+	signal finder_table: f_table := (others => (others => '0'));
+	constant prf_row_len = 1 + 1 + len_data;
+	type p_table is array(0 to prf_table_size - 1) of std_logic_vector(0 to prf_row_len - 1);
+	signal prf_rable: p_table := (others => (others => '0'));
+	
+	-- some indexes for ARF finder
+	constant busy: integer := 0;
+	constant rrf_addr_start: integer := 1; -- corresponds to register having most updated value 
+	constant rrf_addr_end: integer := rrf_addr_start + len_RRF - 1;
+	constant arf_addr_start: integer := rrf_addr_end; -- corresponds to register having value as seen by state
+	constant arf_addr_end: integer := arf_addr_start + len_RRF - 1;
+	
+	-- for actual PRF
+	constant valid: integer := 1;
+	constant data_start: integer := 2;
+	constant data_end : integer := data_start + len_data - 1;
+	
+begin
+	
+	finder_proc: process(clk)
+		variable i: integer := 0;
+		variable arf_addr_in: integer;
+		variable rrf_addr_in: std_logic_vector(0 to len_RRF - 1);
+		variable rrf_addr_in_integer: integer;
+	begin
+	
+		if (rising_edge(clk)) then
+		
+			-- Take input from rob for word 1 
+			if (rob_retire_valid1 = '1') then
+				rrf_addr_in := rob_retire_word1(0 to len_RRF - 1);
+				rrf_addr_in_integer := to_integer(unsigned(rrf_addr_in))
+				arf_addr_in := to_integer(unsigned(rob_retire_word1(len RRF to len_RRF + lenARF - 1)));
+				finder_table(arf_addr_in)(arf_addr_start to arf_addr_end) <= rrf_addr_in;
+				if (rrf_addr_in = finder_table(arf_addr_in)(rrf_addr_start to rrf_addr_end)) then
+					finder_table(arf_addr_in)(busy) <= '0';
+				end if;
+				prf_table(rrf_addr_in_integer)(busy) <= '0'; -- no longer need to hold this temporary value
+			end if;
+			
+			-- Take input from rob for word2
+			if (rob_retire_valid2 = '1') then
+				rrf_addr_in := rob_retire_word2(0 to len_RRF - 1);
+				rrf_addr_in_integer := to_integer(unsigned(rrf_addr_in))
+				arf_addr_in := to_integer(unsigned(rob_retire_word2(len RRF to len_RRF + lenARF - 1)));
+				finder_table(arf_addr_in)(arf_addr_start to arf_addr_end) <= rrf_addr_in;
+				if (rrf_addr_in = finder_table(arf_addr_in)(rrf_addr_start to rrf_addr_end)) then
+					finder_table(arf_addr_in)(busy) <= '0'; -- no longer need to hold this temporary value
+				end if;
+				prf_table(rrf_addr_in_integer)(busy) <= '0';
+			end if;
+			
+			
+			
+		end if;
+end architecture;
+	

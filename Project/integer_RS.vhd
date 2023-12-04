@@ -35,12 +35,12 @@ end entity;
 architecture int_RS_arch of int_RS is
 	type rs_table is array(0 to size_rs - 1) of std_logic_vector(0 to row_len - 1); 
 	signal int_RS_table: rs_table := (others => (others=>'0'));
-	signal i: integer := 0;
-	signal in1_index : integer := 0; --predetermined index for where to put first of decoder output
-	signal in2_index : integer := 1; --predetermined index for where to put second of decoder output
-	signal in1_index_valid, in2_index_valid : std_logic := '1'; -- is predetermined index even valid?
-	signal pipe1_done, pipe2_done: std_logic := '0'; -- whether pipeline has already been assigned something
-	signal stall_determine: std_logic := '0'; -- determine stall based on predetermined indexes given above 
+
+	shared variable in1_index : integer := 0; --predetermined index for where to put first of decoder output
+	shared variable in2_index : integer := 1; --predetermined index for where to put second of decoder output
+	shared variable in1_index_valid, in2_index_valid : std_logic := '1'; -- is predetermined index even valid?
+	shared variable pipe1_done, pipe2_done: std_logic := '0'; -- whether pipeline has already been assigned something
+	--signal stall_determine: std_logic := '0'; -- determine stall based on predetermined indexes given above 
 	signal pipe1_out, pipe2_out: std_logic_vector(0 to len_out - 1) := (others => '0'); --buffer for output to pipeline
 	
 	-- bunch of indexes
@@ -68,12 +68,13 @@ architecture int_RS_arch of int_RS is
 	
 	begin
 	RS_proc: process(clk)
+		variable i: integer := 0;
 	begin
 		if(rising_edge(clk)) then
 		
 			-- Clear pipeline assigned variables
-			pipe1_done <= '0';
-			pipe2_done <= '0';
+			pipe1_done := '0';
+			pipe2_done := '0';
 			
 			-- flush if necessary
 			if (RS_flush = '1') then 
@@ -83,14 +84,14 @@ architecture int_RS_arch of int_RS is
 			end if; --dunno what to put into else
 			
 			-- insert incoming instructions if they are valid and there is no stall. Indexes are determined from previous cycle
-			if (stall_determine = '0' and RS_flush = '0') then -- Ideally after a flush, input valid bits should be 0
+			if (not(in1_index_valid and in2_index_valid) = '0' and RS_flush = '0') then -- Ideally after a flush, input valid bits should be 0
 				if (valid_in1 = '1') then
 					int_RS_table(in1_index) <= '1' & input_word1;
-					in1_index_valid <= '0';
+					in1_index_valid := '0';
 				end if;
 				if (valid_in2 = '1') then
 					int_RS_table(in2_index) <= '1' & input_word2;
-					in2_index_valid <= '0';
+					in2_index_valid := '0';
 				end if;
 			end if;
 			
@@ -158,12 +159,12 @@ architecture int_RS_arch of int_RS is
 					if (int_RS_table(i)(row_len - 1) = '1') then
 						if (pipe1_done = '0' and pipe1_busy = '0') then
 							pipe1_out <= int_RS_table(i)(pc_start_i to pc_end_i) & int_RS_table(i)(control_start_i to control_end_i) & int_RS_table(i)(opr1_start_i to opr1_end_i) & int_RS_table(i)(opr2_start_i to opr2_end_i) & int_RS_table(i)(dest_start_i to dest_end_i) & int_RS_table(i)(status_dest_start_i to status_dest_end_i) & int_RS_table(i)(status_start_i to status_end_i);
-							pipe1_done <= '1'; --mark as valid
+							pipe1_done := '1'; --mark as valid
 							int_RS_table(i)(busy_i) <= '0'; -- make slot available
 						else 
 							if (pipe2_done = '0' and pipe2_busy = '0') then
 								pipe2_out <= int_RS_table(i)(pc_start_i to pc_end_i) & int_RS_table(i)(control_start_i to control_end_i) & int_RS_table(i)(opr1_start_i to opr1_end_i) & int_RS_table(i)(opr2_start_i to opr2_end_i) & int_RS_table(i)(dest_start_i to dest_end_i) & int_RS_table(i)(status_dest_start_i to status_dest_end_i) & int_RS_table(i)(status_start_i to status_end_i);
-								pipe2_done <= '1'; -- mark as valid
+								pipe2_done := '1'; -- mark as valid
 								int_RS_table(i)(busy_i) <= '0'; -- make slot available
 							end if;
 						end if;
@@ -172,20 +173,20 @@ architecture int_RS_arch of int_RS is
 				
 				-- check if row is now free and assign a predetermined index for decoded instrs if it is
 				if (int_RS_table(i)(busy_i) = '0') then --row is free, can use for an input instruction in the next cycle
-					if (in1_index_valid <= '0') then 
-						in1_index <= i;
-						in1_index_valid <= '1';
+					if (in1_index_valid = '0') then 
+						in1_index := i;
+						in1_index_valid := '1';
 					else 
-						if (in2_index_valid <= '0') then
-							in2_index <= i;
-							in2_index_valid <= '1';
+						if (in2_index_valid = '0') then
+							in2_index := i;
+							in2_index_valid := '1';
 						end if;
 					end if;
 				end if;	
 			end loop traverse_loop;
 			
 			-- Determine stall for next cycle and assign an output
-			stall_determine <= not(in1_index_valid and in2_index_valid); -- stall if there is not atleast two spaces available
+			--stall_determine <= not(in1_index_valid and in2_index_valid); -- stall if there is not atleast two spaces available
 			
 		end if;
 	end process RS_proc;
@@ -199,6 +200,6 @@ architecture int_RS_arch of int_RS is
 	pipe2_issue_valid <= pipe2_done;
 	
 	-- Stall output
-	RS_stall <= stall_determine;
+	RS_stall <= not(in1_index_valid and in2_index_valid);
 	
 end architecture int_RS_arch;
