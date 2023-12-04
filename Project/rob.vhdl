@@ -34,7 +34,7 @@ entity rob is
           execute_store1, execute_store2 : in std_logic_vector(len_PC -1 downto 0);
           -- Interconnections with Load Queue $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           valid_load1, valid_load2 : in std_logic;
-          execute_load1, execute_load2 : in std_logic_vector(len_PC -1 downto 0);
+          execute_load1, execute_load2 : in std_logic_vector(len_PC - 1 downto 0);
           retire_load1, retire_load2 : out std_logic_vector(len_PC - 1 downto 0);
           valid_retire_load1, valid_retire_load2 : out std_logic;
           alias_tag1, alias_tag2 : in std_logic_vector(len_PC - 1 downto 0);
