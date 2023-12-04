@@ -10,12 +10,13 @@ entity rob is
               len_op: integer := 4;
               size_rob: integer := 64;
               log_size_rob: integer := 6;
-              row_len: integer := (1 + 5 + 4 + 3 + 6 + 1 + 1 + 1)); -- busy_bit + len_PC + len_op + len_ARF + len_RRF + mispred_bit + disabled_bit + executed_bit
+              len_imm : integer := 6;
+              row_len: integer := (1 + 6 + 5 + 4 + 3 + 6 + 1 + 1 + 1)); -- busy_bit + len_imm + len_PC + len_op + len_ARF + len_RRF + mispred_bit + disabled_bit + executed_bit
 
     port(clk, rob_flush: in std_logic;
           flush_location: in std_logic_vector(len_PC - 1 downto 0); -- tells us where we should ask fetch to go to in the next cycle
           -- Interconnections with decoder $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-          dispatch_word1, dispatch_word2: in std_logic_vector(row_len - 4 downto 0); -- dispatch word has PC, Opcode, ARF entry, RRF entry, disabled bit
+          dispatch_word1, dispatch_word2: in std_logic_vector(row_len - 4 downto 0); -- dispatch word has imm, PC, Opcode, ARF entry, RRF entry, disabled bit
           valid_dispatch1, valid_dispatch2 : in std_logic; -- decoder might have to send just one word/ no words in case of not having ready instr
           -- Interconnections with fetch stage $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           valid_fetch : out std_logic;
@@ -31,13 +32,14 @@ entity rob is
           -- Interconnections with Store Buffer $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           retire_store: out std_logic_vector(1 downto 0);
           valid_store1, valid_store2 : in std_logic;
-          execute_store1, execute_store2 : in std_logic_vector(len_PC -1 downto 0);
-          -- Interconnections with Load Queue $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+          execute_store1, execute_store2 : in std_logic_vector(len_imm + len_PC -1 downto 0);
+          -- Interconnections with Load Pipeline $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           valid_load1, valid_load2 : in std_logic;
-          execute_load1, execute_load2 : in std_logic_vector(len_PC - 1 downto 0);
-          retire_load1, retire_load2 : out std_logic_vector(len_PC - 1 downto 0);
+          execute_load1, execute_load2 : in std_logic_vector(len_imm + len_PC - 1 downto 0);
+          -- Interconnections with Load Queue $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+          retire_load1, retire_load2 : out std_logic_vector(len_imm + len_PC - 1 downto 0);
           valid_retire_load1, valid_retire_load2 : out std_logic;
-          alias_tag1, alias_tag2 : in std_logic_vector(len_PC - 1 downto 0);
+          alias_tag1, alias_tag2 : in std_logic_vector(len_imm + len_PC - 1 downto 0);
           valid_alias1, valid_alias2 : in std_logic;
           -- General port
           rob_stall: out std_logic);
@@ -50,7 +52,7 @@ architecture Struct of rob is
 
   type rob_row_type is array(0 to size_rob - 1) of std_logic_vector(row_len - 1 downto 0); -- notice that it 0, 1, ..., size_rob-1 and not the other way round.
   constant default_row : std_logic_vector(row_len - 1 downto 0) := (others => '0');
-  signal rob_row : rob_row_type := (0 => "1000000001001000000000", 1 => "1000100010010000001001", 2 => "1001000010011000010000", 3 => "1001100001100000011001", 4 => "1010000001101000100001", 5 => "1010100010110000101001", others => default_row);
+  signal rob_row : rob_row_type := (0 => "1000000000000001001000000000", 1 => "1000000000100010010000001001", 2 => "1000000001000010011000010000", 3 => "1000000001100001100000011001", 4 => "1000000010000001101000100001", 5 => "1000000010100010110000101001", others => default_row);
   constant branch_op : std_logic_vector(1 downto 0) := "10";
   signal head: unsigned(log_size_rob - 1 downto 0) := (others => '0'); -- log_size_rob - 1 downto 0 refers to the integer written bitwise
   signal tail: unsigned(log_size_rob - 1 downto 0) := to_unsigned(6, log_size_rob); -- these are written in this way to ensure we get modular arithmetic
@@ -65,8 +67,12 @@ architecture Struct of rob is
   constant disable_bit_loc: integer := 1;
   constant ex_bit_loc: integer := 0;
   constant busy_bit_loc : integer := row_len - 1;
-  constant pc_start: integer := row_len - 2;
+  constant tag_start : integer := row_len - 2;
+  constant tag_end : integer := len_op + len_ARF + len_RRF + len_status;
+  constant pc_start: integer := len_PC + len_op + len_ARF + len_RRF + len_status - 1;
   constant pc_end: integer := len_op + len_ARF + len_RRF + len_status;
+  constant imm_start : integer := len_PC + len_op + len_ARF + len_RRF + len_status;
+  constant imm_end : integer := row_len - 2;
   constant op_start: integer := len_op + len_ARF + len_RRF + len_status - 1;
   constant op_end: integer := len_ARF + len_RRF + len_status;
   constant arf_start: integer := len_ARF + len_RRF + len_status - 1;
@@ -104,14 +110,14 @@ begin
         rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word1(len_RRF downto 1);
         rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word1(len_ARF + len_RRF downto len_RRF + 1);
         rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word1(len_ARF + len_RRF +len_op downto len_RRF + len_ARF + 1);
-        rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op + 1);
+        rob_row(to_integer(tail))(tag_start downto tag_end) <= dispatch_word1(len_ARF + len_RRF + len_op + len_PC + len_imm downto  len_RRF + len_ARF + len_op + 1);
         rob_row(to_integer(tail))(ex_bit_loc) <= '0';
         rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         rob_row(to_integer(tail + 1))(disable_bit_loc) <= dispatch_word2(0);
         rob_row(to_integer(tail + 1))(rrf_start downto rrf_end) <= dispatch_word2(len_RRF downto 1);
         rob_row(to_integer(tail + 1))(arf_start downto arf_end) <= dispatch_word2(len_ARF + len_RRF downto len_RRF + 1);
         rob_row(to_integer(tail + 1))(op_start downto op_end) <= dispatch_word2(len_ARF + len_RRF +len_op downto len_RRF + len_ARF + 1);
-        rob_row(to_integer(tail + 1))(pc_start downto pc_end) <= dispatch_word2(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op + 1);
+        rob_row(to_integer(tail + 1))(tag_start downto tag_end) <= dispatch_word2(len_ARF + len_RRF +len_op + len_PC + len_imm downto  len_RRF + len_ARF + len_op + 1);
         rob_row(to_integer(tail + 1))(ex_bit_loc) <= '0';
         rob_row(to_integer(tail + 1))(mispred_bit_loc) <= '0';
         tail <= tail + 2;
@@ -121,7 +127,7 @@ begin
         rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word1(len_RRF downto 1);
         rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word1(len_ARF + len_RRF downto len_RRF + 1);
         rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word1(len_ARF + len_RRF +len_op downto len_RRF + len_ARF + 1);
-        rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op + 1);
+        rob_row(to_integer(tail))(tag_start downto tag_end) <= dispatch_word1(len_ARF + len_RRF +len_op + len_PC + len_imm downto  len_RRF + len_ARF + len_op + 1);
         rob_row(to_integer(tail))(ex_bit_loc) <= '0';
         rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail + 1;
@@ -131,7 +137,7 @@ begin
         rob_row(to_integer(tail))(rrf_start downto rrf_end) <= dispatch_word2(len_RRF downto 1);
         rob_row(to_integer(tail))(arf_start downto arf_end) <= dispatch_word2(len_ARF + len_RRF downto len_RRF + 1);
         rob_row(to_integer(tail))(op_start downto op_end) <= dispatch_word2(len_ARF + len_RRF +len_op downto len_RRF + len_ARF + 1);
-        rob_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word2(len_ARF + len_RRF +len_op + len_PC downto  len_RRF + len_ARF + len_op + 1);
+        rob_row(to_integer(tail))(tag_start downto tag_end) <= dispatch_word2(len_ARF + len_RRF +len_op + len_PC + len_imm downto  len_RRF + len_ARF + len_op + 1);
         rob_row(to_integer(tail))(ex_bit_loc) <= '0';
         rob_row(to_integer(tail))(mispred_bit_loc) <= '0';
         tail <= tail + 1;
@@ -170,21 +176,21 @@ begin
 
             end if;
 
-          elsif ((valid_store1 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_store1)) or
-                ((valid_store2 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_store2)) or
-                ((valid_load1 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_load1)) or
-                ((valid_load2 = '1') and (rob_row(i)(pc_start downto pc_end) = execute_load2)) then -- we are having some or the correct load or store having executed
+          elsif ((valid_store1 = '1') and (rob_row(i)(tag_start downto tag_end) = execute_store1)) or
+                ((valid_store2 = '1') and (rob_row(i)(tag_start downto tag_end) = execute_store2)) or
+                ((valid_load1 = '1') and (rob_row(i)(tag_start downto tag_end) = execute_load1)) or
+                ((valid_load2 = '1') and (rob_row(i)(tag_start downto tag_end) = execute_load2)) then -- we are having some or the correct load or store having executed
             rob_row(i)(ex_bit_loc) <= '1'; -- executed successfully
 
-          elsif (valid_alias1 = '1') and (rob_row(i)(pc_start downto pc_end) = alias_tag1) then
+          elsif (valid_alias1 = '1') and (rob_row(i)(tag_start downto tag_end) = alias_tag1) then
             rob_row(i)(mispred_bit_loc) <= '1';
-            jump_tag <= alias_tag1;
-            jump_location <= alias_tag1;
+            jump_tag <= alias_tag1(len_PC - 1 downto 0);
+            jump_location <= alias_tag1(len_PC - 1 downto 0);
 
-          elsif (valid_alias2 = '1') and (rob_row(i)(pc_start downto pc_end) = alias_tag2) then
+          elsif (valid_alias2 = '1') and (rob_row(i)(tag_start downto tag_end) = alias_tag2) then
             rob_row(i)(mispred_bit_loc) <= '1';
-            jump_tag <= alias_tag2;
-            jump_location <= alias_tag2;
+            jump_tag <= alias_tag2(len_PC - 1 downto 0);
+            jump_location <= alias_tag2(len_PC - 1 downto 0);
 
           else --i.e. if neither of the executed words match
             null;
@@ -200,8 +206,8 @@ begin
       -- Retiring mispredicted instructions -----------------------------------
       retire_word1 <= rob_row(to_integer(head))(rrf_start downto rrf_end);
       retire_word2 <= rob_row(to_integer(head + 1))(rrf_start downto rrf_end);
-      retire_load1 <= rob_row(to_integer(head))(pc_start downto pc_end);
-      retire_load2 <= rob_row(to_integer(head + 1))(pc_start downto pc_end);
+      retire_load1 <= rob_row(to_integer(head))(tag_start downto tag_end);
+      retire_load2 <= rob_row(to_integer(head + 1))(tag_start downto tag_end);
 
 		if rob_row(to_integer(head))(mispred_bit_loc) = '1' then -- I do not want to create 2 ROB flush cases (i.e. when everything has to be wiped vs everything except head). So I will try to make this into a 2-step process in case the head if non-speculative but the head + 1 is.)
         valid_fetch <= '1';

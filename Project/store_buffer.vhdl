@@ -4,20 +4,21 @@ use ieee.numeric_std.all;
 library work;
 
 entity store_buffer is
-    generic(len_PC :integer := 5;
+    generic(len_imm : integer := 6;
+            len_PC :integer := 5;
             len_opcode : integer := 4;
             len_mem_addr: integer := 5;
             len_data: integer := 16;
             size_store: integer := 16;
             log_size_store: integer := 4;
-            row_len: integer := (1 + 5 + 5 + 16 + 1 + 1)); -- 1 + len_PC + len_mem_addr + len_data + 1 + 1
+            row_len: integer := (1 + 6 + 5 + 5 + 16 + 1 + 1)); -- 1 + len_imm + len_PC + len_mem_addr + len_data + 1 + 1
 
     port(clk, store_buffer_flush : in std_logic; -- we will use the flush to remove the "un-retired" instructions
           -- Interconnections with Decoder $$$$$$$$$$$$$$--
-          dispatch_word1, dispatch_word2 : in std_logic_vector(len_PC + len_opcode + len_data + 2 - 1 downto 0); -- dispatch word has PC, Opcode, RRF address/ data, disable bit, valid bit
+          dispatch_word1, dispatch_word2 : in std_logic_vector(len_imm + len_PC + len_opcode + len_data + 2 - 1 downto 0); -- dispatch word has PC, Opcode, RRF address/ data, disable bit, valid bit
           valid_dispatch1, valid_dispatch2 : in std_logic; -- '1' only when RS has sent it specifically for store and is not garbage
           -- Interconnections with L/S Pipeline $$$$$$$$$$--
-          execute_word1 : in std_logic_vector(len_PC + len_mem_addr - 1 downto 0); -- one from L/S pipeline (execution words come from pipeline)
+          execute_word1 : in std_logic_vector(len_imm + len_PC + len_mem_addr - 1 downto 0); -- one from L/S pipeline (execution words come from pipeline)
           valid_execute1 : in std_logic; -- if the executed words are actually meant for store buffer
           -- Interconnections with PRF $$$$$$--
           valid_prf_update1: in std_logic;
@@ -31,7 +32,7 @@ entity store_buffer is
           data_prf_update3: in std_logic_vector(len_data - 1 downto 0);
           -- Interconnections with ROB $$$$$$$$$$$$$$--
           valid_store1, valid_store2 : out std_logic; -- that we do need to retire it
-          execute_store1, execute_store2 : out std_logic_vector(len_PC - 1 downto 0); -- sent to ROB to tell it that the row can be now executed pakka (this is required to ensure "data" in store buffer is actual data)
+          execute_store1, execute_store2 : out std_logic_vector(len_imm + len_PC - 1 downto 0); -- sent to ROB to tell it that the row can be now executed pakka (this is required to ensure "data" in store buffer is actual data)
           retire_store : in std_logic_vector(1 downto 0);
           -- Interconnections with Memory Arbiter $$$$$$$$$$$$--
           port_free_bit : in std_logic; -- tells store_buffer that it can now control the memory port
@@ -77,8 +78,12 @@ architecture Struct of store_buffer is
   constant valid_bit_loc : integer := 2;
   constant executed_bit_loc : integer := 3;
   constant busy_bit_loc : integer := row_len - 1;
-  constant pc_start: integer := row_len - 2; -- assuming row_len cannot exceed 64
+  constant pc_start: integer := len_imm + len_mem_addr + len_data + len_status - 1; -- assuming row_len cannot exceed 64
   constant pc_end: integer := len_mem_addr + len_data + len_status;
+  constant tag_start: integer := row_len - 2; -- assuming row_len cannot exceed 64
+  constant tag_end: integer := len_mem_addr + len_data + len_status;
+  constant imm_start: integer := row_len - 2; -- assuming row_len cannot exceed 64
+  constant imm_end: integer := len_imm + len_mem_addr + len_data + len_status;
   constant mem_addr_start: integer := len_mem_addr + len_data + len_status - 1;
   constant mem_addr_end: integer := len_data + len_status;
   constant data_start: integer := len_data + len_status - 1;
@@ -118,7 +123,7 @@ begin
 
       -- Welcoming dispatched requests ########################--
       if (valid_dispatch1 = '1') and (dispatch_word1(len_opcode + len_data + 1 - 1 downto len_data + 1) = "0101") and (dispatch_word1(1) = '0') then -- we only take in valid non-disabled store instructions
-        store_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_PC + len_data + len_opcode + 1 downto len_opcode + len_data + 2);
+        store_row(to_integer(tail))(tag_start downto tag_end) <= dispatch_word1(len_imm + len_PC + len_data + len_opcode + 1 downto len_opcode + len_data + 2);
         store_row(to_integer(tail))(data_start downto data_end) <= dispatch_word1(len_data + 1 downto 2);
         store_row(to_integer(tail))(valid_bit_loc) <= dispatch_word1(0); -- valid bit
         store_row(to_integer(tail))(busy_bit_loc) <= '1'; -- busy bit
@@ -127,7 +132,7 @@ begin
         store_row(to_integer(tail))(executed_bit_loc) <= '0'; -- executed bit
         tail <= tail + 1;
       else --adding this to reduce the number of inferred latches
-        store_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word1(len_PC + len_data + 1 downto len_data + 2);
+        store_row(to_integer(tail))(tag_start downto tag_end) <= dispatch_word1(len_imm + len_PC + len_data + 1 downto len_data + 2);
         store_row(to_integer(tail))(data_start downto data_end) <= dispatch_word1(len_data + 1 downto 2);
         store_row(to_integer(tail))(valid_bit_loc) <= dispatch_word1(0); -- valid bit
         store_row(to_integer(tail))(busy_bit_loc) <= '0'; -- busy bit
@@ -138,7 +143,7 @@ begin
       end if;
 
       if (valid_dispatch2 = '1') and (dispatch_word2(len_opcode + len_data + 1 - 1 downto len_data + 1) = "0101") and (dispatch_word2(0) = '0') then -- we only take in valid non-disabled store instructions
-        store_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word2(len_PC + len_data + 1 downto len_data + 2);
+        store_row(to_integer(tail))(tag_start downto tag_end) <= dispatch_word2(len_imm + len_PC + len_data + 1 downto len_data + 2);
         store_row(to_integer(tail))(data_start downto data_end) <= dispatch_word2(len_data + 1 downto 2);
         store_row(to_integer(tail))(valid_bit_loc) <= dispatch_word2(0); -- valid bit
         store_row(to_integer(tail))(busy_bit_loc) <= '1'; -- busy bit
@@ -147,7 +152,7 @@ begin
         store_row(to_integer(tail))(executed_bit_loc) <= '0'; -- executed bit
         tail <= tail + 1;
       else --adding this to reduce the number of inferred latches
-        store_row(to_integer(tail))(pc_start downto pc_end) <= dispatch_word2(len_PC + len_data + 1 downto len_data + 2);
+        store_row(to_integer(tail))(tag_start downto tag_end) <= dispatch_word2(len_imm + len_PC + len_data + 1 downto len_data + 2);
         store_row(to_integer(tail))(data_start downto data_end) <= dispatch_word2(len_data + 1 downto 2);
         store_row(to_integer(tail))(valid_bit_loc) <= dispatch_word2(0); -- valid bit
         store_row(to_integer(tail))(busy_bit_loc) <= '0'; -- busy bit
@@ -162,7 +167,7 @@ begin
       for i in size_store - 1 downto 0 loop -- one singular loop to decrease the number of potential loops
 
       -- Analysing executed addresses ##########################--
-        if (valid_execute1 = '1') and (store_row(i)(pc_start downto pc_end) = execute_word1(len_PC + len_mem_addr - 1 downto len_mem_addr)) then -- we have a match on the ith row for the 1st word
+        if (valid_execute1 = '1') and (store_row(i)(tag_start downto tag_end) = execute_word1(len_imm + len_PC + len_mem_addr - 1 downto len_mem_addr)) then -- we have a match on the ith row for the 1st word
           store_row(i)(mem_addr_start downto mem_addr_end) <= execute_word1(len_mem_addr - 1 downto 0);
           store_row(i)(executed_bit_loc) <= '1'; -- executed successfully
         else --adding this to reduce the number of inferred latches
@@ -183,11 +188,11 @@ begin
 
       -- Checking if any store is executable ###################--
         if (store_row(i)(executed_bit_loc) = '1') and (store_row(i)(valid_bit_loc) = '1') and (valid_store_temp1 = '0') then
-          execute_store1 <= store_row(i)(pc_start downto pc_end);
+          execute_store1 <= store_row(i)(tag_start downto tag_end);
           valid_store_temp1 <= '1';
           valid_store_temp2 <= '0';
         elsif (store_row(i)(executed_bit_loc) = '1') and (store_row(i)(valid_bit_loc) = '1') and (valid_store_temp2 = '0') then
-          execute_store2 <= store_row(i)(pc_start downto pc_end);
+          execute_store2 <= store_row(i)(tag_start downto tag_end);
           valid_store_temp1 <= '1';
           valid_store_temp2 <= '1';
         else
