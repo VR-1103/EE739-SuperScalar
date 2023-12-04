@@ -131,7 +131,11 @@ begin
 	begin
 		if (rising_edge(clk)) then
 			----Sending stuff to rob----
-				rob_dispatch1(6+len_rob_dispatch-1 downto len_rob_dispatch) <= fetch1_prev(5 downto 0);
+				if (fetch1_prev(len_instr-1 downto len_instr-3) = "010") then
+					rob_dispatch1(6+len_rob_dispatch-1 downto len_rob_dispatch) <= fetch1_prev(5 downto 0);
+				else
+					rob_dispatch1(6+len_rob_dispatch-1 downto len_rob_dispatch) <= "000000";
+				end if;
 				rob_dispatch1(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
 				rob_dispatch1(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch1_prev(len_instr-1 downto len_instr-4);
 				rob_dispatch1(len_rob_dispatch-len_PC-5 downto len_rob_dispatch-len_PC-7) <= dest1;
@@ -141,7 +145,11 @@ begin
 				else
 					rob_dispatch1(0) <= '0';
 				end if;
-				rob_dispatch2(6+len_rob_dispatch-1 downto len_rob_dispatch) <= fetch2_prev(5 downto 0);
+				if (fetch2_prev(len_instr-1 downto len_instr-3) = "010") then
+					rob_dispatch2(6+len_rob_dispatch-1 downto len_rob_dispatch) <= fetch2_prev(5 downto 0);
+				else
+					rob_dispatch2(6+len_rob_dispatch-1 downto len_rob_dispatch) <= "000000";
+				end if;
 				rob_dispatch2(len_rob_dispatch-1 downto len_rob_dispatch-len_PC) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
 				rob_dispatch2(len_rob_dispatch-len_PC-1 downto len_rob_dispatch-len_PC-4) <= fetch2_prev(len_instr-1 downto len_instr-4);
 				rob_dispatch2(len_rob_dispatch-len_PC-5 downto len_rob_dispatch-len_PC-7) <= dest2;
