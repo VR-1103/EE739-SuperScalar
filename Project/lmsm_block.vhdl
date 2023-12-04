@@ -20,7 +20,7 @@ architecture Struct of lmsm_block is
 	signal status: std_logic:= '0';
 	signal reg: integer:= 0;
 	signal current_lmsm: std_logic_vector(len_PC+len_data-1 downto 0);
-	signal imm: std_logic_vector(5-1 downto 0);
+	signal imm: std_logic_vector(6-1 downto 0);
 begin
 	op: process(clk)
 	begin

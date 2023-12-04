@@ -25,7 +25,7 @@ entity decoder is
 			int_valid1,int_valid2: out std_logic;
 			ls_valid1,ls_valid2: out std_logic;
 			ls_dispatch1,ls_dispatch2: out std_logic_vector(len_ls_rs_dispatch-1 downto 0);
-			load_dispatch1,load_dispatch2: out std_logic_vector(len_PC-1 downto 0);
+			load_dispatch1,load_dispatch2: out std_logic_vector(6+len_PC-1 downto 0);
 			load_valid1,load_valid2: out std_logic;
 			store_dispatch1,store_dispatch2: out std_logic_vector(len_PC+4+len_data+1-1 downto 0);
 			store_valid1,store_valid2: out std_logic;
@@ -274,8 +274,10 @@ begin
 				end if;
 			
 			----Sending to load queue----
-				load_dispatch1 <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
-				load_dispatch2 <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+				load_dispatch1(6+len_PC-1 downto len_PC) <= fetch1_prev(len_instr-11 downto len_instr-16);
+				load_dispatch1(len_PC-1 downto 0) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
+				load_dispatch2(len_PC-1 downto 0) <= fetch2_prev(len_PC+len_instr-1 downto len_instr);
+				load_dispatch2(6+len_PC-1 downto len_PC) <= fetch2_prev(len_instr-11 downto len_instr-16);
 			
 			----Sending to store buffer----
 				store_dispatch1(len_PC+4+len_data+1-1 downto len_PC+4+len_data+1-len_PC) <= fetch1_prev(len_PC+len_instr-1 downto len_instr);
